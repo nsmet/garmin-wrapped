@@ -1,5 +1,8 @@
 import { spawnSync } from 'node:child_process';
-import { readFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, rmSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { configureToolEnvironment } from './tool-environment.mjs';
@@ -50,8 +53,26 @@ switch(command){
     run(fileURLToPath(new URL('./run-framework.mjs',import.meta.url)),['dev',...args]);break;
   case 'build':build();break;
   case 'verify':verifyBuild();break;
-  case 'preview':
-    verifyBuild();run(wrangler,['dev','--config',generated,'--local','--ip','127.0.0.1','--port','8787','--inspector-port','0',...args]);break;
+  case 'preview': {
+    verifyBuild();
+    const option=name=>args.find(value=>value.startsWith(name+'='))?.slice(name.length+1)??(args.includes(name)?args[args.indexOf(name)+1]:undefined);
+    const port=option('--port')??'8787',protocol=option('--local-protocol')??'http';
+    // Override only the local process. Keep the distributable's production origin
+    // and secrets untouched, and let Wrangler redact this temporary session key.
+    const directory=mkdtempSync(join(tmpdir(),'garmin-wrapped-preview-'));
+    const envFile=join(directory,'.env');
+    const cleanup=()=>rmSync(directory,{recursive:true,force:true});
+    process.once('exit',cleanup);
+    try{
+      writeFileSync(envFile,`SESSION_SECRET=${randomBytes(32).toString('base64url')}\n`,{mode:0o600});
+      run(wrangler,['dev','--config',generated,'--local','--ip','127.0.0.1','--inspector-port','0',
+        ...(!option('--port')?['--port',port]:[]),
+        ...(!option('--local-upstream')?['--local-upstream',`127.0.0.1:${port}`]:[]),
+        ...(!option('--upstream-protocol')?['--upstream-protocol','http']:[]),
+        '--env-file',envFile,'--var',`PUBLIC_ORIGIN:${protocol}://127.0.0.1:${port}`,...args]);
+    }finally{cleanup();process.removeListener('exit',cleanup);}
+    break;
+  }
   case 'dry-run':
     build();run(wrangler,['deploy','--config',generated,'--dry-run','--outdir','.wrangler/cloudflare-dry-run',...args]);break;
   case 'deploy':

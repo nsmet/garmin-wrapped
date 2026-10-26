@@ -70,13 +70,13 @@ npx playwright install chromium webkit
 E2E_BASE_URL=http://127.0.0.1:5173 npm run test:e2e
 ```
 
-For a local preview of the exact production bundle, use `npm run preview:cloudflare`. Its origin remains the production domain by default, so local real imports are intentionally rejected. For a temporary local-only smoke check, override it explicitly:
+For a local preview of the exact production bundle, use:
 
 ```sh
-npm run preview:cloudflare -- --var PUBLIC_ORIGIN:http://127.0.0.1:8787
+npm run preview:cloudflare
 ```
 
-Supply a test `SESSION_SECRET` with `--var` or an ignored `dist/server/.dev.vars` only for local preview. Remove that file before `npm run check:cloudflare` or deployment. Use `dev:cloudflare` for everyday local development, which reads the root `.dev.vars` and uses the local origin automatically.
+Open `http://127.0.0.1:8787`. The preview command sets the allowed origin to this loopback address and creates a temporary, local-only session secret. `--port` updates the allowed origin as well. Restarting the preview expires its previous sessions. Production configuration and build files retain the production origin and contain no secrets. Use `dev:cloudflare` for everyday local development, which reads the root `.dev.vars` and uses the local origin automatically.
 
 After deployment:
 
@@ -118,3 +118,15 @@ The existing release-check workflow also verifies the Cloudflare build with an o
 - Rollback: use the Worker's **Deployments** page to roll back to a previously verified version, or run `npx wrangler rollback --config wrangler.cloudflare.jsonc` and select a known-good deployment. Keep the matching runtime secret and domain settings; key rotation invalidates earlier browser sessions.
 
 The original Sites configuration and identity remain for compatibility. Use the `:cloudflare` commands for this domain. Plain `npm run build` still builds the legacy Sites target; the Cloudflare deployment wrapper refuses to publish that target.
+
+## Preparation verified on 26 October 2026
+
+- Public source/configuration checks and TypeScript checks passed.
+- 60 unit, API, importer, story and visitor-isolation tests passed.
+- 112 Chromium/WebKit desktop/mobile browser checks passed against the compiled production Worker, including exports and the full responsive design library.
+- The actual compiled Worker passed local route checks for assets, security headers, no prefilled key, anonymous config, invalid/missing sessions, key validation, origin rejection and disconnect.
+- Both the working checkout and a clean source copy built successfully and passed Cloudflare's deployment dry run. The clean copy reused installed dependencies; this was not a fresh registry install.
+- Production dependency audit: zero reported vulnerabilities.
+- Production output was scanned against local credential values; none were present. No local secret files are included in the prepared archive.
+
+No Cloudflare account resources, domain records or production secrets were changed during preparation. Live Garmin connectivity on the new domain and physical-device native sharing remain post-deployment acceptance checks.

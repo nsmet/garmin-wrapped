@@ -174,7 +174,7 @@ $('advance').addEventListener('click',()=>state.index===stories.length-1?openSha
 $('back').addEventListener('click',()=>go(state.index-1));$('share').addEventListener('click',openShare);
 $('motion').addEventListener('click',()=>{state.paused=!state.paused;if(state.paused&&state.busy)finish();sync();draw();start();});
 $('chapters-button').addEventListener('click',openChapters);$('close-chapters').addEventListener('click',()=>closeDialog('chapters-dialog'));$('close-share').addEventListener('click',()=>closeDialog('share-dialog'));
-stage.querySelector('.brand').addEventListener('click',async e=>{e.preventDefault();if(libraryMode){await loadAssets(recap[0]);activate(recap[0]);$('library-mode').value='recap';}else go(0);});
+stage.querySelector('.brand-name').addEventListener('click',async e=>{e.preventDefault();if(libraryMode){await loadAssets(recap[0]);activate(recap[0]);$('library-mode').value='recap';}else go(0);});
 for(const id of ['chapters-dialog','share-dialog','privacy-dialog','health-share-dialog']){$(id).addEventListener('close',()=>{$('chapters-button').setAttribute('aria-expanded','false');start();});$(id).addEventListener('click',e=>{if(e.target===$(id)){const r=$(id).getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog(id);}});}
 document.addEventListener('keydown',e=>{if(stage.hidden||$('chapters-dialog').open||$('share-dialog').open||$('privacy-dialog').open||$('health-share-dialog').open||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();go(state.index+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(state.index-1);}});
 let touchStart=null;

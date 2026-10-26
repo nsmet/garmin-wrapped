@@ -40,7 +40,7 @@ $('demo-start').addEventListener('click',()=>start({demo:true,deepLink:true}));$
 $('loading-cancel').addEventListener('click',()=>showConnect());$('loading-retry').addEventListener('click',()=>lastWasDemo?start({demo:true,deepLink:lastDeepLink}):showConnect());
 $('loading-pause').addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>showConnect());
 $('privacy-open').addEventListener('click',()=>{$('coverage-details').replaceChildren();$('privacy-dialog').showModal();});$('close-privacy').addEventListener('click',()=>$('privacy-dialog').close());$('privacy-clear').addEventListener('click',()=>showConnect());
- document.querySelector('.entry-header .brand').addEventListener('click',e=>{e.preventDefault();showConnect();});
+ document.querySelector('.entry-header .brand-name').addEventListener('click',e=>{e.preventDefault();showConnect();});
 document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',()=>{motionPaused=reduced.matches;syncMotion();});
 window.addEventListener('pagehide',()=>{run++;controller?.abort();resetKey();app?.clearRecap();fetch('/api/disconnect',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',credentials:'same-origin',keepalive:true}).catch(()=>{});});
 syncMotion();if(location.hash&&location.hash!=='#connect'){

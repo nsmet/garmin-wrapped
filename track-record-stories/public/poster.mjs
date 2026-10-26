@@ -67,7 +67,7 @@ export function renderPoster(c,w,h,{from,to=from,progress=1,time=0,assets={},chr
  if(transition){typography(c,w,h,from,1-ease(progress/.36),-h*.018*t,time,layout,palette);typography(c,w,h,to,ease((progress-.45)/.55),h*.023*(1-t),time,layout,palette);}else typography(c,w,h,to,1,0,time,layout,palette);
  if(chrome){
   const pad=w*.056;type(c,'GARMIN WRAPED',pad,h*.048,w*.048,w*.68,b[1],800);type(c,String(year),w-pad,h*.048,w*.03,w*.18,b[1],600,'Space Grotesk','right');
-  type(c,'a MINI WATT product ⚡',pad,h*.071,w*.022,w*.8,b[1],600,'Space Grotesk');
+  type(c,'a MINI WATT product ⚡',pad,h*.073,w*.027,w*.8,b[1],700,'Space Grotesk');
   if(chrome!=='share'){
    const count=Math.min(total,24),gap=w*.008,bar=(w-pad*2-gap*(count-1))/count;c.fillStyle=b[1];for(let i=0;i<count;i++){c.globalAlpha=i===Math.floor(index/total*count)?1:.3;c.fillRect(pad+i*(bar+gap),h*.09,bar,h*.002);}c.globalAlpha=1;
    type(c,`${String(index+1).padStart(2,'0')} / ${total}`,pad,h*.12,w*.025,w*.4,b[1],600,'Space Grotesk');

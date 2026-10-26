@@ -1,7 +1,11 @@
 /* Viewport layouts shared by every recorded story and design template. */
-.brand{display:flex;flex-direction:column;gap:5px;letter-spacing:0;flex-shrink:0}
-.brand .brand-name{font:800 clamp(26px,3vw,38px)/.9 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.5px}
-.brand .brand-product{font-size:9px;font-weight:500;letter-spacing:.15px;line-height:1.3}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:8px;letter-spacing:0;flex-shrink:0}
+.brand .brand-name{text-decoration:none;font:800 clamp(26px,3vw,38px)/.9 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.5px}
+.product-credit{font-size:12px;font-weight:600;letter-spacing:.1px;line-height:1.4;text-underline-offset:3px}
+.brand .brand-product{display:inline-flex;align-items:baseline;gap:4px;border:1px solid currentColor;padding:5px 8px;text-decoration:none}
+.product-credit strong{font-weight:700}
+.product-credit:hover{text-decoration:underline}
+.entry-footer .product-credit{font-size:11px;text-align:right;flex-shrink:0}
 .entry-header .edition{margin-left:10px}
 .footer-copy{min-width:0;max-width:min(65%,580px)}
 .footer-top .footer-copy>p{max-width:none}
@@ -13,7 +17,8 @@
  .entry-header .edition{display:none}
  .story-chrome header{gap:14px}
  .story-chrome .edition{font-size:8px;letter-spacing:.5px}
- .brand .brand-product{font-size:8px}
+ .brand .brand-product{font-size:11px;padding:4px 6px;gap:3px}
+ .entry-footer .product-credit{font-size:10px}
  .footer-copy{max-width:calc(100% - 64px)}
  .mini-watt-cta{font-size:12px;padding:12px 14px;min-height:46px;margin-top:12px}
  .footer-top .mini-watt-details{font-size:9px;margin-top:8px}

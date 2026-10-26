@@ -36,6 +36,11 @@ test('Every recap slide fits desktop, tablet and compact mobile layouts after re
  const ids=await page.evaluate(async()=>{const {dataset}=await import('/sample-data.mjs');const {recapSequence}=await import('/recap-sequence.mjs');return recapSequence(dataset).map(s=>s.id);});
  for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[320,568],[844,390]]){
   await page.setViewportSize({width,height});
+  // Wait for the responsive canvas to redraw before measuring its text.
+  await expect.poll(()=>page.locator('#poster').evaluate(canvas=>{
+   const ratio=Math.min(devicePixelRatio||1,2),box=canvas.getBoundingClientRect();
+   return canvas.width===Math.round(box.width*ratio)&&canvas.height===Math.round(box.height*ratio);
+  })).toBe(true);
   for(const id of ids){
    await navigate(page,id,browserName);await expect(page.locator('#chapter-name')).toHaveText(id==='mini-watt'?'ONE MORE RIDE?':id.replaceAll('-',' ').toUpperCase());
    await fits(page,`${width}×${height} ${id}`);
