@@ -106,6 +106,8 @@ Cloudflare installs the locked npm dependencies. Configure the secret as a **run
 
 ## Optional GitHub deployment
 
+The GitHub repository contains the parent `effortbase` folder, with the app in `track-record-stories/`. Workflow files live at the repository root in `.github/workflows/`. Both workflows run commands from `track-record-stories` and cache npm dependencies using `track-record-stories/package-lock.json`. Test-failure uploads also use the app's subdirectory. Keep this structure when pushing updates; nested `track-record-stories/.github/workflows/` files are not discovered by GitHub Actions.
+
 The included **Deploy Garmin Wrapped to Cloudflare** workflow is manual (`workflow_dispatch`). After provisioning the runtime secret once, add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub `production` environment, then run the workflow from Actions. It runs source checks, type checking, tests, the production dependency audit and browser coverage before building and deploying. Do not run both GitHub deployment and Cloudflare Git Builds for the same commits.
 
 The existing release-check workflow also verifies the Cloudflare build with an offline deployment dry run.
