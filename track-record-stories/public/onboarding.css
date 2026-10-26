@@ -51,6 +51,17 @@
 .contents-number{font:700 25px/1 'Barlow Condensed',Impact,sans-serif;color:#1743ed}
 .recap-contents h3{font-size:10px;letter-spacing:.8px;margin:0 0 6px;line-height:1.5}
 .recap-contents p{font-size:11px;line-height:1.5;margin:0;color:#505755}
+.recap-guide{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);margin:0 clamp(22px,4.5vw,70px);padding:48px 0 52px;border-top:1px solid #101519}
+.recap-guide h2{font:800 clamp(32px,3.2vw,48px)/1 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.02em;margin:16px 0 22px}
+.recap-guide-intro h2 span{color:#1743ed}
+.recap-guide p{font-size:13px;line-height:1.75;max-width:540px;margin:0 0 16px;color:#505755}
+.recap-faq h2{font-size:28px;margin:0 0 20px}
+.recap-faq details{border-top:1px solid #10151930;padding:0 0 2px}
+.recap-faq details:last-child{border-bottom:1px solid #10151930}
+.recap-faq summary{font-size:13px;font-weight:600;line-height:1.6;cursor:pointer;padding:15px 0}
+.recap-faq details p{font-size:12px;margin:0 0 16px}
+.onboarding .noscript{position:static;inset:auto;background:#f2e630;padding:14px;font-size:12px;line-height:1.6;margin:20px 0 0}
+@media(max-width:800px){.recap-guide{grid-template-columns:minmax(0,1fr);padding:34px 0 38px;max-width:496px;justify-self:center;gap:24px}.recap-guide h2{font-size:36px}.recap-faq h2{font-size:28px}.recap-guide p{font-size:12px}}
 .entry-footer{margin:0 clamp(22px,4.5vw,70px);border-top:1px solid #10151930;padding:16px 0 20px;display:flex;justify-content:space-between;gap:20px;font-size:8px;font-weight:600;letter-spacing:.8px;line-height:1.6}
 @media(min-width:1600px){.entry-poster{padding-left:70px}}
 @media(max-width:1000px) and (min-width:801px){.entry-header{padding-left:30px;padding-right:30px}.entry-tag{font-size:8px;letter-spacing:.3px}.entry-poster{padding-left:30px;min-height:730px}.entry-poster h1{font-size:90px}.entry-art{height:280px;width:102%;right:-6%}.connect-panel{padding-left:20px;padding-right:30px}.connect-panel h2{font-size:58px}.recap-period{font-size:9px}}

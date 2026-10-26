@@ -62,3 +62,7 @@ Prompt:
 
 Use case: photorealistic-natural. Asset type: original sports photography for a bold graphic website. Extreme close, high oblique view of the sweeping curved lanes of an outdoor coral red athletics running track, thin crisp white lane lines receding in perspective, blue-green infield visible at the upper far side, warm directional morning light and fine rubber texture. No people, no numbers, no text, no signs, no logos, no stadium branding. Portrait 2:3 crop, strong cinematic editorial photography, subtly grainy. The curved white lines are the subject, not a stadium panorama.
 
+## Homepage social preview
+
+`public/social-preview.jpg` is a 1200 × 630 JPEG composed from the existing blue shoe, track motif and homepage palette. The layout source is `source-assets/social-preview.html`; render it at 1200 × 630 after its image loads, then export as JPEG at quality 85. It contains no personal recap data. It is used by the Open Graph and Twitter metadata and application structured data.
+

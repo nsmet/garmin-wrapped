@@ -4,16 +4,65 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f3f0e8">
-  <meta name="description" content="Garmin Wraped, a MINI WATT product. Your Garmin year in sport highlights, yearly totals and shareable story cards.">
-  <title>Garmin Wraped — a MINI WATT product ⚡️</title>
+  <meta name="description" content="Create your Garmin Connect year in review with activity totals, running and cycling highlights, and shareable recap cards. Try the demo without a key.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <title>Garmin Wrapped: Your Garmin Connect Year in Review | MINI WATT</title>
   <link rel="canonical" href="https://garmin-wrapped.miniwatt.app/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Garmin Wraped — a MINI WATT product">
-  <meta property="og:description" content="Your Garmin year in motion. Sport highlights, yearly totals and shareable story cards.">
+  <meta property="og:title" content="Garmin Wrapped: Your Garmin Connect Year in Review">
+  <meta property="og:description" content="Your activities, running and cycling highlights, and year-to-date totals in shareable story cards. Preview a fictional recap without a key.">
   <meta property="og:url" content="https://garmin-wrapped.miniwatt.app/">
   <meta property="og:site_name" content="MINI WATT">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:image" content="https://garmin-wrapped.miniwatt.app/social-preview.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Your Garmin year, wrapped. A colourful running shoe and track, by MINI WATT.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Garmin Wrapped: Your Garmin Connect Year in Review">
+  <meta name="twitter:description" content="Turn your Garmin Connect activities into a personal year in review with sport highlights and shareable story cards.">
+  <meta name="twitter:image" content="https://garmin-wrapped.miniwatt.app/social-preview.jpg">
+  <meta name="twitter:image:alt" content="Your Garmin year, wrapped. A colourful running shoe and track, by MINI WATT.">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://miniwatt.app/#organization",
+          "name": "MINI WATT",
+          "url": "https://miniwatt.app/"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://garmin-wrapped.miniwatt.app/#website",
+          "url": "https://garmin-wrapped.miniwatt.app/",
+          "name": "Garmin Wraped",
+          "alternateName": "Garmin Wrapped",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://miniwatt.app/#organization" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://garmin-wrapped.miniwatt.app/#app",
+          "url": "https://garmin-wrapped.miniwatt.app/",
+          "name": "Garmin Wraped",
+          "alternateName": "Garmin Wrapped",
+          "description": "Create a personal Garmin Connect year in review with year-to-date activity totals, sport highlights and downloadable story cards.",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript and a modern web browser.",
+          "inLanguage": "en",
+          "image": "https://garmin-wrapped.miniwatt.app/social-preview.jpg",
+          "featureList": ["Year-to-date activity recap", "Running and cycling highlights", "1080 × 1920 PNG story cards", "Fictional demo without a Garmin key"],
+          "publisher": { "@id": "https://miniwatt.app/#organization" },
+          "isPartOf": { "@id": "https://garmin-wrapped.miniwatt.app/#website" }
+        }
+      ]
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,7 +72,7 @@
 </head>
 <body class="onboarding-active">
 
-  <section class="onboarding" id="onboarding" aria-label="Your Garmin year, wrapped">
+  <main class="onboarding" id="onboarding" aria-label="Your Garmin year, wrapped">
     <header class="entry-header"><div class="brand"><a class="brand-name" href="#connect" aria-label="Garmin Wraped home">GARMIN WRAPED</a><a class="brand-product product-credit" href="https://miniwatt.app/?utm_source=garmin_wraped&amp;utm_medium=referral&amp;utm_campaign=product_credit&amp;utm_content=header" target="_blank" rel="noopener noreferrer">a <strong>MINI WATT</strong> product <span aria-hidden="true">⚡️ ↗</span><span class="sr-only"> (opens in a new tab)</span></a></div><div class="edition"><span>YOUR YEAR IN MOTION</span><span>A GARMIN YEAR IN REVIEW</span></div><span class="entry-tag"><span aria-hidden="true">↗</span> MADE FROM YOUR MOVEMENT</span></header>
     <div id="connect-screen" class="connect-layout">
       <div class="entry-poster">
@@ -32,7 +81,7 @@
         <p class="entry-description">All the miles. All the minutes.<br>Your year in motion, all in one recap.</p>
         <div class="entry-art" aria-hidden="true">
           <svg class="entry-track" viewBox="0 0 600 400" fill="none"><g transform="rotate(-24 300 200)"><rect x="25" y="65" width="550" height="270" rx="135" stroke="#ff7038" stroke-width="42"/><rect x="75" y="115" width="450" height="170" rx="85" stroke="#f23897" stroke-width="36"/><rect x="121" y="161" width="358" height="78" rx="39" stroke="#1743ed" stroke-width="28"/></g></svg>
-          <img src="assets/shoe-blue.webp" alt="" class="entry-shoe">
+          <img src="assets/shoe-blue.webp" alt="" class="entry-shoe" width="1254" height="1254" fetchpriority="high" decoding="async">
           <span class="art-sticker">YEAR IN<br>REVIEW <span>↗</span></span>
         </div>
         <p class="poster-footnote">YOU RECORDED IT.<br>NOW RELIVE IT.</p>
@@ -40,7 +89,7 @@
       <section class="connect-panel" aria-labelledby="connect-title">
         <div class="step-label"><span>YOUR DATA. YOUR HIGHLIGHTS.</span><span aria-hidden="true">↗</span></div>
         <h2 id="connect-title">UNWRAP<br><span>YOUR YEAR.</span></h2>
-        <p class="connect-intro">Turn your Garmin Connect activities into a personal recap of the sports, distances and efforts that made your year. Then save your favourite stories as share cards.</p>
+        <p class="connect-intro">Create your Garmin Connect year in review. Turn your activities into a personal recap of the sports, distances and efforts that made your year, then save your favourite stories as share cards.</p>
         <p class="recap-period"><span aria-hidden="true"></span> Your current year so far. Ready whenever you are.</p>
         <form id="api-form" novalidate>
           <label for="api-key">GARMIN PERSONAL API KEY</label>
@@ -53,11 +102,44 @@
         <div class="demo-divider"><span>TAKE A LOOK FIRST</span></div>
         <button class="demo-link" id="demo-start">Try the demo without a key <span aria-hidden="true">→</span></button>
         <p class="demo-caption">A sample year with fictional data.</p>
+        <noscript><p class="noscript">Enable JavaScript to build your Garmin recap or try the demo. You can read about the recap below without connecting an account.</p></noscript>
       </section>
       <section class="recap-contents" aria-label="Inside your Garmin recap">
+        <h2 class="sr-only">Inside your Garmin recap</h2>
         <div><span class="contents-number">01</span><div><h3>THE BIG PICTURE</h3><p>Your activities, hours and active days.</p></div></div>
         <div><span class="contents-number">02</span><div><h3>YOUR SPORT STORIES</h3><p>Your distances, longest efforts and patterns.</p></div></div>
         <div><span class="contents-number">03</span><div><h3>HIGHLIGHTS TO KEEP</h3><p>Colourful story cards, ready to save and share.</p></div></div>
+      </section>
+      <section class="recap-guide" aria-labelledby="recap-guide-title">
+        <div class="recap-guide-intro">
+          <p class="eyebrow">EVERY EFFORT ADDS UP</p>
+          <h2 id="recap-guide-title">YOUR GARMIN CONNECT<br><span>YEAR IN REVIEW.</span></h2>
+          <p>Garmin Wraped brings your recorded year into focus: total activities, time spent moving, active days and the sports you kept coming back to. Explore running and cycling highlights alongside supported activities such as swimming, walking, hiking and strength training.</p>
+          <p>Each recap uses the records available from your own Garmin Connect account. Stories appear only when their required measurements are available, so missing data never becomes a made-up highlight.</p>
+        </div>
+        <div class="recap-faq" aria-labelledby="recap-faq-title">
+          <h2 id="recap-faq-title">BEFORE YOU UNWRAP.</h2>
+          <details>
+            <summary>What is Garmin Wrapped?</summary>
+            <p>It is a personal year-in-review recap of your Garmin Connect activities, presented as colourful stories you can save and share. Garmin Wraped is an independent MINI WATT project, not affiliated with or endorsed by Garmin.</p>
+          </details>
+          <details>
+            <summary>Can I see my Garmin year in review before December?</summary>
+            <p>Yes. Your recap covers the current calendar year so far, using your device’s time zone. You can build it during the year without waiting for an end-of-year release.</p>
+          </details>
+          <details>
+            <summary>Do I need a Garmin account or an API key?</summary>
+            <p>Your own recap needs your Garmin Connect account’s Personal API key. Use the key help above for instructions and a link to Garmin’s key page. You can try the demo without a key; every demo activity and highlight is fictional.</p>
+          </details>
+          <details>
+            <summary>Can I download and share my Garmin recap?</summary>
+            <p>Yes. Pick a story, choose a colour and download a 1080 × 1920 PNG card. You choose where to share it. Health cards require a separate confirmation before export.</p>
+          </details>
+          <details>
+            <summary>Are my Garmin key and activity records saved?</summary>
+            <p>Your key is exchanged securely with Garmin and is not saved. The connection uses an encrypted cookie that expires after 20 minutes and is cleared after import or disconnect. Your recap stays in this tab’s memory; refreshing, closing the tab or clearing your data removes it.</p>
+          </details>
+        </div>
       </section>
     </div>
     <section id="loading-screen" class="loading-screen" aria-labelledby="loading-title" hidden>
@@ -69,7 +151,7 @@
       <div class="loading-bottom"><div class="loading-status-row"><span id="loading-status" role="status" aria-live="polite">Getting the example ready…</span><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="loading-meter" aria-hidden="true"><span></span></div><div class="loading-bottom-row"><span>FICTIONAL DATA · DEMO PREVIEW</span><div><button id="loading-pause" class="text-button" aria-pressed="false">Pause motion</button><button id="loading-cancel" class="text-button">Back</button></div></div><button id="loading-retry" class="secondary-button" hidden>Try again ↗</button></div>
     </section>
     <div class="entry-footer" id="entry-footer"><span>YOUR GARMIN DATA. A WHOLE NEW PERSPECTIVE.</span><a class="product-credit" href="https://miniwatt.app/?utm_source=garmin_wraped&amp;utm_medium=referral&amp;utm_campaign=product_credit&amp;utm_content=footer" target="_blank" rel="noopener noreferrer">a <strong>MINI WATT</strong> product <span aria-hidden="true">⚡️ ↗</span><span class="sr-only"> (opens in a new tab)</span></a></div>
-  </section>
+  </main>
   <dialog id="key-help-dialog" class="key-help-dialog" aria-labelledby="key-help-title">
     <div class="dialog-heading"><div><p class="eyebrow">GARMIN CONNECT · PERSONAL API</p><h2 id="key-help-title">YOUR KEY.<br>YOUR START LINE.</h2></div><button id="close-key-help" class="close-button" aria-label="Close API key help">×</button></div>
     <p class="help-intro">Get your Personal API key on the Garmin Connect website. Use your own account’s key, not your Garmin password.</p>
@@ -114,7 +196,6 @@
     </div>
   </dialog>
   <div class="toast" id="toast" role="status"></div>
-  <noscript><p class="noscript">This story needs JavaScript. All example data is fictional; no Garmin account is connected.</p></noscript>
   <dialog id="privacy-dialog" aria-labelledby="privacy-title"><div class="dialog-heading"><h2 id="privacy-title">YOUR DATA.<br>YOUR CALL.</h2><button id="close-privacy" class="close-button" aria-label="Close privacy">×</button></div><div class="privacy-copy"><p>Garmin Wraped is an independent MINI WATT project. Each visitor connects only their own Garmin account using their own Personal API key. Garmin Wraped is not affiliated with or endorsed by Garmin.</p><p>Your key is exchanged with Garmin by this site’s server over HTTPS. The server retains no activity or health records. A secure, encrypted connection cookie expires after 20 minutes and is cleared when the import finishes or you disconnect. Visitors have separate connection sessions. Tabs in the same browser share a connection cookie; import one account at a time.</p><p>The recap lives only in this tab’s memory. Refreshing or closing the tab removes it. “Clear my data” removes the recap, export preview, and connection cookie. Downloaded PNG files and shares you send remain on your device or in the receiving app.</p><p>Daily steps, sleep and resting heart rate are included automatically when available. Sharing any health card requires a separate confirmation for that card. Exports contain only the shown metric and approved copy: no names, Garmin identifiers, source references, or precise locations.</p><p>Activity dates use your automatically detected device time zone. Daily steps and sleep use Garmin’s recorded calendar days. Missing measurements are omitted. A complete API import means all pages returned for the requested date window; it cannot establish that Garmin holds every activity you performed.</p><p>Application error logs contain request IDs, route names, error codes, and timings only. Cloudflare hosts this app and processes connection information, including IP addresses, to deliver it and limit requests. No advertising or analytics SDK is installed. Fonts load from Google Fonts.</p><p>Disconnecting does not revoke your Garmin key. You can revoke it on <a href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noopener noreferrer">Garmin’s key page</a>.</p><div id="coverage-details"></div></div><button id="privacy-clear" class="primary-button">Clear my data & disconnect</button></dialog>
   <dialog id="health-share-dialog" aria-labelledby="health-share-title"><div class="dialog-heading"><h2 id="health-share-title">SHARE THIS<br>HEALTH CARD?</h2></div><p id="health-share-description"></p><p>It may reveal personal health information. Only this card’s metric and caption will be included. You decide where it goes.</p><div class="consent-actions"><button id="health-share-cancel" class="secondary-button">Keep it private</button><button id="health-share-confirm" class="primary-button">Allow this card’s export</button></div></dialog>
   <script type="module" src="onboarding.mjs"></script>

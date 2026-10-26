@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Garmin Wraped — a MINI WATT product ⚡️",
-  description: "Garmin Wraped, a MINI WATT product. Your Garmin year in sport highlights, yearly totals and shareable story cards.",
+  title: "Garmin Wrapped: Your Garmin Connect Year in Review | MINI WATT",
+  description: "Create your Garmin Connect year in review with activity totals, running and cycling highlights, and shareable recap cards. Try the demo without a key.",
+  metadataBase: new URL("https://garmin-wrapped.miniwatt.app"),
+  alternates: { canonical: "/" },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

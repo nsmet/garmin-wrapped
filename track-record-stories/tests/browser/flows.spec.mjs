@@ -23,7 +23,7 @@ async function checkProductCredit(page,selector){
 }
 test('Garmin Wraped branding carries through to the recap and cycling ends with a MINI WATT invitation',async({page})=>{
  await mocked(page,{sport:'indoor_cycling'});await page.goto('/');
- await expect(page).toHaveTitle('Garmin Wraped — a MINI WATT product ⚡️');
+ await expect(page).toHaveTitle('Garmin Wrapped: Your Garmin Connect Year in Review | MINI WATT');
  await expect(page.locator('.entry-header .brand')).toContainText('GARMIN WRAPED');
  await expect(page.locator('.entry-header .brand')).toContainText('a MINI WATT product');
  await checkProductCredit(page,'.entry-header .brand-product');
