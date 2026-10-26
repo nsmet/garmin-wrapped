@@ -1,0 +1,4 @@
+.DS_Store
+
+# This local audit script contains a personal Garmin API key.
+/audit.py

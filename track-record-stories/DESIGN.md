@@ -1,0 +1,35 @@
+# Approved direction
+
+The user's supplied reference combines extreme editorial sport-poster type, colorful modernist geometry and photography. Preserve this direction as the baseline for later work.
+
+The homepage leads with “Your Garmin year, wrapped” and explicitly introduces an end-of-year recap for Garmin. The connection panel explains sport highlights and share cards, with current-year-so-far coverage visible before the key field. A numbered strip describes the annual overview, sport stories and downloadable highlights. Preserve this direct product framing alongside the condensed type, warm paper, cobalt action and photographic track composition.
+
+- Mobile-first immersive web stories, not a dashboard or native app.
+- Each story adapts to its viewport: wide screens place type beside artwork or charts; portrait screens stack the composition. Live content reserves the measured header and footer space. Charts, labels and dialogs scale with the available space, and very short screens can scroll without cropping the controls. Keep exports portrait at 1080×1920. The shared grid lives in `public/poster-layout.mjs` and viewport rules in `public/responsive.css`.
+- Sport stories focus on one supported measurement; annual overview and closing cards bring the overall totals together. Huge condensed type, decisive empty areas, saturated orange/coral/magenta/blue/yellow/mint, black and warm white.
+- Original photographic layers, large circles, angled bands and flowing routes. Color changes by chapter; typography and navigation remain consistent.
+- Continuous, restrained ambient loops on the shapes and travelling markers. Fluid motif transformations between chapters. Numbers and captions stay still while reading.
+- No automatic progression. Respect reduced motion, pause, keyboard controls and hidden tabs.
+- Standalone portrait share cards use the same renderer as the sequence.
+- The closing card opens a picker for every shareable card in the recap. Exports use a clean portrait composition with small branding, year, story copy and the required data notice; omit progress bars, chapter counters and navigation. Offer Original, Paper, Cobalt, Orange and Mint color choices. Color changes apply to typography and artwork without recoloring photography or changing chart meanings. Health consent applies only to the selected card and expires on switching cards or closing the picker.
+- Athlete-neutral imagery by default. No gender inference, no mandatory gender field.
+- Chapter admission depends on actual data coverage and privacy rules. Demo values are labeled fictional in the story and every export.
+- The supplied reference is art-direction inspiration, not an asset to slice or reproduce. No Olympic/FIFA branding.
+
+The fictional demo now runs the production planner over one explicitly fictional record fixture. Its activity counts, durations, active days, sports and monthly totals agree. The sequence opens with overall totals, an activity-count donut with a complete sport legend, and a twelve-month heat map with peak/quietest comparisons. Sport chapters follow, then available steps and opt-in health stories, and a compact year receipt.
+
+Sport introductions use their own equipment cutout and sport-specific headline. Recorded hours use a typographic time composition, distance uses a track/road photo crop where appropriate, longest distances use ranked comparison bars, and weekday patterns use an actual seven-day distribution. Charts remain still; duration dials move slowly; grounded weights and mats do not float. The same equipment is no longer reused for every measurement in a sport. Annual charts use no decorative equipment imagery or travelling paths.
+
+Monthly heat intensity uses recorded minutes when every activity has duration; otherwise it explicitly uses session counts. Complete empty months have zero recorded activity; unknown coverage and future months are blank, with different labels. The current month says “so far”. Peak/quietest comparisons include only completed months and preserve ties. The full chart data is available to screen readers and the shared portrait renderer.
+
+The library covers every supplied story candidate, with empty metrics and source conditions. It is an art-direction catalogue, separate from recap eligibility. Eight extra concepts cover recovery, HRV, hydration, nutrition, sleep timing/consistency, energy and elevation; their API support is not assumed.
+
+Visual vocabulary: track loops, gear teeth, stepped bands, folded planes, crescents, radial bursts, weight stacks, lanes, ripples, arches, balance circles, slalom stripes, targets, courts, triads, pitches, climbing holds, pulses and citrus rays. Photography sits between two halves of the same animated path. Typography remains still. Motion frequency is calmer for sleep and recovery.
+
+The 24 October visual refinement constrains every chapter palette to the eight brand anchors: warm paper, ink, warm white, cobalt, orange, pink, mint and yellow. The footer uses each chapter's own paper/ink pairing instead of a dark photographic gradient. Photos retain their natural proportions. Mobile headline and metric sizes fit above the artwork, including short screens and long library titles.
+
+Landscape compositions use independent transparent mountain and road subjects: rear geometry → mountain fragment → intervening ribbon → floating road → foreground path. The opaque alpine-road scene is retained only as historical source material and is no longer rendered. Cycling distance uses diagonal road geometry; cycling introductions retain gear geometry. Track photography remains a single masked photo fragment.
+
+Motion profiles are deterministic per story, with individual phase, pace, direction and transition duration. Ambient cycles use smooth periodic motion; open-path markers fade at their endpoints. Lane counts and marker positions interpolate during transitions. Incoming art settles after outgoing art clears, over diagonal color sweeps or slower circular reveals for quiet chapters. Charts and values stay still; the duration dial alone has ambient motion. Adjacent slides preload. Pause, reduced-motion changes during transitions, hidden tabs and open dialogs stop animation without losing the selected story. Live cards, thumbnails and exported cards use this same layered renderer.
+
+The start line uses a warm-paper sports poster, oversized condensed headline, original shoe cutout and orange/pink/blue track geometry. The loading interlude shifts to cobalt with yellow type, floating photography, moving lane markers and rotating editorial captions. Motion can be paused, respects reduced motion and pauses in background tabs. Entry, loading and recap remain clearly labeled as a design preview until the Garmin Personal API adapter is implemented. The help panel links directly to Garmin’s key settings and explains key creation and replacement.

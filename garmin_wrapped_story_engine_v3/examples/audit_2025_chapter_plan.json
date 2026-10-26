@@ -1,0 +1,209 @@
+{
+  "status": "ok",
+  "schemaVersion": "3.0.0",
+  "generationVersion": "0.3-reference-chapters",
+  "period": {
+    "year": 2025,
+    "complete": true
+  },
+  "athleteIdentity": {
+    "profile": "dual_headline",
+    "headlineSports": [
+      "hiit",
+      "running"
+    ],
+    "chosenFavorite": null,
+    "countLeader": "hiit"
+  },
+  "chapters": [
+    {
+      "chapterId": "year_overview",
+      "kind": "core",
+      "sportKey": null,
+      "order": 0,
+      "title": "Your sporting year",
+      "editorialQuestion": "What defined your recorded sporting year?",
+      "thesis": null,
+      "depth": "core",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "overview_activity_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "141 recorded activities",
+          "supportingCopy": null,
+          "claimKey": "all:activity_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Core yearly foundation"
+        },
+        {
+          "storyId": "overview_sport_mix",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "5 sport families in the recorded year",
+          "supportingCopy": null,
+          "claimKey": "all:sport_family_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Shows breadth of sport participation"
+        }
+      ]
+    },
+    {
+      "chapterId": "sport:hiit",
+      "kind": "sport",
+      "sportKey": "hiit",
+      "order": 1,
+      "title": "Your HIIT year",
+      "editorialQuestion": "What made HIIT part of your recorded year?",
+      "thesis": null,
+      "depth": "spotlight",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sport_hiit_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "60 recorded HIIT sessions",
+          "supportingCopy": null,
+          "claimKey": "sport:hiit:session_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Establishes sport chapter with verified count"
+        }
+      ]
+    },
+    {
+      "chapterId": "sport:running",
+      "kind": "sport",
+      "sportKey": "running",
+      "order": 2,
+      "title": "Your Running year",
+      "editorialQuestion": "What made Running part of your recorded year?",
+      "thesis": null,
+      "depth": "spotlight",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sport_running_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "52 recorded Running sessions",
+          "supportingCopy": null,
+          "claimKey": "sport:running:session_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Establishes sport chapter with verified count"
+        }
+      ]
+    },
+    {
+      "chapterId": "other_sports",
+      "kind": "supporting_sports",
+      "sportKey": null,
+      "order": 3,
+      "title": "Your other sports",
+      "editorialQuestion": "What else did you do?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "supporting_sports",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "Your other recorded sports included 13 Strength training, 12 Cycling, 4 Rowing",
+          "supportingCopy": null,
+          "claimKey": "all:supporting_sports:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Adds genuine variety without padding each small sport"
+        }
+      ]
+    },
+    {
+      "chapterId": "finale",
+      "kind": "core",
+      "sportKey": null,
+      "order": 4,
+      "title": "Your year, in a nutshell",
+      "editorialQuestion": "What uniquely sums up this recorded year?",
+      "thesis": null,
+      "depth": "core",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "finale",
+          "definitionId": null,
+          "phase": "payoff",
+          "kind": null,
+          "primaryClaim": "Two headline sports shaped your 2025: HIIT and Running",
+          "supportingCopy": null,
+          "claimKey": "all:finale:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Synthesizes earlier verified facts; no new performance claim"
+        }
+      ]
+    }
+  ],
+  "omittedChapters": [
+    {
+      "chapterId": "cross_sport",
+      "reason": "NO_VALID_STORIES"
+    },
+    {
+      "chapterId": "everyday_movement",
+      "reason": "NO_VALID_STORIES"
+    },
+    {
+      "chapterId": "heart_and_effort",
+      "reason": "NO_VALID_STORIES"
+    },
+    {
+      "chapterId": "wellness_recovery",
+      "reason": "NOT_OPTED_IN"
+    },
+    {
+      "chapterId": "sleep",
+      "reason": "NOT_OPTED_IN"
+    }
+  ],
+  "privateTrace": [],
+  "notes": [
+    "REFERENCE ONLY: assumes complete activity index and validated count metrics supplied by caller; additional storyCandidates are already verified.",
+    "Full sport-specific metric calculators, temporal completeness, FIT parsing, 176 story gates and localized copy are specified but not implemented here.",
+    "No visual designs, motion instructions, API keys or health measurements are produced."
+  ]
+}

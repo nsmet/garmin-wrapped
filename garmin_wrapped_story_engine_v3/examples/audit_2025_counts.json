@@ -1,0 +1,13 @@
+{
+  "year": 2025,
+  "yearComplete": true,
+  "indexComplete": true,
+  "activityCount": 141,
+  "sportCounts": {
+    "hiit": 60,
+    "running": 52,
+    "strength": 13,
+    "cycling": 12,
+    "rowing": 4
+  }
+}

@@ -1,0 +1,177 @@
+id,sport,story_family,metric,headline,eligibility,claim_guard,default_share,narrative_placement
+running_distance,running,distance,distance_sum,THE DISTANCE YOU RAN,distance>=0; completeness>=95%,2025 distance is valid only if all eligible run activities have usable distance,allow_sanitized,sport_chapter
+running_longest,running,peak,max_distance,ONE RUN WENT FURTHER,at least 2 runs; max distance>0,"largest recorded run, not a certified personal record",allow_sanitized,sport_chapter
+running_pace,running,peak,best_comparable_pace,YOUR FASTEST COMPARABLE RUN,"at least 3 runs, distance>=3km; GPS or calibrated pace",like-for-like distance and route conditions; no general speed improvement claim,allow_sanitized,sport_chapter
+running_consistency,running,habit,active_weeks,WEEKS IN YOUR RUNNING SHOES,at least 8 run weeks; full year,count unique ISO weeks with running,allow_sanitized,sport_chapter
+running_favorite_time,running,habit,start_hour_mode,WHEN YOUR RUNS HAPPENED,at least 10 runs; dominant time bucket>=40%,local-time clock with daylight savings,allow_sanitized,sport_chapter
+running_hr,running,intensity,zone_minutes,YOUR RUNNING ENGINE,HR present >=75% of running time,HR zone settings may change; use only validated compatible zones,allow_sanitized,sport_chapter
+running_cadence,running,technical,cadence_distribution,YOUR RUNNING RHYTHM,FIT cadence values in >=3 runs,running cadence units device-specific and FIT developer fields normalized,allow_sanitized,sport_chapter
+running_elevation,running,terrain,ascent_sum,THE HILLS ADDED UP,ascent valid in >=90% outdoor running,do not include treadmill elevation unless recorded as valid,allow_sanitized,sport_chapter
+running_footprint,running,location,route_coverage,ALL THE PATHS YOU TOOK,at least 3 valid GPS runs; privacy permission,never publicly expose start/end or precise trace by default,private_only,sport_chapter
+running_progress,running,trend,matched_pace_change,DID YOUR PACE CHANGE?,matched comparison >=6 sessions each period,match distance/elevation/type/effort; no causal explanation,allow_sanitized,sport_chapter
+running_pr,running,achievement,verified_pr_count,THE RUNS THAT STOOD OUT,actual PR markers; corroborated with category,PR flag is not evidence of which distance record,allow_sanitized,sport_chapter
+running_trail_split,running,identity,subtype_share,YOU LEFT THE ROAD BEHIND,trail subtype >=3; entire running classification reliable,trail vs road breakdown only when subtype truly known,allow_sanitized,sport_chapter
+cycling_distance,cycling,distance,distance_sum,KILOMETERS ON TWO WHEELS,distance completeness >=95%,separate indoor credited trainer kilometers from GPS outdoors,allow_sanitized,sport_chapter
+cycling_duration,cycling,volume,duration_sum,TIME IN THE SADDLE,recorded duration complete,do not turn elapsed time into pedaling time,allow_sanitized,sport_chapter
+cycling_biggest,cycling,peak,max_distance,YOUR BIGGEST RIDE,>=2 rides; valid distance,recorded longest not global record,allow_sanitized,sport_chapter
+cycling_climbing,cycling,terrain,ascent_sum,EVERY CLIMB COUNTS,>=3 outdoor rides; ascent completeness >=90%,exclude indoor without meaningful ascent,allow_sanitized,sport_chapter
+cycling_power,cycling,technical,power_curve,THE WATTS YOU PUT DOWN,"calibrated power readings, comparable windows",FIT power data optional; no FTP claim without supported test,allow_sanitized,sport_chapter
+cycling_cadence,cycling,technical,cadence_distribution,YOUR PEDALING RHYTHM,FIT cadence validated >=3 rides,no cadence absent sensor,allow_sanitized,sport_chapter
+cycling_hr,cycling,intensity,zone_minutes,THE EFFORT BEHIND THE RIDE,HR present >=75% of duration,zones from consistent definition,allow_sanitized,sport_chapter
+cycling_route,cycling,location,route_coverage,THE ROADS YOU EXPLORED,>=3 valid outdoor GPS tracks,avoid revealing home and routine routes,private_only,sport_chapter
+cycling_longday,cycling,peak,max_duration,THE DAY YOU KEPT GOING,>=3 rides; valid session duration,route optional,allow_sanitized,sport_chapter
+cycling_subtypes,cycling,identity,subtype_share,HOW YOU RODE,">=6 rides, indoor and outdoor accurately classified",do not imply preference from indoor vs outdoor alone,allow_sanitized,sport_chapter
+cycling_speed,cycling,trend,matched_speed_change,DID YOUR RIDING SPEED CHANGE?,matched outdoor course conditions; >=6 paired sessions,wind/terrain/traffic make naive mean speed misleading,allow_sanitized,sport_chapter
+cycling_consistency,cycling,habit,active_weeks,YOUR YEAR ON TWO WHEELS,>=8 cycling weeks,count unique weeks,allow_sanitized,sport_chapter
+hiit_sessions,hiit,identity,session_count,YOU CAME FOR THE INTENSITY,>=4 sessions,recorded sessions only,allow_sanitized,sport_chapter
+hiit_time,hiit,volume,duration_sum,THE MINUTES THAT COUNTED,>=4 sessions; duration complete,do not assume all minutes were hard effort,allow_sanitized,sport_chapter
+hiit_zone4,hiit,intensity,upper_zone_minutes,TIME IN THE RED,HR coverage >=80%; compatible zone definition,"zones 4 and 5, not necessarily actual max exertion",allow_sanitized,sport_chapter
+hiit_hrpeak,hiit,peak,max_hr,THE BIGGEST HEART-RATE PEAK,>=3 sessions with usable HR,not proof of maximum physiological heart rate,allow_sanitized,sport_chapter
+hiit_recovery,hiit,technical,intra_session_recovery,HOW YOUR HEART SETTLED,>=3 FIT sessions with intervals and continuous HR,"observed recovery between intervals, not medical fitness conclusion",allow_sanitized,sport_chapter
+hiit_repeat,hiit,habit,weekly_consistency,THE WEEKLY RITUAL,>=8 active weeks,no moral judgement on missed weeks,allow_sanitized,sport_chapter
+hiit_longest,hiit,peak,max_duration,YOUR LONGEST HIIT SESSION,>=3 sessions,long session is not higher intensity,allow_sanitized,sport_chapter
+hiit_peak_day,hiit,surprise,max_sessions_day,YOUR BIGGEST HIIT DAY,>=8 sessions and repeated days,multiple sessions may reflect duplicate imports; dedupe first,allow_sanitized,sport_chapter
+hiit_interval_structure,hiit,technical,interval_pattern,THE FORMAT YOU RETURNED TO,structured workout steps in >=5 sessions,do not infer EMOM/AMRAP from generic timer,allow_sanitized,sport_chapter
+hiit_workload,hiit,achievement,recorded_sets,MORE THAN JUST A TIMER,reps/sets actually present for >=3 workouts,HIIT set summaries may not represent all exercises,allow_sanitized,sport_chapter
+strength_sessions,strength,identity,session_count,YOUR STRENGTH YEAR,>=4 sessions,sessions counted,allow_sanitized,sport_chapter
+strength_time,strength,volume,duration_sum,HOURS OF STRENGTH TRAINING,valid session durations,not time under tension,allow_sanitized,sport_chapter
+strength_reps,strength,volume,reps_sum,EVERY REP COUNTS,>=80% sessions with complete recorded rep metadata,"recorded sets only, not estimated untracked repetitions",allow_sanitized,sport_chapter
+strength_sets,strength,volume,sets_sum,SET AFTER SET,>=80% sessions complete sets,same dedupe rules,allow_sanitized,sport_chapter
+strength_maxload,strength,peak,max_recorded_load,THE HEAVIEST RECORDED SET,weight measurements and exercise identity valid,never describe as one-rep max,allow_sanitized,sport_chapter
+strength_exercise,strength,habit,top_exercise,THE MOVE YOU KEPT COMING BACK TO,>=8 classified exercises,requires consistent exercise IDs,allow_sanitized,sport_chapter
+strength_progress,strength,trend,matched_load_progress,"ONE LIFT, TWO CHAPTERS",>=3 comparable sets in early/late windows,compare same movement/reps/equipment,allow_sanitized,sport_chapter
+strength_hr,strength,intensity,zone_minutes,YOUR HEART SHOWED UP TOO,HR on >=75% session time,cardio metrics optional,allow_sanitized,sport_chapter
+strength_consistency,strength,habit,active_weeks,YOUR ROUTINE HELD,>=8 weeks,no missing weeks interpreted as failure,allow_sanitized,sport_chapter
+walking_sessions,walking,identity,session_count,WALK AFTER WALK,>=4 sessions,recorded walk sessions,allow_sanitized,sport_chapter
+walking_distance,walking,distance,distance_sum,THE DISTANCE YOU WALKED,>=90% valid distance,do not add daily step distance; risk of double count,allow_sanitized,sport_chapter
+walking_longest,walking,peak,max_distance,YOUR LONGEST WALK,>=2 recorded walks,recorded only,allow_sanitized,sport_chapter
+walking_minutes,walking,volume,duration_sum,TIME ON YOUR FEET,valid duration,"activity time, not standing",allow_sanitized,sport_chapter
+walking_routine,walking,habit,active_weeks,THE WALKING HABIT,>=8 weeks,"walks recorded, not step-derived",allow_sanitized,sport_chapter
+walking_timing,walking,habit,start_hour_mode,WHEN YOU HEADED OUT,>=10 walks,local time,allow_sanitized,sport_chapter
+walking_routes,walking,location,route_coverage,WHERE YOUR WALKS TOOK YOU,>=3 valid GPS trails,privacy gated,private_only,sport_chapter
+walking_weekday,walking,surprise,weekday_mode,YOUR WALKING DAY,>=12 walks and meaningful concentration,not a fixed weekly plan,allow_sanitized,sport_chapter
+hiking_sessions,hiking,identity,session_count,YOU WENT EXPLORING,>=3 hikes,recorded hikes only,allow_sanitized,sport_chapter
+hiking_distance,hiking,distance,distance_sum,TRAIL AFTER TRAIL,distance>=90%,verified route distance,allow_sanitized,sport_chapter
+hiking_ascent,hiking,terrain,ascent_sum,THE CLIMBS KEPT COMING,>=3 hikes with ascent,validate elevation,allow_sanitized,sport_chapter
+hiking_longest,hiking,peak,max_distance,YOUR BIGGEST DAY OUT,>=2 hikes,recorded max,allow_sanitized,sport_chapter
+hiking_highest,hiking,peak,max_elevation,THE HIGHEST YOU REACHED,valid GPS/elevation; >=2 hikes,"elevation above sea level, not ascent",allow_sanitized,sport_chapter
+hiking_routes,hiking,location,route_coverage,THE PLACES YOU FOUND,>=2 GPS hikes,privacy gated,private_only,sport_chapter
+hiking_duration,hiking,volume,duration_sum,HOURS IN THE OUTDOORS,valid duration,time recorded,allow_sanitized,sport_chapter
+hiking_season,hiking,habit,season_mode,YOUR TRAIL SEASON,>=6 hikes; clear seasonal pattern,weather inferred? no,allow_sanitized,sport_chapter
+swim_sessions,swimming,identity,session_count,YOUR YEAR IN THE WATER,>=4 swims,pool and open water grouped,allow_sanitized,sport_chapter
+swim_distance,swimming,distance,distance_sum,LENGTH AFTER LENGTH,>=90% valid distance,pool distance relies on pool length/laps,allow_sanitized,sport_chapter
+swim_longest,swimming,peak,max_distance,THE LONGEST SWIM,>=2 swims,recorded longest,allow_sanitized,sport_chapter
+swim_time,swimming,volume,duration_sum,HOURS IN THE WATER,valid active timer,exclude time on deck where possible,allow_sanitized,sport_chapter
+swim_strokes,swimming,technical,stroke_sum,EVERY STROKE ADDED UP,stroke totals validated >=80%,must never fake estimated stroke counts,allow_sanitized,sport_chapter
+swim_pace,swimming,technical,pace100m,YOUR PACE THROUGH THE WATER,>=3 comparable swims,separate pool/open water,allow_sanitized,sport_chapter
+swim_pool,swimming,habit,pool_length_distribution,THE POOL YOU KNOW,>=4 valid pool swims,pool distance values validated,allow_sanitized,sport_chapter
+swim_open,swimming,identity,open_water_share,YOUR OPEN WATER CHAPTER,>=2 true open-water activities,distinguish from pool,allow_sanitized,sport_chapter
+swim_swolf,swimming,technical,swolf_pattern,YOUR SWOLF STORY,swolf available consistently >=3 sessions,"device-specific, not a cross-user score",allow_sanitized,sport_chapter
+row_sessions,rowing,identity,session_count,YOUR YEAR ON THE ROW,>=3 rows,recorded rows,allow_sanitized,sport_chapter
+row_distance,rowing,distance,distance_sum,METER BY METER,>=90% distance,erg data not GPS river distance,allow_sanitized,sport_chapter
+row_time,rowing,volume,duration_sum,TIME IN RHYTHM,duration valid,session time,allow_sanitized,sport_chapter
+row_longest,rowing,peak,max_distance,YOUR LONGEST ROW,>=2 valid rows,indoor/outdoor may be compared distance not conditions,allow_sanitized,sport_chapter
+row_strokes,rowing,technical,stroke_sum,EVERY STROKE ADDED UP,strokes validated >=80%,strokes optional,allow_sanitized,sport_chapter
+row_rate,rowing,technical,stroke_rate_distribution,YOUR STROKE RHYTHM,cadence FIT validated >=3 rows,normalization of stroke rate,allow_sanitized,sport_chapter
+row_pace,rowing,technical,pace500m,YOUR PACE PER 500,>=3 calibrated comparable sessions,erg vs water separate,allow_sanitized,sport_chapter
+row_hr,rowing,intensity,zone_minutes,THE EFFORT IN EVERY PULL,HR 75%,observed only,allow_sanitized,sport_chapter
+yoga_sessions,yoga,identity,session_count,YOU MADE SPACE TO MOVE,>=4 sessions,activity classification only,allow_sanitized,sport_chapter
+yoga_time,yoga,volume,duration_sum,TIME ON THE MAT,valid duration,recorded yoga time,allow_sanitized,sport_chapter
+yoga_consistency,yoga,habit,active_weeks,THE MAT KEPT CALLING,>=8 weeks,no claims of stress relief,allow_sanitized,sport_chapter
+yoga_streak,yoga,habit,longest_weekly_streak,A ROUTINE TO RETURN TO,>=8 yoga weeks and complete index,"sequential activity weeks, not every day",allow_sanitized,sport_chapter
+yoga_favorite_day,yoga,surprise,weekday_mode,YOUR YOGA DAY,>=10 yoga sessions,concentration threshold,allow_sanitized,sport_chapter
+yoga_month,yoga,habit,month_mode,WHEN YOU FOUND YOUR FLOW,>=10 yoga sessions,seasonal pattern only,allow_sanitized,sport_chapter
+yoga_duration,yoga,peak,max_duration,YOUR LONGEST FLOW,>=3 yoga sessions,duration not skill,allow_sanitized,sport_chapter
+yoga_energy,yoga,wellness,prepost_body_battery,WHAT HAPPENED AROUND CLASS,consent and reliable measured pre/post samples,descriptive only; no causal recovery claim,private_only,sport_chapter
+pilates_sessions,pilates,identity,session_count,YOUR PILATES YEAR,>=4,recorded sessions,allow_sanitized,sport_chapter
+pilates_time,pilates,volume,duration_sum,HOURS OF MOVEMENT,valid duration,recorded activity timer,allow_sanitized,sport_chapter
+pilates_consistency,pilates,habit,active_weeks,WEEKS YOU RETURNED,>=8 weeks,weekly presence,allow_sanitized,sport_chapter
+pilates_streak,pilates,habit,longest_weekly_streak,THE ROUTINE TOOK SHAPE,>=8 weeks,not fitness progression,allow_sanitized,sport_chapter
+pilates_weekday,pilates,surprise,weekday_mode,YOUR PILATES DAY,>=10 sessions,strong mode,allow_sanitized,sport_chapter
+pilates_longest,pilates,peak,max_duration,YOUR LONGEST SESSION,>=3 sessions,no performance claim,allow_sanitized,sport_chapter
+pilates_month,pilates,habit,month_mode,WHEN YOU FOUND YOUR GROOVE,>=10 sessions,full-year coverage,allow_sanitized,sport_chapter
+pilates_hr,pilates,intensity,zone_minutes,"YOUR SESSION, IN HEARTBEATS",HR time series >75%,heart rate does not measure pilates quality,allow_sanitized,sport_chapter
+elliptical_sessions,elliptical,identity,session_count,ON THE ELLIPTICAL,>=4 sessions,recorded sessions,allow_sanitized,sport_chapter
+elliptical_time,elliptical,volume,duration_sum,THE MINUTES ROLLED ON,valid duration,recorded time,allow_sanitized,sport_chapter
+elliptical_longest,elliptical,peak,max_duration,YOU KEPT IT GOING,>=3 sessions,longest duration,allow_sanitized,sport_chapter
+elliptical_hr,elliptical,intensity,zone_minutes,THE EFFORT PROFILE,HR>=75%,HR zones validated,allow_sanitized,sport_chapter
+elliptical_week,elliptical,habit,active_weeks,YOU KEPT COMING BACK,>=8 weeks,routine,allow_sanitized,sport_chapter
+elliptical_peak,elliptical,peak,max_hr,THE DAY YOUR HEART RAN HIGH,>=4 HR tracked sessions,no max physiological claim,allow_sanitized,sport_chapter
+elliptical_calories,elliptical,volume,calorie_sum,ENERGY IN MOTION,>=90% measured calorie coverage,estimated calories not exact expenditure,allow_sanitized,sport_chapter
+elliptical_month,elliptical,habit,month_mode,YOUR BUSIEST MONTH,>=10 sessions,full-year index,allow_sanitized,sport_chapter
+ski_days,skiing,identity,active_days,DAYS ON THE SNOW,>=2 unique days,recorded snow-sport days only,allow_sanitized,sport_chapter
+ski_vertical,skiing,terrain,ascent_or_descent,YOUR VERTICAL YEAR,comparable measurement and subtype,downhill descent never labeled ascent,allow_sanitized,sport_chapter
+ski_runs,skiing,volume,recorded_run_count,ONE RUN AFTER ANOTHER,downhill lap/run segmentation validated,laps not always ski descents,allow_sanitized,sport_chapter
+ski_distance,skiing,distance,distance_sum,THE SNOW COVERED,valid distance>=90%,disclose downhill vs cross-country,allow_sanitized,sport_chapter
+ski_bigday,skiing,peak,max_duration,YOUR LONGEST SNOW DAY,>=2 snow activities,elapsed vs moving distinction,allow_sanitized,sport_chapter
+ski_elevation,skiing,peak,max_elevation,YOUR HIGHEST POINT,elevation valid,altitude above sea level,allow_sanitized,sport_chapter
+ski_places,skiing,location,route_coverage,WHERE THE SNOW TOOK YOU,GPS data; privacy,"avoid exact location),",private_only,sport_chapter
+ski_subtype,skiing,identity,subtype_share,YOUR WAY DOWN THE MOUNTAIN,multiple identified snow subtypes,do not mix snowshoeing with alpine performance,allow_sanitized,sport_chapter
+golf_rounds,golf,identity,session_count,A YEAR ON THE COURSE,>=3 rounds,recorded golf rounds,allow_sanitized,sport_chapter
+golf_hours,golf,volume,duration_sum,TIME ON THE FAIRWAYS,duration complete,walking between holes is part of activity,allow_sanitized,sport_chapter
+golf_courses,golf,location,distinct_course_count,THE COURSES YOU PLAYED,course IDs available for >=3 rounds,optional; no GPS-derived course guessing,private_only,sport_chapter
+golf_score,golf,technical,round_score_distribution,YOUR SCORECARD YEAR,actual numeric scores/holes >=3 rounds,not available in tested generic API; require explicit golf score data,allow_sanitized,sport_chapter
+golf_best,golf,achievement,best_comparable_round,YOUR STANDOUT ROUND,stroke count and course context,"adjust for course, 9 vs 18 holes",allow_sanitized,sport_chapter
+golf_streak,golf,habit,active_months,THE MONTHS YOU PLAYED,>=6 rounds,months present,allow_sanitized,sport_chapter
+golf_walk,golf,distance,walking_distance,THE WALK BETWEEN SHOTS,GPS walking samples during round,avoid conflating club activity with steps,allow_sanitized,sport_chapter
+golf_favorite_time,golf,surprise,start_hour_mode,YOUR TEE-TIME HABIT,>=8 rounds,timestamps only,allow_sanitized,sport_chapter
+racket_sessions,racket,identity,session_count,BACK ON COURT,>=4 sessions,per subtype when available,allow_sanitized,sport_chapter
+racket_time,racket,volume,duration_sum,HOURS ON COURT,valid duration,recorded time,allow_sanitized,sport_chapter
+racket_type,racket,identity,subtype_share,YOUR COURT OF CHOICE,>=8 sessions and subtype classified,tennis vs padel etc,allow_sanitized,sport_chapter
+racket_hr,racket,intensity,zone_minutes,YOUR EFFORT BETWEEN POINTS,HR>=75%,cannot infer match outcomes,allow_sanitized,sport_chapter
+racket_longest,racket,peak,max_duration,YOUR LONGEST COURT SESSION,>=3 sessions,not longest match without match data,allow_sanitized,sport_chapter
+racket_favorite_day,racket,habit,weekday_mode,COURT DAY,>=10 sessions,strong weekday signal,allow_sanitized,sport_chapter
+racket_consistency,racket,habit,active_weeks,A YEAR ON THE COURT,>=8 weeks,weekly consistency,allow_sanitized,sport_chapter
+racket_score,racket,achievement,match_results,YOUR MATCH STORY,explicit verified scores exist,not available in generic FIT summary; do not invent wins,allow_sanitized,sport_chapter
+multi_events,triathlon,identity,session_count,THE MULTISPORT YEAR,>=2 full events,parent event counted once,allow_sanitized,sport_chapter
+multi_legs,triathlon,identity,leg_count,"ONE SESSION, MANY SPORTS",FIT sessions classified into legs,child activities not counted again,allow_sanitized,sport_chapter
+multi_total_time,triathlon,volume,duration_sum,TIME FROM START TO FINISH,timer semantics validated,transitions included/excluded explicit,allow_sanitized,sport_chapter
+multi_split,triathlon,technical,leg_time_distribution,YOUR SPLIT STORY,complete leg sessions >=1 full event,"leg timing from FIT, not generic labels",allow_sanitized,sport_chapter
+multi_transition,triathlon,technical,transition_time_sum,THE TIME BETWEEN SPORTS,actual transitions recorded,not estimated,allow_sanitized,sport_chapter
+multi_longest,triathlon,peak,max_duration,YOUR BIGGEST MULTISPORT DAY,>=2 events,event duration,allow_sanitized,sport_chapter
+multi_sport_mix,triathlon,identity,leg_sport_mix,"THREE DISCIPLINES, ONE DAY",leg type metadata,only supported formats,allow_sanitized,sport_chapter
+multi_hr,triathlon,intensity,zone_minutes,THE EFFORT THROUGH EACH LEG,HR continuous or session summaries,avoid attributing HR to legs without timestamp alignment,allow_sanitized,sport_chapter
+team_sessions,team_sports,identity,session_count,YOUR SEASON IN PLAY,>=4 sessions,"recorded sessions, not matches won",allow_sanitized,sport_chapter
+team_time,team_sports,volume,duration_sum,TIME IN THE GAME,valid timer,recorded field time not minutes played,allow_sanitized,sport_chapter
+team_type,team_sports,identity,subtype_share,YOUR GAME,sport subtypes >=5,do not conflate codes,allow_sanitized,sport_chapter
+team_hr,team_sports,intensity,zone_minutes,GAME-DAY EFFORT,HR>=75%,not match scoring,allow_sanitized,sport_chapter
+team_distance,team_sports,distance,distance_sum,DISTANCE ON THE FIELD,valid GPS recording on >=80% of sessions,indoor court GPS often unreliable,allow_sanitized,sport_chapter
+team_active,team_sports,habit,active_weeks,WEEKS YOU SUITED UP,>=8 weeks,consistent sport type,allow_sanitized,sport_chapter
+team_longest,team_sports,peak,max_duration,YOUR LONGEST RECORDED SESSION,>=3 sessions,could include training,allow_sanitized,sport_chapter
+team_scores,team_sports,achievement,verified_results,THE RESULTS YOU REMEMBER,explicit match result metadata available,generic Garmin API does not guarantee team results,allow_sanitized,sport_chapter
+climb_sessions,climbing,identity,session_count,YOU KEPT CLIMBING,>=3 sessions,recorded climbing sessions,allow_sanitized,sport_chapter
+climb_time,climbing,volume,duration_sum,TIME ON THE WALL,valid duration,includes rests,allow_sanitized,sport_chapter
+climb_sends,climbing,achievement,verified_send_count,THE PROBLEMS YOU SENT,explicit send data and route identity,split field numClimbSends may mean different things; verify,allow_sanitized,sport_chapter
+climb_falls,climbing,surprise,verified_fall_count,THE ATTEMPTS YOU LEARNED FROM,explicit reliable fall counters,avoid blame/shaming,allow_sanitized,sport_chapter
+climb_vertical,climbing,terrain,ascent_sum,YOUR VERTICAL MOVEMENT,valid ascent and climbing subtype,not number of completed routes,allow_sanitized,sport_chapter
+climb_longest,climbing,peak,max_duration,THE SESSION YOU STUCK WITH,>=3 sessions,not skill,allow_sanitized,sport_chapter
+climb_month,climbing,habit,month_mode,THE MONTH YOU LIVED ON THE WALL,>=8 sessions,recorded month,allow_sanitized,sport_chapter
+climb_type,climbing,identity,subtype_share,YOUR KIND OF CLIMB,reliable type classification,bouldering vs rope,allow_sanitized,sport_chapter
+cardio_sessions,cardio,identity,session_count,A YEAR OF SHOWING UP,>=4 sessions,generic cardio umbrella,allow_sanitized,sport_chapter
+cardio_minutes,cardio,volume,duration_sum,YOU KEPT MOVING,valid duration,recorded minutes,allow_sanitized,sport_chapter
+cardio_zone,cardio,intensity,zone_minutes,TIME WITH THE HEART RACING,HR>=75%,do not infer health improvements,allow_sanitized,sport_chapter
+cardio_top_mode,cardio,identity,subtype_share,HOW YOU MOVED,>=8 sessions and subtype,"differentiate stair, boxing, dance",allow_sanitized,sport_chapter
+cardio_week,cardio,habit,active_weeks,THE ROUTINE,>=8 weeks,recorded activity,allow_sanitized,sport_chapter
+cardio_longest,cardio,peak,max_duration,YOUR LONGEST CARDIO SESSION,>=3 sessions,duration only,allow_sanitized,sport_chapter
+cardio_calorie,cardio,volume,calorie_sum,THE ENERGY YOU SPENT MOVING,>=90% recorded calorie coverage,estimates not exact physiology,allow_sanitized,sport_chapter
+cardio_peak,cardio,peak,max_hr,YOUR BIGGEST RECORDED PEAK,>=4 heart-rate tracked sessions,not maximal HR medical assessment,allow_sanitized,sport_chapter
+year_sessions,all,opening,session_count,YOU SHOWED UP,complete activity index; >=1 eligible activity,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,opening
+year_sport_mix,all,identity,sport_distribution,MORE THAN ONE WAY TO MOVE,complete index; classified >=95%; >=2 sports,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,identity
+year_recorded_hours,all,foundation,duration_sum,TIME WELL SPENT,>=95% valid session duration and full index,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,foundation
+year_active_days,all,foundation,active_days,DAYS YOU MADE TIME TO MOVE,index complete and valid local timestamps,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,foundation
+year_peak_month,all,habit,month_mode,THE MONTH YOU SHOWED UP MOST,>=12 sessions; leading month >=20% higher than median,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,habit
+year_weekday,all,habit,weekday_mode,YOUR TRAINING DAY,>=20 sessions; strong weekday preference,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,habit
+year_hour,all,habit,start_hour_mode,YOUR HOUR OF MOVEMENT,>=20 sessions; dominant time bucket >=45%,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,habit
+year_weekly_streak,all,habit,longest_weekly_streak,YOUR LONGEST RUN OF WEEKS,complete activity index; >=5 consecutive active weeks,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,habit
+year_hybrid,all,identity,dual_sport,"TWO SPORTS, ONE BIG YEAR",top two sports jointly >=65%; each>=20%; count gap <=10 percentage points,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,identity
+year_dominant,all,identity,dominant_sport,THE SPORT YOU RETURNED TO MOST,top sport >=45% AND lead >=15 pp; >=10 sessions; other evidence,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,identity
+year_top_time,all,identity,sport_most_time,THE SPORT THAT TOOK THE MOST TIME,per-sport durations >=95%,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,identity
+year_longest_event,all,peak,max_duration,YOUR LONGEST SESSION,complete index; valid session time,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,peak
+year_sport_surprise,all,surprise,rare_sport,THEN THERE WAS THAT OTHER SPORT,"secondary sport >=3 sessions, not already spotlighted","Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,surprise
+year_activity_pr,all,achievement,verified_pr_count,YOUR RECORDED PERSONAL BESTS,actual PR flags; no specific type without proof,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,achievement
+year_heart_zones,all,intensity,zone_minutes,THE EFFORT BEHIND YOUR YEAR,>=75% all tracked activity duration has compatible HR zones,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,intensity
+year_steps,all,wellness,daily_step_sum,STEP BY STEP,>=330 days of actual step measurements; no missing-as-zero,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",private_only,wellness
+year_resting_hr,all,wellness,resting_hr_trend,YOUR HEART BETWEEN SESSIONS,>=20 valid days in each compared period and consent,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",private_only,wellness
+year_body_battery,all,wellness,body_battery_trend,YOUR ENERGY ACROSS THE YEAR,>=80% daily BB coverage and explicit opt-in,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",private_only,wellness
+year_sleep,all,wellness,sleep_trend,"YOUR NIGHTS, RECORDED",>=80% valid sleep days and explicit opt-in,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",private_only,wellness
+year_finale,all,finale,year_summary,"YOUR YEAR, YOUR STORY",>=1 verified personal fact,"Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",allow_sanitized,finale

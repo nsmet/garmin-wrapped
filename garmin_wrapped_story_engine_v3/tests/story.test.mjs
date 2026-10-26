@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {planStory} from '../reference/plan_story.mjs';
+const user={year:2025,yearComplete:true,indexComplete:true,activityCount:141,sportCounts:{hiit:60,running:52,strength:13,cycling:12,rowing:4}};
+test('2025 evidence: two headline sports, not invented favorite',()=>{const x=planStory(user);assert.equal(x.status,'ok');assert.equal(x.identity,'dual_headline');assert.deepEqual(x.headlineSports,['hiit','running']);assert.equal(x.chosenFavorite,null);assert.equal(x.scenes.filter(s=>s.type==='sport_intro').length,2);});
+test('manually chosen favorite changes prominence but not counts',()=>{const x=planStory({...user,chosenFavorite:'cycling'});assert.equal(x.headlineSports[0],'cycling');assert.equal(x.scenes.find(s=>s.id==='sport_cycling').fact.value,12);assert.equal(x.countLeader,'hiit');});
+test('most sessions and most hours can disagree',()=>{const x=planStory({...user,sportDurationHours:{hiit:48,running:101,strength:17,cycling:60,rowing:5},durationCoverage:'verified'});assert.equal(x.mostRecordedHoursSport,'running');});
+test('missing duration verification suppresses hours leader',()=>{const x=planStory({...user,sportDurationHours:{hiit:48,running:101},durationCoverage:'partial'});assert.equal(x.mostRecordedHoursSport,null);});
+test('no activity data explicitly blocked',()=>{assert.deepEqual(planStory({year:2025,indexComplete:true,activityCount:0,sportCounts:{}}).errors,['NO_ACTIVITIES']);});
+test('incomplete index blocks annual claims',()=>{assert.equal(planStory({...user,indexComplete:false}).status,'blocked');});
+test('invalid unknown sport blocks rather than drops',()=>{assert.equal(planStory({...user,sportCounts:{...user.sportCounts,fictionalSport:0}}).status,'blocked');});
+test('count mismatch blocks',()=>{assert.equal(planStory({...user,activityCount:140}).status,'blocked');});
+test('single sport correctly recognized as focused',()=>{const x=planStory({year:2025,yearComplete:true,indexComplete:true,activityCount:30,sportCounts:{running:30}});assert.equal(x.identity,'clear_count_leader');assert.deepEqual(x.headlineSports,['running']);});
+test('output is deterministic',()=>{assert.deepEqual(planStory(user),planStory(user));});
+test('partial year explicitly qualified',()=>{const x=planStory({...user,yearComplete:false});assert.match(x.scenes[0].claim,/so far/);});
+test('unused sport content not injected',()=>{const x=planStory({...user,activityCount:60,sportCounts:{hiit:60}});assert.ok(!x.scenes.some(s=>s.sport==='running'));});

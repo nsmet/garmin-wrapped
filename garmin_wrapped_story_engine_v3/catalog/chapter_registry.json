@@ -1,0 +1,143 @@
+{
+  "version": "3.0.0",
+  "notes": "Content-only chapter definitions. Target depths are soft guidance.",
+  "chapters": [
+    {
+      "key": "year_overview",
+      "type": "core",
+      "label": "Your sporting year",
+      "min_stories": 1,
+      "target_stories": [
+        2,
+        4
+      ],
+      "question": "What defined the recorded year?",
+      "gates": [
+        "complete_activity_index_for_full_year_claims"
+      ]
+    },
+    {
+      "key": "sport:<sportKey>",
+      "type": "sport_factory",
+      "label": "Sport chapter",
+      "min_stories": 2,
+      "target_stories": [
+        3,
+        6
+      ],
+      "question": "What made this sport meaningful in the year?",
+      "gates": [
+        ">=1 relevant session",
+        "2 independent insights for deep chapter",
+        "single strong fact becomes compact spotlight"
+      ]
+    },
+    {
+      "key": "other_sports",
+      "type": "supporting_sports",
+      "label": "Other sports",
+      "min_stories": 1,
+      "target_stories": [
+        1,
+        3
+      ],
+      "question": "What else enriched the year?",
+      "gates": [
+        "secondary sport(s) with verified data"
+      ]
+    },
+    {
+      "key": "cross_sport",
+      "type": "discovery",
+      "label": "Across sports",
+      "min_stories": 1,
+      "target_stories": [
+        1,
+        3
+      ],
+      "question": "What contrasts between sports are true and surprising?",
+      "gates": [
+        "comparable data for >=2 sports",
+        "unique comparator"
+      ]
+    },
+    {
+      "key": "everyday_movement",
+      "type": "daily",
+      "label": "Everyday movement",
+      "min_stories": 2,
+      "target_stories": [
+        2,
+        4
+      ],
+      "question": "What did movement look like outside and across logged training?",
+      "gates": [
+        "enough sampled daily measurements",
+        "no full-year extrapolation"
+      ]
+    },
+    {
+      "key": "heart_and_effort",
+      "type": "activity_physiology",
+      "label": "Heart and effort",
+      "min_stories": 2,
+      "target_stories": [
+        2,
+        4
+      ],
+      "question": "What intensity patterns appear in recorded sessions?",
+      "gates": [
+        "activity HR permission",
+        "enough comparable HR data",
+        "not duplicated in sport section"
+      ]
+    },
+    {
+      "key": "wellness_recovery",
+      "type": "sensitive",
+      "label": "Wellness and recovery",
+      "min_stories": 2,
+      "target_stories": [
+        2,
+        4
+      ],
+      "question": "What do recorded stress, energy and HRV reveal descriptively?",
+      "gates": [
+        "explicit opt in",
+        "adequate dates and data",
+        "no diagnosis"
+      ]
+    },
+    {
+      "key": "sleep",
+      "type": "sensitive",
+      "label": "Your sleep",
+      "min_stories": 2,
+      "target_stories": [
+        2,
+        4
+      ],
+      "question": "What sleep habits were measured?",
+      "gates": [
+        "explicit opt in",
+        "enough observed nights",
+        "no diagnosis"
+      ]
+    },
+    {
+      "key": "finale",
+      "type": "core",
+      "label": "Your year in a nutshell",
+      "min_stories": 1,
+      "target_stories": [
+        1,
+        2
+      ],
+      "question": "What unique facts summarize the year?",
+      "gates": [
+        "at least one verified fact",
+        "no new invented insight"
+      ]
+    }
+  ]
+}

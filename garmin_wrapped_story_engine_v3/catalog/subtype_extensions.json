@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "purpose": "Subtypes provide granular editorial identity without double counting sport families; examples of Garmin profiles, not exhaustive or necessarily exact API typeKey names.",
+  "extensions": [
+    {"parent":"running","subtype":"trail","dedicated_story_angles":["trail-specific ascent","longest trail outing","trail versus road share"],"gate":"verified trail classification and elevation where claimed"},
+    {"parent":"running","subtype":"treadmill","dedicated_story_angles":["indoor versus outdoor sessions","longest treadmill workout","treadmill consistency"],"gate":"verified subtype; distance calibration caveat"},
+    {"parent":"running","subtype":"track","dedicated_story_angles":["track laps where actual lap semantics known","track consistency","comparably timed track session"],"gate":"track FIT and lap semantics verified"},
+    {"parent":"cycling","subtype":"gravel","dedicated_story_angles":["gravel rides","longest gravel adventure","gravel climbing"],"gate":"verified gravel tagging; valid GPS/ascent where necessary"},
+    {"parent":"cycling","subtype":"mtb","dedicated_story_angles":["mountain bike ride count","MTB-specific ascent","longest MTB session"],"gate":"verified MTB classification and elevation"},
+    {"parent":"cycling","subtype":"road","dedicated_story_angles":["road kilometers","favorite road ride weekday","road ride consistency"],"gate":"road cycling reliably identified"},
+    {"parent":"cycling","subtype":"indoor","dedicated_story_angles":["indoor cycling sessions","trainer-reported distance","indoor power/cadence where available"],"gate":"never imply traveled geography"},
+    {"parent":"cycling","subtype":"commute","dedicated_story_angles":["rides to commute","commuting months","recorded commute distance"],"gate":"explicit commute subtype; never infer workplaces"},
+    {"parent":"swimming","subtype":"pool","dedicated_story_angles":["pool lengths","pace per 100m","recorded strokes and SWOLF"],"gate":"valid pool size, laps and optional stroke fields"},
+    {"parent":"swimming","subtype":"open_water","dedicated_story_angles":["open-water distance","longest open-water swim","open-water route memory"],"gate":"water type and GPS verified; location privacy"},
+    {"parent":"rowing","subtype":"erg","dedicated_story_angles":["500m erg pace","stroke rate","longest indoor row"],"gate":"calibrated machine metrics"},
+    {"parent":"rowing","subtype":"water","dedicated_story_angles":["route distance","water rowing frequency","longest outdoor row"],"gate":"reliable rowing GPS"},
+    {"parent":"racket","subtype":"tennis","dedicated_story_angles":["tennis time","number of tennis sessions","tennis match results only if verified"],"gate":"tennis classification; optional true scoring data"},
+    {"parent":"racket","subtype":"padel","dedicated_story_angles":["padel sessions","hours on padel court","padel weekday habit"],"gate":"padel classification; no invented wins"},
+    {"parent":"racket","subtype":"pickleball","dedicated_story_angles":["pickleball time","pickleball rhythm","pickleball season"],"gate":"verified profile"},
+    {"parent":"team_sports","subtype":"football","dedicated_story_angles":["football appearances","recorded football time","field distance only with valid GPS"],"gate":"football classification; no score inference"},
+    {"parent":"team_sports","subtype":"basketball","dedicated_story_angles":["basketball sessions","time on court","HR profile"],"gate":"basketball classification; court GPS generally unreliable"},
+    {"parent":"skiing","subtype":"downhill_ski","dedicated_story_angles":["recorded ski descents","ski days","vertical descent"],"gate":"verified downhill run segmentation"},
+    {"parent":"skiing","subtype":"cross_country","dedicated_story_angles":["XC skiing distance","XC ascent","XC ski pace"],"gate":"XC classification, GPS and comparable style"},
+    {"parent":"skiing","subtype":"snowboard","dedicated_story_angles":["snowboard days","vertical descent","longest downhill day"],"gate":"snowboard classification"},
+    {"parent":"triathlon","subtype":"triathlon","dedicated_story_angles":["individual leg splits","transitions","full event duration"],"gate":"verified multi-leg FIT Session messages; exclude duplicated children"},
+    {"parent":"climbing","subtype":"bouldering","dedicated_story_angles":["bouldering visits","verified sends","recorded attempts"],"gate":"sends/attempts only with proven event semantics"},
+    {"parent":"cardio","subtype":"boxing","dedicated_story_angles":["boxing workouts","boxing training hours","observed HR zones"],"gate":"boxing activity profile; never infer punches or bouts"},
+    {"parent":"cardio","subtype":"stair","dedicated_story_angles":["stair sessions","floors where measured","effort"],"gate":"floors not inferred from treadmill elapsed time"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "road-ribbon",
+  "tool": "built-in image_gen",
+  "created": "2026-10-24",
+  "source": "/Users/nsmet/.codex/generated_images/01a16cca-c61c-7d93-bfab-da6f4710b4a1/exec-dd0b597e-e039-4eeb-8bb6-9d3118a6756d.png",
+  "delivery": "public/assets/road-ribbon.webp",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "transparent": true,
+  "prompt": "Use case: photorealistic-natural. Asset type: isolated transparent photographic cutout for mini., an editorial sports-poster website. Primary request: one beautiful S-curving strip of dark asphalt cycling road, isolated in transparent space, viewed from an elevated oblique camera. The road sweeps from a broad foreground at bottom-left through a right bend and a left bend into a narrow vanishing end near upper center. Crisp pale edge lines, fine realistic asphalt grain, very narrow natural stone/gravel shoulders. Premium natural outdoor photography, soft morning side light, realistic matte material, subtly analogue. Composition: portrait 2:3, entire road silhouette comfortably contained inside the frame. This is one individual collage component that will float over flat vivid geometric shapes; mountains are a completely separate existing layer. Constraints: actual transparent alpha background all around road and between the bends. Absolutely no mountain, landscape, sky, vegetation, trees, horizon, background ground plane, buildings, cars, cyclists, type, logos, colored graphic shapes, decorative geometry, frame, or cast shadow. Only the isolated photographic road ribbon."
+}

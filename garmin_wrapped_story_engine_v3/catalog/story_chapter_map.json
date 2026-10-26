@@ -1,0 +1,1415 @@
+{
+  "version": "3.0.0",
+  "count": 176,
+  "notes": "Non-authoritative placement hints for all existing story definitions. Typed eligibility gates and claim ownership override hints.",
+  "mapping": [
+    {
+      "definitionId": "running_distance",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_longest",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_pace",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "peak",
+      "metricKey": "best_comparable_pace",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_consistency",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_favorite_time",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "pattern",
+      "metricKey": "start_hour_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_hr",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_cadence",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "pattern",
+      "metricKey": "cadence_distribution",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_elevation",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "peak",
+      "metricKey": "ascent_sum",
+      "meaningFamily": "terrain",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_footprint",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "peak",
+      "metricKey": "route_coverage",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_progress",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "twist",
+      "metricKey": "matched_pace_change",
+      "meaningFamily": "trend",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_pr",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "peak",
+      "metricKey": "verified_pr_count",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "running_trail_split",
+      "defaultChapter": "sport:running",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_distance",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_duration",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_biggest",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_climbing",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "peak",
+      "metricKey": "ascent_sum",
+      "meaningFamily": "terrain",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_power",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "pattern",
+      "metricKey": "power_curve",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_cadence",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "pattern",
+      "metricKey": "cadence_distribution",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_hr",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_route",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "peak",
+      "metricKey": "route_coverage",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_longday",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_subtypes",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_speed",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "twist",
+      "metricKey": "matched_speed_change",
+      "meaningFamily": "trend",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cycling_consistency",
+      "defaultChapter": "sport:cycling",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_sessions",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_time",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_zone4",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "pattern",
+      "metricKey": "upper_zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_hrpeak",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "peak",
+      "metricKey": "max_hr",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_recovery",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "pattern",
+      "metricKey": "intra_session_recovery",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_repeat",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "pattern",
+      "metricKey": "weekly_consistency",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_longest",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_peak_day",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "twist",
+      "metricKey": "max_sessions_day",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_interval_structure",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "pattern",
+      "metricKey": "interval_pattern",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiit_workload",
+      "defaultChapter": "sport:hiit",
+      "defaultPhase": "peak",
+      "metricKey": "recorded_sets",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_sessions",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_time",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_reps",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "scale",
+      "metricKey": "reps_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_sets",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "scale",
+      "metricKey": "sets_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_maxload",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "peak",
+      "metricKey": "max_recorded_load",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_exercise",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "pattern",
+      "metricKey": "top_exercise",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_progress",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "twist",
+      "metricKey": "matched_load_progress",
+      "meaningFamily": "trend",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_hr",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "strength_consistency",
+      "defaultChapter": "sport:strength",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_sessions",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_distance",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_longest",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_minutes",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_routine",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_timing",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "pattern",
+      "metricKey": "start_hour_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_routes",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "peak",
+      "metricKey": "route_coverage",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "walking_weekday",
+      "defaultChapter": "sport:walking",
+      "defaultPhase": "twist",
+      "metricKey": "weekday_mode",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_sessions",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_distance",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_ascent",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "peak",
+      "metricKey": "ascent_sum",
+      "meaningFamily": "terrain",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_longest",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_highest",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "peak",
+      "metricKey": "max_elevation",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_routes",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "peak",
+      "metricKey": "route_coverage",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_duration",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "hiking_season",
+      "defaultChapter": "sport:hiking",
+      "defaultPhase": "pattern",
+      "metricKey": "season_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_sessions",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_distance",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_longest",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_time",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_strokes",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "pattern",
+      "metricKey": "stroke_sum",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_pace",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "pattern",
+      "metricKey": "pace100m",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_pool",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "pattern",
+      "metricKey": "pool_length_distribution",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_open",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "position",
+      "metricKey": "open_water_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "swim_swolf",
+      "defaultChapter": "sport:swimming",
+      "defaultPhase": "pattern",
+      "metricKey": "swolf_pattern",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_sessions",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_distance",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_time",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_longest",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "peak",
+      "metricKey": "max_distance",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_strokes",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "pattern",
+      "metricKey": "stroke_sum",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_rate",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "pattern",
+      "metricKey": "stroke_rate_distribution",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_pace",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "pattern",
+      "metricKey": "pace500m",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "row_hr",
+      "defaultChapter": "sport:rowing",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_sessions",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_time",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_consistency",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_streak",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "pattern",
+      "metricKey": "longest_weekly_streak",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_favorite_day",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "twist",
+      "metricKey": "weekday_mode",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_month",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "pattern",
+      "metricKey": "month_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_duration",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "yoga_energy",
+      "defaultChapter": "sport:yoga",
+      "defaultPhase": "pattern",
+      "metricKey": "prepost_body_battery",
+      "meaningFamily": "wellness",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_sessions",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_time",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_consistency",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_streak",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "pattern",
+      "metricKey": "longest_weekly_streak",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_weekday",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "twist",
+      "metricKey": "weekday_mode",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_longest",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_month",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "pattern",
+      "metricKey": "month_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "pilates_hr",
+      "defaultChapter": "sport:pilates",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_sessions",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_time",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_longest",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_hr",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_week",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_peak",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "peak",
+      "metricKey": "max_hr",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_calories",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "scale",
+      "metricKey": "calorie_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "elliptical_month",
+      "defaultChapter": "sport:elliptical",
+      "defaultPhase": "pattern",
+      "metricKey": "month_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_days",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "position",
+      "metricKey": "active_days",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_vertical",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "peak",
+      "metricKey": "ascent_or_descent",
+      "meaningFamily": "terrain",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_runs",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "scale",
+      "metricKey": "recorded_run_count",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_distance",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_bigday",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_elevation",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "peak",
+      "metricKey": "max_elevation",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_places",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "peak",
+      "metricKey": "route_coverage",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "ski_subtype",
+      "defaultChapter": "sport:skiing",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_rounds",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_hours",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_courses",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "peak",
+      "metricKey": "distinct_course_count",
+      "meaningFamily": "location",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_score",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "pattern",
+      "metricKey": "round_score_distribution",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_best",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "peak",
+      "metricKey": "best_comparable_round",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_streak",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "pattern",
+      "metricKey": "active_months",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_walk",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "scale",
+      "metricKey": "walking_distance",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "golf_favorite_time",
+      "defaultChapter": "sport:golf",
+      "defaultPhase": "twist",
+      "metricKey": "start_hour_mode",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_sessions",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_time",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_type",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_hr",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_longest",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_favorite_day",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "pattern",
+      "metricKey": "weekday_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_consistency",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "racket_score",
+      "defaultChapter": "sport:racket",
+      "defaultPhase": "peak",
+      "metricKey": "match_results",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_events",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_legs",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "position",
+      "metricKey": "leg_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_total_time",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_split",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "pattern",
+      "metricKey": "leg_time_distribution",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_transition",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "pattern",
+      "metricKey": "transition_time_sum",
+      "meaningFamily": "technical",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_longest",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_sport_mix",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "position",
+      "metricKey": "leg_sport_mix",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "multi_hr",
+      "defaultChapter": "sport:triathlon",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_sessions",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_time",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_type",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_hr",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_distance",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "scale",
+      "metricKey": "distance_sum",
+      "meaningFamily": "distance",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_active",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_longest",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "team_scores",
+      "defaultChapter": "sport:team_sports",
+      "defaultPhase": "peak",
+      "metricKey": "verified_results",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_sessions",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_time",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_sends",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "peak",
+      "metricKey": "verified_send_count",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_falls",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "twist",
+      "metricKey": "verified_fall_count",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_vertical",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "peak",
+      "metricKey": "ascent_sum",
+      "meaningFamily": "terrain",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_longest",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_month",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "pattern",
+      "metricKey": "month_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "climb_type",
+      "defaultChapter": "sport:climbing",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_sessions",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_minutes",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "scale",
+      "metricKey": "duration_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_zone",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_top_mode",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "position",
+      "metricKey": "subtype_share",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_week",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "pattern",
+      "metricKey": "active_weeks",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_longest",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_calorie",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "scale",
+      "metricKey": "calorie_sum",
+      "meaningFamily": "volume",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "cardio_peak",
+      "defaultChapter": "sport:cardio",
+      "defaultPhase": "peak",
+      "metricKey": "max_hr",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_sessions",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "session_count",
+      "meaningFamily": "opening",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_sport_mix",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "sport_distribution",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_recorded_hours",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "duration_sum",
+      "meaningFamily": "foundation",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_active_days",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "active_days",
+      "meaningFamily": "foundation",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_peak_month",
+      "defaultChapter": "everyday_movement",
+      "defaultPhase": "pattern",
+      "metricKey": "month_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_weekday",
+      "defaultChapter": "everyday_movement",
+      "defaultPhase": "pattern",
+      "metricKey": "weekday_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_hour",
+      "defaultChapter": "everyday_movement",
+      "defaultPhase": "pattern",
+      "metricKey": "start_hour_mode",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_weekly_streak",
+      "defaultChapter": "everyday_movement",
+      "defaultPhase": "pattern",
+      "metricKey": "longest_weekly_streak",
+      "meaningFamily": "habit",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_hybrid",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "dual_sport",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_dominant",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "dominant_sport",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_top_time",
+      "defaultChapter": "year_overview",
+      "defaultPhase": "position",
+      "metricKey": "sport_most_time",
+      "meaningFamily": "identity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_longest_event",
+      "defaultChapter": "cross_sport",
+      "defaultPhase": "peak",
+      "metricKey": "max_duration",
+      "meaningFamily": "peak",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_sport_surprise",
+      "defaultChapter": "cross_sport",
+      "defaultPhase": "twist",
+      "metricKey": "rare_sport",
+      "meaningFamily": "surprise",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_activity_pr",
+      "defaultChapter": "cross_sport",
+      "defaultPhase": "peak",
+      "metricKey": "verified_pr_count",
+      "meaningFamily": "achievement",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_heart_zones",
+      "defaultChapter": "heart_and_effort",
+      "defaultPhase": "pattern",
+      "metricKey": "zone_minutes",
+      "meaningFamily": "intensity",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_steps",
+      "defaultChapter": "wellness_recovery",
+      "defaultPhase": "pattern",
+      "metricKey": "daily_step_sum",
+      "meaningFamily": "wellness",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_resting_hr",
+      "defaultChapter": "wellness_recovery",
+      "defaultPhase": "pattern",
+      "metricKey": "resting_hr_trend",
+      "meaningFamily": "wellness",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_body_battery",
+      "defaultChapter": "wellness_recovery",
+      "defaultPhase": "pattern",
+      "metricKey": "body_battery_trend",
+      "meaningFamily": "wellness",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_sleep",
+      "defaultChapter": "wellness_recovery",
+      "defaultPhase": "pattern",
+      "metricKey": "sleep_trend",
+      "meaningFamily": "wellness",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    },
+    {
+      "definitionId": "year_finale",
+      "defaultChapter": "finale",
+      "defaultPhase": "payoff",
+      "metricKey": "year_summary",
+      "meaningFamily": "finale",
+      "overrideRule": "final placement determined by evidence, non-duplication and chapter-editor; this record is a hint only"
+    }
+  ]
+}

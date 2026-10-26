@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "2.0.0",
+  "year": 2025,
+  "identity": "dual_headline",
+  "headlineSports": ["hiit", "running"],
+  "userSelectedFavorite": null,
+  "stories": [
+    {
+      "storyId": "annual_sessions",
+      "catalogDefinitionId": "year_sessions",
+      "type": "cumulative",
+      "act": "identity",
+      "sport": "all",
+      "hook": "YOU SHOWED UP",
+      "primaryClaim": "141 recorded activities",
+      "facts": [{"metric":"session_count","value":141,"unit":"sessions","status":"verified"}],
+      "evidenceRefs": ["private://calculated/session_count/2025"],
+      "sharePolicy": "allow_sanitized",
+      "whySelected": "Reliable year-wide foundation",
+      "alternativeStoryIds": []
+    }
+  ],
+  "excludedCandidates": "PRIVATE_DEBUG_TRACE_SEPARATE_FROM_PUBLIC_OUTPUT"
+}

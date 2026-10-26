@@ -1,0 +1,9 @@
+{
+  "name": "shoe-blue",
+  "tool": "built-in image_gen edit",
+  "created": "2026-10-24",
+  "editTarget": "public/assets/shoe.webp",
+  "source": "/Users/nsmet/.codex/generated_images/01a16cca-c61c-7d93-bfab-da6f4710b4a1/exec-ab086dab-8f3c-4a8a-88d2-97aaf3f41f5e.png",
+  "delivery": "public/assets/shoe-blue.webp",
+  "prompt": "Use case: precise-object-edit. Edit target: the supplied transparent photographic running-shoe cutout. Change ONLY the coral/pink colored shoe materials to rich cobalt blue, matching the brand's blue #1743ed as closely as realistic fabric lighting allows. Recolor the knitted upper, tongue, laces, collar lining, overlays and colored rubber outsole accents blue. Keep the warm-white foam midsole white. Preserve the exact same shoe design, angle, framing, silhouette, mesh details, lacing, perspective, lighting, highlights and natural shadows. Preserve the existing genuinely transparent alpha background; no background, no floor, no surrounding geometry, no shadow outside the shoe, no new text or logo. This is a color replacement of the existing asset, not a redesign. No coral, pink or red should remain on the shoe."
+}

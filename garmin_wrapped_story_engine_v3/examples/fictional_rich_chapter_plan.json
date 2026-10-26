@@ -1,0 +1,529 @@
+{
+  "status": "ok",
+  "schemaVersion": "3.0.0",
+  "generationVersion": "0.3-reference-chapters",
+  "period": {
+    "year": 2025,
+    "complete": true
+  },
+  "athleteIdentity": {
+    "profile": "mixed_or_sparse",
+    "headlineSports": [
+      "hiit"
+    ],
+    "chosenFavorite": null,
+    "countLeader": "hiit"
+  },
+  "chapters": [
+    {
+      "chapterId": "year_overview",
+      "kind": "core",
+      "sportKey": null,
+      "order": 0,
+      "title": "Your sporting year",
+      "editorialQuestion": "What defined your recorded sporting year?",
+      "thesis": null,
+      "depth": "core",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "overview_activity_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "150 recorded activities",
+          "supportingCopy": null,
+          "claimKey": "all:activity_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Core yearly foundation"
+        },
+        {
+          "storyId": "overview_sport_mix",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "4 sport families in the recorded year",
+          "supportingCopy": null,
+          "claimKey": "all:sport_family_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Shows breadth of sport participation"
+        }
+      ]
+    },
+    {
+      "chapterId": "sport:hiit",
+      "kind": "sport",
+      "sportKey": "hiit",
+      "order": 1,
+      "title": "Your HIIT year",
+      "editorialQuestion": "What made HIIT part of your recorded year?",
+      "thesis": null,
+      "depth": "deep",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sport_hiit_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "68 recorded HIIT sessions",
+          "supportingCopy": null,
+          "claimKey": "sport:hiit:session_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Establishes sport chapter with verified count"
+        },
+        {
+          "storyId": "hiit_minutes",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "You logged 48 hours of HIIT in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "hiit:minutes:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://hiit/duration"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "hiit_habit",
+          "definitionId": null,
+          "phase": "pattern",
+          "kind": null,
+          "primaryClaim": "Wednesday was the most common HIIT day in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "hiit:weekday:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://hiit/weekday"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "hiit_peak",
+          "definitionId": null,
+          "phase": "peak",
+          "kind": null,
+          "primaryClaim": "One HIIT workout lasted 92 minutes in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "hiit:longest:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://hiit/max_duration"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "sport:running",
+      "kind": "sport",
+      "sportKey": "running",
+      "order": 2,
+      "title": "Your Running year",
+      "editorialQuestion": "What made Running part of your recorded year?",
+      "thesis": null,
+      "depth": "deep",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sport_running_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "51 recorded Running sessions",
+          "supportingCopy": null,
+          "claimKey": "sport:running:session_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Establishes sport chapter with verified count"
+        },
+        {
+          "storyId": "running_distance",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "You logged 540 km of running in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "running:distance:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://running/distance"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "running_habit",
+          "definitionId": null,
+          "phase": "pattern",
+          "kind": null,
+          "primaryClaim": "Most of your runs started before 9 AM in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "running:start_hour:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://running/time"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "running_peak",
+          "definitionId": null,
+          "phase": "peak",
+          "kind": null,
+          "primaryClaim": "Your longest run was 21 km in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "running:max_distance:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://running/max_distance"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "sport:cycling",
+      "kind": "sport",
+      "sportKey": "cycling",
+      "order": 3,
+      "title": "Your Cycling year",
+      "editorialQuestion": "What made Cycling part of your recorded year?",
+      "thesis": null,
+      "depth": "deep",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sport_cycling_count",
+          "definitionId": null,
+          "phase": "position",
+          "kind": null,
+          "primaryClaim": "18 recorded Cycling sessions",
+          "supportingCopy": null,
+          "claimKey": "sport:cycling:session_count:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Establishes sport chapter with verified count"
+        },
+        {
+          "storyId": "cycling_time",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "You spent 38 hours cycling in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "cycling:duration:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://cycling/duration"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "cycling_peak",
+          "definitionId": null,
+          "phase": "peak",
+          "kind": null,
+          "primaryClaim": "Your longest ride was 125 km in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "cycling:max_distance:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://cycling/max_distance"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "other_sports",
+      "kind": "supporting_sports",
+      "sportKey": null,
+      "order": 4,
+      "title": "Your other sports",
+      "editorialQuestion": "What else did you do?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "supporting_sports",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "Your other recorded sports included 13 Strength training",
+          "supportingCopy": null,
+          "claimKey": "all:supporting_sports:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Adds genuine variety without padding each small sport"
+        }
+      ]
+    },
+    {
+      "chapterId": "everyday_movement",
+      "kind": "general",
+      "sportKey": null,
+      "order": 5,
+      "title": "Your everyday movement",
+      "editorialQuestion": "What did recorded daily movement look like?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "steps_total",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "You walked 2.6 million measured steps in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "movement:steps:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://steps/annual"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "steps_peak",
+          "definitionId": null,
+          "phase": "peak",
+          "kind": null,
+          "primaryClaim": "Your biggest recorded step day had 27,000 steps in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "movement:big_day:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://steps/peak"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "heart_and_effort",
+      "kind": "general",
+      "sportKey": null,
+      "order": 6,
+      "title": "Your heart and effort",
+      "editorialQuestion": "What intensity patterns occurred during activities?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "heart_zone",
+          "definitionId": null,
+          "phase": "pattern",
+          "kind": null,
+          "primaryClaim": "You logged 38 hours in activity HR zones 3 and 4 in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "activity_hr:zone:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://heart/zones"
+          ],
+          "sharePolicy": "requires_explicit_share_consent",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "heart_max",
+          "definitionId": null,
+          "phase": "peak",
+          "kind": null,
+          "primaryClaim": "Your highest recorded workout HR was 185 BPM in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "activity_hr:peak:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://heart/peak"
+          ],
+          "sharePolicy": "requires_explicit_share_consent",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "wellness_recovery",
+      "kind": "general",
+      "sportKey": null,
+      "order": 7,
+      "title": "Your wellness and recovery",
+      "editorialQuestion": "What recorded recovery/energy patterns can be described?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "body_battery",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "Your recorded morning energy had a distinct weekly pattern in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "wellness:bodybattery:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://wellness/bodybattery"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "stress",
+          "definitionId": null,
+          "phase": "pattern",
+          "kind": null,
+          "primaryClaim": "Your recorded stress was lowest on Sundays in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "wellness:stress:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://wellness/stress"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "sleep",
+      "kind": "general",
+      "sportKey": null,
+      "order": 8,
+      "title": "Your sleep story",
+      "editorialQuestion": "What sleep habits were actually measured?",
+      "thesis": null,
+      "depth": "compact",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "sleep_count",
+          "definitionId": null,
+          "phase": "scale",
+          "kind": null,
+          "primaryClaim": "There were 330 nights with recorded sleep in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "sleep:nights:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://sleep/count"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        },
+        {
+          "storyId": "sleep_pattern",
+          "definitionId": null,
+          "phase": "pattern",
+          "kind": null,
+          "primaryClaim": "Your median recorded sleep was 7h 35m in this fictional example",
+          "supportingCopy": null,
+          "claimKey": "sleep:median:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "fictional://sleep/median"
+          ],
+          "sharePolicy": "private_only",
+          "whySelected": "Prevalidated nonduplicate insight"
+        }
+      ]
+    },
+    {
+      "chapterId": "finale",
+      "kind": "core",
+      "sportKey": null,
+      "order": 9,
+      "title": "Your year, in a nutshell",
+      "editorialQuestion": "What uniquely sums up this recorded year?",
+      "thesis": null,
+      "depth": "core",
+      "whyIncluded": "Supported by the prevalidated evidence and chapter policy",
+      "stories": [
+        {
+          "storyId": "finale",
+          "definitionId": null,
+          "phase": "payoff",
+          "kind": null,
+          "primaryClaim": "Your recorded 2025 in motion: 150 activities",
+          "supportingCopy": null,
+          "claimKey": "all:finale:2025",
+          "evidenceStatus": "verified",
+          "verifiedFacts": [],
+          "evidenceRefs": [
+            "prevalidated_activity_index"
+          ],
+          "sharePolicy": "allow_sanitized",
+          "whySelected": "Synthesizes earlier verified facts; no new performance claim"
+        }
+      ]
+    }
+  ],
+  "omittedChapters": [
+    {
+      "chapterId": "cross_sport",
+      "reason": "NO_VALID_STORIES"
+    }
+  ],
+  "privateTrace": [],
+  "notes": [
+    "REFERENCE ONLY: assumes complete activity index and validated count metrics supplied by caller; additional storyCandidates are already verified.",
+    "Full sport-specific metric calculators, temporal completeness, FIT parsing, 176 story gates and localized copy are specified but not implemented here.",
+    "No visual designs, motion instructions, API keys or health measurements are produced."
+  ]
+}

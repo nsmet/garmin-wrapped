@@ -1,0 +1,26 @@
+{
+  "version":"2.0.0",
+  "note":"Suggested editorial starting thresholds, to be tuned against labeled real-world data. Never override metric-level evidence checks.",
+  "identity":{
+    "clear_count_leader":{"min_sessions":10,"min_share":0.45,"min_lead_percentage_points":15},
+    "dual_headline":{"min_second_share":0.20,"min_combined_share":0.65,"max_gap_percentage_points":10},
+    "diverse_year":{"min_distinct_sports":3,"min_share_each":0.15},
+    "chosen_favorite":{"priority_override":true,"must_have_recorded_activities":true,"changes_facts":false}
+  },
+  "chapters":{
+    "clear_leader":{"deep_sport_stories_min_when_eligible":2,"deep_sport_stories_max":5},
+    "dual_headline":{"each_sport_stories_min_when_eligible":2,"each_sport_stories_max":4},
+    "secondary_sport":{"min_when_eligible":0,"max":2},
+    "goal_total_scenes":{"low":8,"high":14,"hard_quota":false}
+  },
+  "quality":{
+    "annual_index":"complete",
+    "typical_annual_field_coverage":0.95,
+    "typical_sport_field_coverage":0.90,
+    "hr_zone_duration_coverage":0.75,
+    "wellness_day_coverage":0.80,
+    "like_for_like_min_samples_each_period":6,
+    "no_imputation":true
+  },
+  "omission_reason_codes":["MISSING_DATA","INSUFFICIENT_COVERAGE","INVALID_SOURCE","UNSUPPORTED_SEMANTICS","SENSITIVE_WITHOUT_CONSENT","NOT_DISTINCT","NOT_MEANINGFUL","SPORT_NOT_REPRESENTED","FULL_YEAR_NOT_COMPLETE","LOW_CONFIDENCE","DUPLICATE_MULTISPORT","NOT_IN_TOP_N"]
+}

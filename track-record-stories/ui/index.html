@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f3f0e8">
+  <meta name="description" content="Garmin Wraped, a MINI WATT product. Your Garmin year in sport highlights, yearly totals and shareable story cards.">
+  <title>Garmin Wraped — a MINI WATT product ⚡️</title>
+  <link rel="canonical" href="https://garmin-wrapped.miniwatt.app/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Garmin Wraped — a MINI WATT product">
+  <meta property="og:description" content="Your Garmin year in motion. Sport highlights, yearly totals and shareable story cards.">
+  <meta property="og:url" content="https://garmin-wrapped.miniwatt.app/">
+  <meta property="og:site_name" content="MINI WATT">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="onboarding.css">
+  <link rel="stylesheet" href="responsive.css">
+</head>
+<body class="onboarding-active">
+
+  <section class="onboarding" id="onboarding" aria-label="Your Garmin year, wrapped">
+    <header class="entry-header"><a class="brand" href="#connect" aria-label="Garmin Wraped home"><span class="brand-name">GARMIN WRAPED</span><span class="brand-product">a MINI WATT product <span aria-hidden="true">⚡️</span></span></a><div class="edition"><span>YOUR YEAR IN MOTION</span><span>A GARMIN YEAR IN REVIEW</span></div><span class="entry-tag"><span aria-hidden="true">↗</span> MADE FROM YOUR MOVEMENT</span></header>
+    <div id="connect-screen" class="connect-layout">
+      <div class="entry-poster">
+        <p class="eyebrow">THE END-OF-YEAR RECAP FOR GARMIN</p>
+        <h1><span class="headline-source">YOUR GARMIN</span><br>YEAR,<br><span>WRAPPED.</span></h1>
+        <p class="entry-description">All the miles. All the minutes.<br>Your year in motion, all in one recap.</p>
+        <div class="entry-art" aria-hidden="true">
+          <svg class="entry-track" viewBox="0 0 600 400" fill="none"><g transform="rotate(-24 300 200)"><rect x="25" y="65" width="550" height="270" rx="135" stroke="#ff7038" stroke-width="42"/><rect x="75" y="115" width="450" height="170" rx="85" stroke="#f23897" stroke-width="36"/><rect x="121" y="161" width="358" height="78" rx="39" stroke="#1743ed" stroke-width="28"/></g></svg>
+          <img src="assets/shoe-blue.webp" alt="" class="entry-shoe">
+          <span class="art-sticker">YEAR IN<br>REVIEW <span>↗</span></span>
+        </div>
+        <p class="poster-footnote">YOU RECORDED IT.<br>NOW RELIVE IT.</p>
+      </div>
+      <section class="connect-panel" aria-labelledby="connect-title">
+        <div class="step-label"><span>YOUR DATA. YOUR HIGHLIGHTS.</span><span aria-hidden="true">↗</span></div>
+        <h2 id="connect-title">UNWRAP<br><span>YOUR YEAR.</span></h2>
+        <p class="connect-intro">Turn your Garmin Connect activities into a personal recap of the sports, distances and efforts that made your year. Then save your favourite stories as share cards.</p>
+        <p class="recap-period"><span aria-hidden="true"></span> Your current year so far. Ready whenever you are.</p>
+        <form id="api-form" novalidate>
+          <label for="api-key">GARMIN PERSONAL API KEY</label>
+          <div class="key-field"><input id="api-key" type="password" placeholder="Paste your Garmin Personal API key" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="key-note key-error"><button type="button" id="toggle-key" aria-label="Show API key" aria-pressed="false">Show</button></div>
+          <p id="key-error" class="key-error" role="alert"></p>
+          <button type="button" class="key-help" id="key-help" aria-haspopup="dialog"><span class="help-icon" aria-hidden="true">?</span> How do I get my Garmin key? <span aria-hidden="true">↗</span></button>
+          <button class="connect-submit" type="submit"><span>Build my Garmin recap</span><span aria-hidden="true">↗</span></button>
+          <p id="key-note" class="key-note">Your key is sent securely to this site’s server and exchanged with Garmin. It is never saved. Your recap stays in this tab until you clear it or close the tab. <button type="button" id="privacy-open" class="inline-link">Data & privacy</button></p>
+        </form>
+        <div class="demo-divider"><span>TAKE A LOOK FIRST</span></div>
+        <button class="demo-link" id="demo-start">Try the demo without a key <span aria-hidden="true">→</span></button>
+        <p class="demo-caption">A sample year with fictional data.</p>
+      </section>
+      <section class="recap-contents" aria-label="Inside your Garmin recap">
+        <div><span class="contents-number">01</span><div><h3>THE BIG PICTURE</h3><p>Your activities, hours and active days.</p></div></div>
+        <div><span class="contents-number">02</span><div><h3>YOUR SPORT STORIES</h3><p>Your distances, longest efforts and patterns.</p></div></div>
+        <div><span class="contents-number">03</span><div><h3>HIGHLIGHTS TO KEEP</h3><p>Colourful story cards, ready to save and share.</p></div></div>
+      </section>
+    </div>
+    <section id="loading-screen" class="loading-screen" aria-labelledby="loading-title" hidden>
+      <div class="loading-copy"><p class="eyebrow">02 / FINDING THE HIGHLIGHTS</p><h1 id="loading-title" tabindex="-1">GOOD THINGS<br>TAKE <span>MOTION.</span></h1><p class="loading-description">A little perspective on a lot of effort.</p></div>
+      <div class="loading-art" aria-hidden="true">
+        <svg class="loading-track" viewBox="0 0 600 600" fill="none"><g transform="rotate(-30 300 300)"><rect x="45" y="125" width="510" height="350" rx="175" stroke="#ff7038" stroke-width="46"/><rect x="103" y="183" width="394" height="234" rx="117" stroke="#f23897" stroke-width="42"/><rect x="157" y="237" width="286" height="126" rx="63" stroke="#f2e630" stroke-width="38"/><rect class="track-runner runner-one" x="45" y="125" width="510" height="350" rx="175" pathLength="100" stroke="#fffaf0" stroke-width="13" stroke-linecap="round" stroke-dasharray="2 98"/><rect class="track-runner runner-two" x="103" y="183" width="394" height="234" rx="117" pathLength="100" stroke="#fffaf0" stroke-width="11" stroke-linecap="round" stroke-dasharray="2 98"/></g></svg>
+        <img src="assets/shoe-blue.webp" alt="" class="loading-shoe"><span class="loading-orbit-word">EVERY. LITTLE. EFFORT.</span>
+      </div>
+      <div class="loading-bottom"><div class="loading-status-row"><span id="loading-status" role="status" aria-live="polite">Getting the example ready…</span><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="loading-meter" aria-hidden="true"><span></span></div><div class="loading-bottom-row"><span>FICTIONAL DATA · DEMO PREVIEW</span><div><button id="loading-pause" class="text-button" aria-pressed="false">Pause motion</button><button id="loading-cancel" class="text-button">Back</button></div></div><button id="loading-retry" class="secondary-button" hidden>Try again ↗</button></div>
+    </section>
+    <div class="entry-footer" id="entry-footer"><span>YOUR GARMIN DATA. A WHOLE NEW PERSPECTIVE.</span><span>a MINI WATT product ⚡️</span></div>
+  </section>
+  <dialog id="key-help-dialog" class="key-help-dialog" aria-labelledby="key-help-title">
+    <div class="dialog-heading"><div><p class="eyebrow">GARMIN CONNECT · PERSONAL API</p><h2 id="key-help-title">YOUR KEY.<br>YOUR START LINE.</h2></div><button id="close-key-help" class="close-button" aria-label="Close API key help">×</button></div>
+    <p class="help-intro">Get your Personal API key on the Garmin Connect website. Use your own account’s key, not your Garmin password.</p>
+    <a class="garmin-key-link" href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noopener noreferrer"><span>Open Garmin’s key page</span><span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+    <ol class="help-steps">
+      <li><span>01</span><div><h3>Sign in to Garmin Connect</h3><p>The link opens <strong>Settings → Personal API Key</strong> in your browser. Sign in if prompted.</p></div></li>
+      <li><span>02</span><div><h3>Create your key</h3><p>Select <strong>Create Key</strong>, review Garmin’s terms and accept if you agree. Choose an expiry—30, 90 or 180 days, or one year—then select <strong>Create</strong>.</p></div></li>
+      <li><span>03</span><div><h3>Copy it before you leave</h3><p>Garmin shows the key <strong>only once</strong>. Copy it and keep it somewhere secure, then select <strong>Done</strong>. The field here is for that Personal API key.</p></div></li>
+    </ol>
+    <details class="key-troubleshooting"><summary>Lost, expired or deleted your key?</summary><p>Return to Garmin’s key page to create a replacement. If you lost an existing key, delete it first. Deleting a key also disables its access tokens.</p></details>
+    <p class="help-source">Instructions from <a href="https://developer.garmin.com/gc-developer-program/personal/personal-faq/" target="_blank" rel="noopener noreferrer">Garmin’s official Personal API FAQ ↗<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+    <p class="help-preview-note">Use only your own Garmin account’s key. The demo needs no key and uses fictional data. Garmin Wraped is an independent MINI WATT project, not affiliated with Garmin.</p>
+    <button id="help-demo" class="primary-button">Try the demo →</button>
+  </dialog>
+  <main class="story" hidden inert id="story" aria-label="Your year in motion">
+    <canvas id="poster" aria-hidden="true"></canvas>
+    <div class="story-chrome">
+      <header>
+        <a class="brand" href="#cover" aria-label="Garmin Wraped back to the cover"><span class="brand-name">GARMIN WRAPED</span><span class="brand-product">a MINI WATT product <span aria-hidden="true">⚡️</span></span></a>
+        <div class="edition"><span>YOUR YEAR</span><span id="edition-year"></span></div>
+        <button class="icon-button menu-button" id="chapters-button" aria-label="Choose a story" aria-expanded="false" aria-controls="chapters-dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      </header>
+      <div class="progress" id="progress" aria-hidden="true"></div>
+      <div class="chapter-label"><span id="position"></span><span id="chapter-name"></span></div>
+      <section class="sr-only" aria-live="polite" aria-atomic="true"><h1 id="story-title">Your year in motion</h1><p id="story-description"></p></section>
+      <footer>
+        <div class="footer-top"><div class="footer-copy"><p id="caption"></p><div id="mini-watt-offer" hidden><a class="mini-watt-cta" href="https://www.miniwatt.app/download" target="_blank" rel="noopener noreferrer"><span>Try MINI WATT <span aria-hidden="true">⚡️</span></span><span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p class="mini-watt-details">14 days free · Mac + Windows<br>For Bluetooth FTMS smart trainers</p></div></div><button id="advance" class="advance" aria-label="Next story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
+        <div class="footer-bottom"><span class="demo-label"></span><div class="footer-actions"><button id="back" class="text-button" aria-label="Previous story">Back</button><button id="motion" class="text-button" aria-pressed="false">Pause</button><button id="share" class="text-button">Share card <span aria-hidden="true">↗</span></button></div></div>
+      </footer>
+    </div>
+  </main>
+  <dialog id="chapters-dialog" aria-labelledby="chapter-dialog-title"><div class="dialog-heading"><div><p class="eyebrow">THE WHOLE PICTURE</p><h2 id="chapter-dialog-title">EVERY CHAPTER.</h2></div><button id="close-chapters" class="close-button" aria-label="Close chapters">×</button></div><button id="restart-onboarding" class="secondary-button">Clear my data & start again ↗</button><button id="recap-details" class="secondary-button">Activity breakdown, coverage & privacy ↗</button><div class="library-controls"><select id="library-mode" aria-label="Story collection"><option value="recap">The example recap</option><option value="library">All 184 design templates</option></select><select id="story-group" aria-label="Sport or health category" hidden><option value="">All sports & health</option></select><input id="story-search" type="search" placeholder="Find a story…" aria-label="Search stories"></div><p id="library-count" class="dialog-note"></p><div class="chapter-grid" id="chapter-grid"></div><button id="more-stories" class="secondary-button">Show more stories ↓</button><p class="dialog-note">The design library contains 184 concepts. Your recap includes only supported, verified stories. Missing records never become zeros.</p></dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-heading"><div><p class="eyebrow">TAKE IT WITH YOU</p><h2 id="share-title">YOUR YEAR.<br>YOUR PICK.</h2></div><button id="close-share" class="close-button" aria-label="Close share preview">×</button></div>
+    <div class="share-layout">
+      <div class="share-preview-panel"><div id="share-preview-frame" class="share-preview-frame" aria-busy="false"><span class="share-rendering" role="status">Making your card…</span><img id="share-preview" alt="Preview of your selected share card"></div><p class="share-note">1080 × 1920</p></div>
+      <div class="share-settings">
+        <fieldset class="share-choice"><legend>01 / CHOOSE A CARD</legend><p id="share-card-count" class="share-hint"></p><div id="share-cards" class="share-cards" role="group" aria-label="Cards from your recap"></div></fieldset>
+        <fieldset class="share-choice"><legend>02 / MAKE IT YOURS</legend><div id="share-colors" class="share-colors" role="group" aria-label="Card colors"></div></fieldset>
+        <div class="share-save"><p id="share-selection" aria-live="polite"></p><button id="download" class="primary-button" disabled>Download PNG ↓</button><button id="native-share" class="secondary-button" hidden>Share to another app ↗</button><p id="share-error" role="status"></p></div>
+      </div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <noscript><p class="noscript">This story needs JavaScript. All example data is fictional; no Garmin account is connected.</p></noscript>
+  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><div class="dialog-heading"><h2 id="privacy-title">YOUR DATA.<br>YOUR CALL.</h2><button id="close-privacy" class="close-button" aria-label="Close privacy">×</button></div><div class="privacy-copy"><p>Garmin Wraped is an independent MINI WATT project. Each visitor connects only their own Garmin account using their own Personal API key. Garmin Wraped is not affiliated with or endorsed by Garmin.</p><p>Your key is exchanged with Garmin by this site’s server over HTTPS. The server retains no activity or health records. A secure, encrypted connection cookie expires after 20 minutes and is cleared when the import finishes or you disconnect. Visitors have separate connection sessions. Tabs in the same browser share a connection cookie; import one account at a time.</p><p>The recap lives only in this tab’s memory. Refreshing or closing the tab removes it. “Clear my data” removes the recap, export preview, and connection cookie. Downloaded PNG files and shares you send remain on your device or in the receiving app.</p><p>Daily steps, sleep and resting heart rate are included automatically when available. Sharing any health card requires a separate confirmation for that card. Exports contain only the shown metric and approved copy: no names, Garmin identifiers, source references, or precise locations.</p><p>Activity dates use your automatically detected device time zone. Daily steps and sleep use Garmin’s recorded calendar days. Missing measurements are omitted. A complete API import means all pages returned for the requested date window; it cannot establish that Garmin holds every activity you performed.</p><p>Application error logs contain request IDs, route names, error codes, and timings only. Cloudflare hosts this app and processes connection information, including IP addresses, to deliver it and limit requests. No advertising or analytics SDK is installed. Fonts load from Google Fonts.</p><p>Disconnecting does not revoke your Garmin key. You can revoke it on <a href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noopener noreferrer">Garmin’s key page</a>.</p><div id="coverage-details"></div></div><button id="privacy-clear" class="primary-button">Clear my data & disconnect</button></dialog>
+  <dialog id="health-share-dialog" aria-labelledby="health-share-title"><div class="dialog-heading"><h2 id="health-share-title">SHARE THIS<br>HEALTH CARD?</h2></div><p id="health-share-description"></p><p>It may reveal personal health information. Only this card’s metric and caption will be included. You decide where it goes.</p><div class="consent-actions"><button id="health-share-cancel" class="secondary-button">Keep it private</button><button id="health-share-confirm" class="primary-button">Allow this card’s export</button></div></dialog>
+  <script type="module" src="onboarding.mjs"></script>
+</body>
+</html>

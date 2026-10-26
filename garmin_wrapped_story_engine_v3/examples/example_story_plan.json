@@ -1,0 +1,146 @@
+{
+  "status": "ok",
+  "schemaVersion": "2.0.0",
+  "engineVersion": "0.2-count-reference",
+  "year": 2025,
+  "yearComplete": true,
+  "identity": "dual_headline",
+  "countLeader": "hiit",
+  "chosenFavorite": null,
+  "mostRecordedHoursSport": null,
+  "headlineSports": [
+    "hiit",
+    "running"
+  ],
+  "secondarySports": [
+    "strength",
+    "cycling",
+    "rowing"
+  ],
+  "scenes": [
+    {
+      "id": "open",
+      "type": "opening",
+      "sport": "all",
+      "claim": "Your 2025 in motion",
+      "fact": {
+        "value": 2025,
+        "unit": "year"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "annual_sessions",
+      "type": "cumulative",
+      "sport": "all",
+      "claim": "141 recorded activities",
+      "fact": {
+        "value": 141,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "sport_mix",
+      "type": "identity",
+      "sport": "all",
+      "claim": "5 kinds of sport in your recorded year",
+      "fact": {
+        "value": 5,
+        "unit": "sport_families"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "dual",
+      "type": "identity",
+      "sport": "all",
+      "claim": "HIIT and Running shared the spotlight: 60 and 52 sessions",
+      "fact": {
+        "value": 112,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "sport_hiit",
+      "type": "sport_intro",
+      "sport": "hiit",
+      "claim": "60 recorded HIIT sessions",
+      "fact": {
+        "value": 60,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "sport_running",
+      "type": "sport_intro",
+      "sport": "running",
+      "claim": "52 recorded Running sessions",
+      "fact": {
+        "value": 52,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "supporting_sports",
+      "type": "surprise",
+      "sport": "all",
+      "claim": "Your other recorded sports included 13 Strength training, 12 Cycling, 4 Rowing",
+      "fact": {
+        "value": 29,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    },
+    {
+      "id": "finale",
+      "type": "finale",
+      "sport": "all",
+      "claim": "Your year, in two main rhythms: HIIT and Running",
+      "fact": {
+        "value": 141,
+        "unit": "sessions"
+      },
+      "evidence": {
+        "source": "prevalidated_activity_index",
+        "status": "verified"
+      },
+      "sharePolicy": "allow_sanitized"
+    }
+  ],
+  "notes": [
+    "This reference planner only supports count-backed scenes and supplied verified duration ranks. Full metrics and all catalog gates remain future implementation.",
+    "Story copy should be localized and copy-reviewed before production."
+  ]
+}

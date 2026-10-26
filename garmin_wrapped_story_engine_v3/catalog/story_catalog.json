@@ -1,0 +1,2656 @@
+{
+  "version": "2.0.0",
+  "count": 176,
+  "note": "All story definitions are candidates. Human-readable eligibility gates must be implemented as typed guards; no headline may render without verified values. The generic card headline is a template, not a claim of a measured result.",
+  "stories": [
+    {
+      "id": "running_distance",
+      "sport": "running",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "THE DISTANCE YOU RAN",
+      "eligibility": "distance>=0; completeness>=95%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "2025 distance is valid only if all eligible run activities have usable distance",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_longest",
+      "sport": "running",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "ONE RUN WENT FURTHER",
+      "eligibility": "at least 2 runs; max distance>0",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "largest recorded run, not a certified personal record",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "running_pace",
+      "sport": "running",
+      "story_family": "peak",
+      "metric": "best_comparable_pace",
+      "headline": "YOUR FASTEST COMPARABLE RUN",
+      "eligibility": "at least 3 runs, distance>=3km; GPS or calibrated pace",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "like-for-like distance and route conditions; no general speed improvement claim",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "running_consistency",
+      "sport": "running",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "WEEKS IN YOUR RUNNING SHOES",
+      "eligibility": "at least 8 run weeks; full year",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "count unique ISO weeks with running",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_favorite_time",
+      "sport": "running",
+      "story_family": "habit",
+      "metric": "start_hour_mode",
+      "headline": "WHEN YOUR RUNS HAPPENED",
+      "eligibility": "at least 10 runs; dominant time bucket>=40%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "local-time clock with daylight savings",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_hr",
+      "sport": "running",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "YOUR RUNNING ENGINE",
+      "eligibility": "HR present >=75% of running time",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "HR zone settings may change; use only validated compatible zones",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_cadence",
+      "sport": "running",
+      "story_family": "technical",
+      "metric": "cadence_distribution",
+      "headline": "YOUR RUNNING RHYTHM",
+      "eligibility": "FIT cadence values in >=3 runs",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "running cadence units device-specific and FIT developer fields normalized",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_elevation",
+      "sport": "running",
+      "story_family": "terrain",
+      "metric": "ascent_sum",
+      "headline": "THE HILLS ADDED UP",
+      "eligibility": "ascent valid in >=90% outdoor running",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not include treadmill elevation unless recorded as valid",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_footprint",
+      "sport": "running",
+      "story_family": "location",
+      "metric": "route_coverage",
+      "headline": "ALL THE PATHS YOU TOOK",
+      "eligibility": "at least 3 valid GPS runs; privacy permission",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "never publicly expose start/end or precise trace by default",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_progress",
+      "sport": "running",
+      "story_family": "trend",
+      "metric": "matched_pace_change",
+      "headline": "DID YOUR PACE CHANGE?",
+      "eligibility": "matched comparison >=6 sessions each period",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "match distance/elevation/type/effort; no causal explanation",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "running_pr",
+      "sport": "running",
+      "story_family": "achievement",
+      "metric": "verified_pr_count",
+      "headline": "THE RUNS THAT STOOD OUT",
+      "eligibility": "actual PR markers; corroborated with category",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "PR flag is not evidence of which distance record",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "running_trail_split",
+      "sport": "running",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "YOU LEFT THE ROAD BEHIND",
+      "eligibility": "trail subtype >=3; entire running classification reliable",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "trail vs road breakdown only when subtype truly known",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cycling_distance",
+      "sport": "cycling",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "KILOMETERS ON TWO WHEELS",
+      "eligibility": "distance completeness >=95%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "separate indoor credited trainer kilometers from GPS outdoors",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_duration",
+      "sport": "cycling",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME IN THE SADDLE",
+      "eligibility": "recorded duration complete",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not turn elapsed time into pedaling time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_biggest",
+      "sport": "cycling",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "YOUR BIGGEST RIDE",
+      "eligibility": ">=2 rides; valid distance",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded longest not global record",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cycling_climbing",
+      "sport": "cycling",
+      "story_family": "terrain",
+      "metric": "ascent_sum",
+      "headline": "EVERY CLIMB COUNTS",
+      "eligibility": ">=3 outdoor rides; ascent completeness >=90%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "exclude indoor without meaningful ascent",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_power",
+      "sport": "cycling",
+      "story_family": "technical",
+      "metric": "power_curve",
+      "headline": "THE WATTS YOU PUT DOWN",
+      "eligibility": "calibrated power readings, comparable windows",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "FIT power data optional; no FTP claim without supported test",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_cadence",
+      "sport": "cycling",
+      "story_family": "technical",
+      "metric": "cadence_distribution",
+      "headline": "YOUR PEDALING RHYTHM",
+      "eligibility": "FIT cadence validated >=3 rides",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "no cadence absent sensor",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_hr",
+      "sport": "cycling",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "THE EFFORT BEHIND THE RIDE",
+      "eligibility": "HR present >=75% of duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "zones from consistent definition",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_route",
+      "sport": "cycling",
+      "story_family": "location",
+      "metric": "route_coverage",
+      "headline": "THE ROADS YOU EXPLORED",
+      "eligibility": ">=3 valid outdoor GPS tracks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "avoid revealing home and routine routes",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_longday",
+      "sport": "cycling",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "THE DAY YOU KEPT GOING",
+      "eligibility": ">=3 rides; valid session duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "route optional",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cycling_subtypes",
+      "sport": "cycling",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "HOW YOU RODE",
+      "eligibility": ">=6 rides, indoor and outdoor accurately classified",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not imply preference from indoor vs outdoor alone",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cycling_speed",
+      "sport": "cycling",
+      "story_family": "trend",
+      "metric": "matched_speed_change",
+      "headline": "DID YOUR RIDING SPEED CHANGE?",
+      "eligibility": "matched outdoor course conditions; >=6 paired sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "wind/terrain/traffic make naive mean speed misleading",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cycling_consistency",
+      "sport": "cycling",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "YOUR YEAR ON TWO WHEELS",
+      "eligibility": ">=8 cycling weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "count unique weeks",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_sessions",
+      "sport": "hiit",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOU CAME FOR THE INTENSITY",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded sessions only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiit_time",
+      "sport": "hiit",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "THE MINUTES THAT COUNTED",
+      "eligibility": ">=4 sessions; duration complete",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not assume all minutes were hard effort",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_zone4",
+      "sport": "hiit",
+      "story_family": "intensity",
+      "metric": "upper_zone_minutes",
+      "headline": "TIME IN THE RED",
+      "eligibility": "HR coverage >=80%; compatible zone definition",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "zones 4 and 5, not necessarily actual max exertion",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_hrpeak",
+      "sport": "hiit",
+      "story_family": "peak",
+      "metric": "max_hr",
+      "headline": "THE BIGGEST HEART-RATE PEAK",
+      "eligibility": ">=3 sessions with usable HR",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not proof of maximum physiological heart rate",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiit_recovery",
+      "sport": "hiit",
+      "story_family": "technical",
+      "metric": "intra_session_recovery",
+      "headline": "HOW YOUR HEART SETTLED",
+      "eligibility": ">=3 FIT sessions with intervals and continuous HR",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "observed recovery between intervals, not medical fitness conclusion",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_repeat",
+      "sport": "hiit",
+      "story_family": "habit",
+      "metric": "weekly_consistency",
+      "headline": "THE WEEKLY RITUAL",
+      "eligibility": ">=8 active weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "no moral judgement on missed weeks",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_longest",
+      "sport": "hiit",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST HIIT SESSION",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "long session is not higher intensity",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiit_peak_day",
+      "sport": "hiit",
+      "story_family": "surprise",
+      "metric": "max_sessions_day",
+      "headline": "YOUR BIGGEST HIIT DAY",
+      "eligibility": ">=8 sessions and repeated days",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "multiple sessions may reflect duplicate imports; dedupe first",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_interval_structure",
+      "sport": "hiit",
+      "story_family": "technical",
+      "metric": "interval_pattern",
+      "headline": "THE FORMAT YOU RETURNED TO",
+      "eligibility": "structured workout steps in >=5 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not infer EMOM/AMRAP from generic timer",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiit_workload",
+      "sport": "hiit",
+      "story_family": "achievement",
+      "metric": "recorded_sets",
+      "headline": "MORE THAN JUST A TIMER",
+      "eligibility": "reps/sets actually present for >=3 workouts",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "HIIT set summaries may not represent all exercises",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "strength_sessions",
+      "sport": "strength",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOUR STRENGTH YEAR",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "sessions counted",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "strength_time",
+      "sport": "strength",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "HOURS OF STRENGTH TRAINING",
+      "eligibility": "valid session durations",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not time under tension",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_reps",
+      "sport": "strength",
+      "story_family": "volume",
+      "metric": "reps_sum",
+      "headline": "EVERY REP COUNTS",
+      "eligibility": ">=80% sessions with complete recorded rep metadata",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded sets only, not estimated untracked repetitions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_sets",
+      "sport": "strength",
+      "story_family": "volume",
+      "metric": "sets_sum",
+      "headline": "SET AFTER SET",
+      "eligibility": ">=80% sessions complete sets",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "same dedupe rules",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_maxload",
+      "sport": "strength",
+      "story_family": "peak",
+      "metric": "max_recorded_load",
+      "headline": "THE HEAVIEST RECORDED SET",
+      "eligibility": "weight measurements and exercise identity valid",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "never describe as one-rep max",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "strength_exercise",
+      "sport": "strength",
+      "story_family": "habit",
+      "metric": "top_exercise",
+      "headline": "THE MOVE YOU KEPT COMING BACK TO",
+      "eligibility": ">=8 classified exercises",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "requires consistent exercise IDs",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_progress",
+      "sport": "strength",
+      "story_family": "trend",
+      "metric": "matched_load_progress",
+      "headline": "ONE LIFT, TWO CHAPTERS",
+      "eligibility": ">=3 comparable sets in early/late windows",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "compare same movement/reps/equipment",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_hr",
+      "sport": "strength",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "YOUR HEART SHOWED UP TOO",
+      "eligibility": "HR on >=75% session time",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "cardio metrics optional",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "strength_consistency",
+      "sport": "strength",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "YOUR ROUTINE HELD",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "no missing weeks interpreted as failure",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_sessions",
+      "sport": "walking",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "WALK AFTER WALK",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded walk sessions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "walking_distance",
+      "sport": "walking",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "THE DISTANCE YOU WALKED",
+      "eligibility": ">=90% valid distance",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not add daily step distance; risk of double count",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_longest",
+      "sport": "walking",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "YOUR LONGEST WALK",
+      "eligibility": ">=2 recorded walks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "walking_minutes",
+      "sport": "walking",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME ON YOUR FEET",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "activity time, not standing",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_routine",
+      "sport": "walking",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "THE WALKING HABIT",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "walks recorded, not step-derived",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_timing",
+      "sport": "walking",
+      "story_family": "habit",
+      "metric": "start_hour_mode",
+      "headline": "WHEN YOU HEADED OUT",
+      "eligibility": ">=10 walks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "local time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_routes",
+      "sport": "walking",
+      "story_family": "location",
+      "metric": "route_coverage",
+      "headline": "WHERE YOUR WALKS TOOK YOU",
+      "eligibility": ">=3 valid GPS trails",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "privacy gated",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "walking_weekday",
+      "sport": "walking",
+      "story_family": "surprise",
+      "metric": "weekday_mode",
+      "headline": "YOUR WALKING DAY",
+      "eligibility": ">=12 walks and meaningful concentration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not a fixed weekly plan",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiking_sessions",
+      "sport": "hiking",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOU WENT EXPLORING",
+      "eligibility": ">=3 hikes",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded hikes only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiking_distance",
+      "sport": "hiking",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "TRAIL AFTER TRAIL",
+      "eligibility": "distance>=90%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "verified route distance",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiking_ascent",
+      "sport": "hiking",
+      "story_family": "terrain",
+      "metric": "ascent_sum",
+      "headline": "THE CLIMBS KEPT COMING",
+      "eligibility": ">=3 hikes with ascent",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "validate elevation",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiking_longest",
+      "sport": "hiking",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "YOUR BIGGEST DAY OUT",
+      "eligibility": ">=2 hikes",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded max",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiking_highest",
+      "sport": "hiking",
+      "story_family": "peak",
+      "metric": "max_elevation",
+      "headline": "THE HIGHEST YOU REACHED",
+      "eligibility": "valid GPS/elevation; >=2 hikes",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "elevation above sea level, not ascent",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "hiking_routes",
+      "sport": "hiking",
+      "story_family": "location",
+      "metric": "route_coverage",
+      "headline": "THE PLACES YOU FOUND",
+      "eligibility": ">=2 GPS hikes",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "privacy gated",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiking_duration",
+      "sport": "hiking",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "HOURS IN THE OUTDOORS",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "time recorded",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "hiking_season",
+      "sport": "hiking",
+      "story_family": "habit",
+      "metric": "season_mode",
+      "headline": "YOUR TRAIL SEASON",
+      "eligibility": ">=6 hikes; clear seasonal pattern",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "weather inferred? no",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_sessions",
+      "sport": "swimming",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOUR YEAR IN THE WATER",
+      "eligibility": ">=4 swims",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "pool and open water grouped",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "swim_distance",
+      "sport": "swimming",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "LENGTH AFTER LENGTH",
+      "eligibility": ">=90% valid distance",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "pool distance relies on pool length/laps",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_longest",
+      "sport": "swimming",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "THE LONGEST SWIM",
+      "eligibility": ">=2 swims",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded longest",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "swim_time",
+      "sport": "swimming",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "HOURS IN THE WATER",
+      "eligibility": "valid active timer",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "exclude time on deck where possible",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_strokes",
+      "sport": "swimming",
+      "story_family": "technical",
+      "metric": "stroke_sum",
+      "headline": "EVERY STROKE ADDED UP",
+      "eligibility": "stroke totals validated >=80%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "must never fake estimated stroke counts",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_pace",
+      "sport": "swimming",
+      "story_family": "technical",
+      "metric": "pace100m",
+      "headline": "YOUR PACE THROUGH THE WATER",
+      "eligibility": ">=3 comparable swims",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "separate pool/open water",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_pool",
+      "sport": "swimming",
+      "story_family": "habit",
+      "metric": "pool_length_distribution",
+      "headline": "THE POOL YOU KNOW",
+      "eligibility": ">=4 valid pool swims",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "pool distance values validated",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "swim_open",
+      "sport": "swimming",
+      "story_family": "identity",
+      "metric": "open_water_share",
+      "headline": "YOUR OPEN WATER CHAPTER",
+      "eligibility": ">=2 true open-water activities",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "distinguish from pool",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "swim_swolf",
+      "sport": "swimming",
+      "story_family": "technical",
+      "metric": "swolf_pattern",
+      "headline": "YOUR SWOLF STORY",
+      "eligibility": "swolf available consistently >=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "device-specific, not a cross-user score",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_sessions",
+      "sport": "rowing",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOUR YEAR ON THE ROW",
+      "eligibility": ">=3 rows",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded rows",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "row_distance",
+      "sport": "rowing",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "METER BY METER",
+      "eligibility": ">=90% distance",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "erg data not GPS river distance",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_time",
+      "sport": "rowing",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME IN RHYTHM",
+      "eligibility": "duration valid",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "session time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_longest",
+      "sport": "rowing",
+      "story_family": "peak",
+      "metric": "max_distance",
+      "headline": "YOUR LONGEST ROW",
+      "eligibility": ">=2 valid rows",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "indoor/outdoor may be compared distance not conditions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "row_strokes",
+      "sport": "rowing",
+      "story_family": "technical",
+      "metric": "stroke_sum",
+      "headline": "EVERY STROKE ADDED UP",
+      "eligibility": "strokes validated >=80%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "strokes optional",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_rate",
+      "sport": "rowing",
+      "story_family": "technical",
+      "metric": "stroke_rate_distribution",
+      "headline": "YOUR STROKE RHYTHM",
+      "eligibility": "cadence FIT validated >=3 rows",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "normalization of stroke rate",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_pace",
+      "sport": "rowing",
+      "story_family": "technical",
+      "metric": "pace500m",
+      "headline": "YOUR PACE PER 500",
+      "eligibility": ">=3 calibrated comparable sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "erg vs water separate",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "row_hr",
+      "sport": "rowing",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "THE EFFORT IN EVERY PULL",
+      "eligibility": "HR 75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "observed only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_sessions",
+      "sport": "yoga",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOU MADE SPACE TO MOVE",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "activity classification only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "yoga_time",
+      "sport": "yoga",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME ON THE MAT",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded yoga time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_consistency",
+      "sport": "yoga",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "THE MAT KEPT CALLING",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "no claims of stress relief",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_streak",
+      "sport": "yoga",
+      "story_family": "habit",
+      "metric": "longest_weekly_streak",
+      "headline": "A ROUTINE TO RETURN TO",
+      "eligibility": ">=8 yoga weeks and complete index",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "sequential activity weeks, not every day",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_favorite_day",
+      "sport": "yoga",
+      "story_family": "surprise",
+      "metric": "weekday_mode",
+      "headline": "YOUR YOGA DAY",
+      "eligibility": ">=10 yoga sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "concentration threshold",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_month",
+      "sport": "yoga",
+      "story_family": "habit",
+      "metric": "month_mode",
+      "headline": "WHEN YOU FOUND YOUR FLOW",
+      "eligibility": ">=10 yoga sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "seasonal pattern only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "yoga_duration",
+      "sport": "yoga",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST FLOW",
+      "eligibility": ">=3 yoga sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "duration not skill",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "yoga_energy",
+      "sport": "yoga",
+      "story_family": "wellness",
+      "metric": "prepost_body_battery",
+      "headline": "WHAT HAPPENED AROUND CLASS",
+      "eligibility": "consent and reliable measured pre/post samples",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "descriptive only; no causal recovery claim",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_sessions",
+      "sport": "pilates",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOUR PILATES YEAR",
+      "eligibility": ">=4",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded sessions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "pilates_time",
+      "sport": "pilates",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "HOURS OF MOVEMENT",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded activity timer",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_consistency",
+      "sport": "pilates",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "WEEKS YOU RETURNED",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "weekly presence",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_streak",
+      "sport": "pilates",
+      "story_family": "habit",
+      "metric": "longest_weekly_streak",
+      "headline": "THE ROUTINE TOOK SHAPE",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not fitness progression",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_weekday",
+      "sport": "pilates",
+      "story_family": "surprise",
+      "metric": "weekday_mode",
+      "headline": "YOUR PILATES DAY",
+      "eligibility": ">=10 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "strong mode",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_longest",
+      "sport": "pilates",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST SESSION",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "no performance claim",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "pilates_month",
+      "sport": "pilates",
+      "story_family": "habit",
+      "metric": "month_mode",
+      "headline": "WHEN YOU FOUND YOUR GROOVE",
+      "eligibility": ">=10 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "full-year coverage",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "pilates_hr",
+      "sport": "pilates",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "YOUR SESSION, IN HEARTBEATS",
+      "eligibility": "HR time series >75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "heart rate does not measure pilates quality",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "elliptical_sessions",
+      "sport": "elliptical",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "ON THE ELLIPTICAL",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded sessions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "elliptical_time",
+      "sport": "elliptical",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "THE MINUTES ROLLED ON",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "elliptical_longest",
+      "sport": "elliptical",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOU KEPT IT GOING",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "longest duration",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "elliptical_hr",
+      "sport": "elliptical",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "THE EFFORT PROFILE",
+      "eligibility": "HR>=75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "HR zones validated",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "elliptical_week",
+      "sport": "elliptical",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "YOU KEPT COMING BACK",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "routine",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "elliptical_peak",
+      "sport": "elliptical",
+      "story_family": "peak",
+      "metric": "max_hr",
+      "headline": "THE DAY YOUR HEART RAN HIGH",
+      "eligibility": ">=4 HR tracked sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "no max physiological claim",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "elliptical_calories",
+      "sport": "elliptical",
+      "story_family": "volume",
+      "metric": "calorie_sum",
+      "headline": "ENERGY IN MOTION",
+      "eligibility": ">=90% measured calorie coverage",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "estimated calories not exact expenditure",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "elliptical_month",
+      "sport": "elliptical",
+      "story_family": "habit",
+      "metric": "month_mode",
+      "headline": "YOUR BUSIEST MONTH",
+      "eligibility": ">=10 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "full-year index",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "ski_days",
+      "sport": "skiing",
+      "story_family": "identity",
+      "metric": "active_days",
+      "headline": "DAYS ON THE SNOW",
+      "eligibility": ">=2 unique days",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded snow-sport days only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "ski_vertical",
+      "sport": "skiing",
+      "story_family": "terrain",
+      "metric": "ascent_or_descent",
+      "headline": "YOUR VERTICAL YEAR",
+      "eligibility": "comparable measurement and subtype",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "downhill descent never labeled ascent",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "ski_runs",
+      "sport": "skiing",
+      "story_family": "volume",
+      "metric": "recorded_run_count",
+      "headline": "ONE RUN AFTER ANOTHER",
+      "eligibility": "downhill lap/run segmentation validated",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "laps not always ski descents",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "ski_distance",
+      "sport": "skiing",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "THE SNOW COVERED",
+      "eligibility": "valid distance>=90%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "disclose downhill vs cross-country",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "ski_bigday",
+      "sport": "skiing",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST SNOW DAY",
+      "eligibility": ">=2 snow activities",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "elapsed vs moving distinction",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "ski_elevation",
+      "sport": "skiing",
+      "story_family": "peak",
+      "metric": "max_elevation",
+      "headline": "YOUR HIGHEST POINT",
+      "eligibility": "elevation valid",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "altitude above sea level",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "ski_places",
+      "sport": "skiing",
+      "story_family": "location",
+      "metric": "route_coverage",
+      "headline": "WHERE THE SNOW TOOK YOU",
+      "eligibility": "GPS data; privacy",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "avoid exact location),",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "ski_subtype",
+      "sport": "skiing",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "YOUR WAY DOWN THE MOUNTAIN",
+      "eligibility": "multiple identified snow subtypes",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not mix snowshoeing with alpine performance",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "golf_rounds",
+      "sport": "golf",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "A YEAR ON THE COURSE",
+      "eligibility": ">=3 rounds",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded golf rounds",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "golf_hours",
+      "sport": "golf",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME ON THE FAIRWAYS",
+      "eligibility": "duration complete",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "walking between holes is part of activity",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "golf_courses",
+      "sport": "golf",
+      "story_family": "location",
+      "metric": "distinct_course_count",
+      "headline": "THE COURSES YOU PLAYED",
+      "eligibility": "course IDs available for >=3 rounds",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "optional; no GPS-derived course guessing",
+      "default_share": "private_only",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "golf_score",
+      "sport": "golf",
+      "story_family": "technical",
+      "metric": "round_score_distribution",
+      "headline": "YOUR SCORECARD YEAR",
+      "eligibility": "actual numeric scores/holes >=3 rounds",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not available in tested generic API; require explicit golf score data",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "golf_best",
+      "sport": "golf",
+      "story_family": "achievement",
+      "metric": "best_comparable_round",
+      "headline": "YOUR STANDOUT ROUND",
+      "eligibility": "stroke count and course context",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "adjust for course, 9 vs 18 holes",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "golf_streak",
+      "sport": "golf",
+      "story_family": "habit",
+      "metric": "active_months",
+      "headline": "THE MONTHS YOU PLAYED",
+      "eligibility": ">=6 rounds",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "months present",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "golf_walk",
+      "sport": "golf",
+      "story_family": "distance",
+      "metric": "walking_distance",
+      "headline": "THE WALK BETWEEN SHOTS",
+      "eligibility": "GPS walking samples during round",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "avoid conflating club activity with steps",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "golf_favorite_time",
+      "sport": "golf",
+      "story_family": "surprise",
+      "metric": "start_hour_mode",
+      "headline": "YOUR TEE-TIME HABIT",
+      "eligibility": ">=8 rounds",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "timestamps only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "racket_sessions",
+      "sport": "racket",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "BACK ON COURT",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "per subtype when available",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "racket_time",
+      "sport": "racket",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "HOURS ON COURT",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded time",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "racket_type",
+      "sport": "racket",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "YOUR COURT OF CHOICE",
+      "eligibility": ">=8 sessions and subtype classified",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "tennis vs padel etc",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "racket_hr",
+      "sport": "racket",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "YOUR EFFORT BETWEEN POINTS",
+      "eligibility": "HR>=75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "cannot infer match outcomes",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "racket_longest",
+      "sport": "racket",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST COURT SESSION",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not longest match without match data",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "racket_favorite_day",
+      "sport": "racket",
+      "story_family": "habit",
+      "metric": "weekday_mode",
+      "headline": "COURT DAY",
+      "eligibility": ">=10 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "strong weekday signal",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "racket_consistency",
+      "sport": "racket",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "A YEAR ON THE COURT",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "weekly consistency",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "racket_score",
+      "sport": "racket",
+      "story_family": "achievement",
+      "metric": "match_results",
+      "headline": "YOUR MATCH STORY",
+      "eligibility": "explicit verified scores exist",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not available in generic FIT summary; do not invent wins",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "multi_events",
+      "sport": "triathlon",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "THE MULTISPORT YEAR",
+      "eligibility": ">=2 full events",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "parent event counted once",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "multi_legs",
+      "sport": "triathlon",
+      "story_family": "identity",
+      "metric": "leg_count",
+      "headline": "ONE SESSION, MANY SPORTS",
+      "eligibility": "FIT sessions classified into legs",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "child activities not counted again",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "multi_total_time",
+      "sport": "triathlon",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME FROM START TO FINISH",
+      "eligibility": "timer semantics validated",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "transitions included/excluded explicit",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "multi_split",
+      "sport": "triathlon",
+      "story_family": "technical",
+      "metric": "leg_time_distribution",
+      "headline": "YOUR SPLIT STORY",
+      "eligibility": "complete leg sessions >=1 full event",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "leg timing from FIT, not generic labels",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "multi_transition",
+      "sport": "triathlon",
+      "story_family": "technical",
+      "metric": "transition_time_sum",
+      "headline": "THE TIME BETWEEN SPORTS",
+      "eligibility": "actual transitions recorded",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "not estimated",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "multi_longest",
+      "sport": "triathlon",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR BIGGEST MULTISPORT DAY",
+      "eligibility": ">=2 events",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "event duration",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "multi_sport_mix",
+      "sport": "triathlon",
+      "story_family": "identity",
+      "metric": "leg_sport_mix",
+      "headline": "THREE DISCIPLINES, ONE DAY",
+      "eligibility": "leg type metadata",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "only supported formats",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "multi_hr",
+      "sport": "triathlon",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "THE EFFORT THROUGH EACH LEG",
+      "eligibility": "HR continuous or session summaries",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "avoid attributing HR to legs without timestamp alignment",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "team_sessions",
+      "sport": "team_sports",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOUR SEASON IN PLAY",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded sessions, not matches won",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "team_time",
+      "sport": "team_sports",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME IN THE GAME",
+      "eligibility": "valid timer",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded field time not minutes played",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "team_type",
+      "sport": "team_sports",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "YOUR GAME",
+      "eligibility": "sport subtypes >=5",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not conflate codes",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "team_hr",
+      "sport": "team_sports",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "GAME-DAY EFFORT",
+      "eligibility": "HR>=75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not match scoring",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "team_distance",
+      "sport": "team_sports",
+      "story_family": "distance",
+      "metric": "distance_sum",
+      "headline": "DISTANCE ON THE FIELD",
+      "eligibility": "valid GPS recording on >=80% of sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "indoor court GPS often unreliable",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "team_active",
+      "sport": "team_sports",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "WEEKS YOU SUITED UP",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "consistent sport type",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "team_longest",
+      "sport": "team_sports",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST RECORDED SESSION",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "could include training",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "team_scores",
+      "sport": "team_sports",
+      "story_family": "achievement",
+      "metric": "verified_results",
+      "headline": "THE RESULTS YOU REMEMBER",
+      "eligibility": "explicit match result metadata available",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "generic Garmin API does not guarantee team results",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "climb_sessions",
+      "sport": "climbing",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "YOU KEPT CLIMBING",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded climbing sessions",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "climb_time",
+      "sport": "climbing",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "TIME ON THE WALL",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "includes rests",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "climb_sends",
+      "sport": "climbing",
+      "story_family": "achievement",
+      "metric": "verified_send_count",
+      "headline": "THE PROBLEMS YOU SENT",
+      "eligibility": "explicit send data and route identity",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "split field numClimbSends may mean different things; verify",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "climb_falls",
+      "sport": "climbing",
+      "story_family": "surprise",
+      "metric": "verified_fall_count",
+      "headline": "THE ATTEMPTS YOU LEARNED FROM",
+      "eligibility": "explicit reliable fall counters",
+      "required_evidence": [
+        "activity_index",
+        "activity_fit_samples"
+      ],
+      "claim_guard": "avoid blame/shaming",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "climb_vertical",
+      "sport": "climbing",
+      "story_family": "terrain",
+      "metric": "ascent_sum",
+      "headline": "YOUR VERTICAL MOVEMENT",
+      "eligibility": "valid ascent and climbing subtype",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not number of completed routes",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "climb_longest",
+      "sport": "climbing",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "THE SESSION YOU STUCK WITH",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not skill",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "climb_month",
+      "sport": "climbing",
+      "story_family": "habit",
+      "metric": "month_mode",
+      "headline": "THE MONTH YOU LIVED ON THE WALL",
+      "eligibility": ">=8 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded month",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "climb_type",
+      "sport": "climbing",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "YOUR KIND OF CLIMB",
+      "eligibility": "reliable type classification",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "bouldering vs rope",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cardio_sessions",
+      "sport": "cardio",
+      "story_family": "identity",
+      "metric": "session_count",
+      "headline": "A YEAR OF SHOWING UP",
+      "eligibility": ">=4 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "generic cardio umbrella",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cardio_minutes",
+      "sport": "cardio",
+      "story_family": "volume",
+      "metric": "duration_sum",
+      "headline": "YOU KEPT MOVING",
+      "eligibility": "valid duration",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded minutes",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cardio_zone",
+      "sport": "cardio",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "TIME WITH THE HEART RACING",
+      "eligibility": "HR>=75%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "do not infer health improvements",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cardio_top_mode",
+      "sport": "cardio",
+      "story_family": "identity",
+      "metric": "subtype_share",
+      "headline": "HOW YOU MOVED",
+      "eligibility": ">=8 sessions and subtype",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "differentiate stair, boxing, dance",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cardio_week",
+      "sport": "cardio",
+      "story_family": "habit",
+      "metric": "active_weeks",
+      "headline": "THE ROUTINE",
+      "eligibility": ">=8 weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "recorded activity",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cardio_longest",
+      "sport": "cardio",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST CARDIO SESSION",
+      "eligibility": ">=3 sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "duration only",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "cardio_calorie",
+      "sport": "cardio",
+      "story_family": "volume",
+      "metric": "calorie_sum",
+      "headline": "THE ENERGY YOU SPENT MOVING",
+      "eligibility": ">=90% recorded calorie coverage",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "estimates not exact physiology",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 3
+    },
+    {
+      "id": "cardio_peak",
+      "sport": "cardio",
+      "story_family": "peak",
+      "metric": "max_hr",
+      "headline": "YOUR BIGGEST RECORDED PEAK",
+      "eligibility": ">=4 heart-rate tracked sessions",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "not maximal HR medical assessment",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "sport_chapter",
+      "editorial_priority": 4
+    },
+    {
+      "id": "year_sessions",
+      "sport": "all",
+      "story_family": "opening",
+      "metric": "session_count",
+      "headline": "YOU SHOWED UP",
+      "eligibility": "complete activity index; >=1 eligible activity",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "opening",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_sport_mix",
+      "sport": "all",
+      "story_family": "identity",
+      "metric": "sport_distribution",
+      "headline": "MORE THAN ONE WAY TO MOVE",
+      "eligibility": "complete index; classified >=95%; >=2 sports",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "identity",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_recorded_hours",
+      "sport": "all",
+      "story_family": "foundation",
+      "metric": "duration_sum",
+      "headline": "TIME WELL SPENT",
+      "eligibility": ">=95% valid session duration and full index",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "foundation",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_active_days",
+      "sport": "all",
+      "story_family": "foundation",
+      "metric": "active_days",
+      "headline": "DAYS YOU MADE TIME TO MOVE",
+      "eligibility": "index complete and valid local timestamps",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "foundation",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_peak_month",
+      "sport": "all",
+      "story_family": "habit",
+      "metric": "month_mode",
+      "headline": "THE MONTH YOU SHOWED UP MOST",
+      "eligibility": ">=12 sessions; leading month >=20% higher than median",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "habit",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_weekday",
+      "sport": "all",
+      "story_family": "habit",
+      "metric": "weekday_mode",
+      "headline": "YOUR TRAINING DAY",
+      "eligibility": ">=20 sessions; strong weekday preference",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "habit",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_hour",
+      "sport": "all",
+      "story_family": "habit",
+      "metric": "start_hour_mode",
+      "headline": "YOUR HOUR OF MOVEMENT",
+      "eligibility": ">=20 sessions; dominant time bucket >=45%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "habit",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_weekly_streak",
+      "sport": "all",
+      "story_family": "habit",
+      "metric": "longest_weekly_streak",
+      "headline": "YOUR LONGEST RUN OF WEEKS",
+      "eligibility": "complete activity index; >=5 consecutive active weeks",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "habit",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_hybrid",
+      "sport": "all",
+      "story_family": "identity",
+      "metric": "dual_sport",
+      "headline": "TWO SPORTS, ONE BIG YEAR",
+      "eligibility": "top two sports jointly >=65%; each>=20%; count gap <=10 percentage points",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "identity",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_dominant",
+      "sport": "all",
+      "story_family": "identity",
+      "metric": "dominant_sport",
+      "headline": "THE SPORT YOU RETURNED TO MOST",
+      "eligibility": "top sport >=45% AND lead >=15 pp; >=10 sessions; other evidence",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "identity",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_top_time",
+      "sport": "all",
+      "story_family": "identity",
+      "metric": "sport_most_time",
+      "headline": "THE SPORT THAT TOOK THE MOST TIME",
+      "eligibility": "per-sport durations >=95%",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "identity",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_longest_event",
+      "sport": "all",
+      "story_family": "peak",
+      "metric": "max_duration",
+      "headline": "YOUR LONGEST SESSION",
+      "eligibility": "complete index; valid session time",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "peak",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_sport_surprise",
+      "sport": "all",
+      "story_family": "surprise",
+      "metric": "rare_sport",
+      "headline": "THEN THERE WAS THAT OTHER SPORT",
+      "eligibility": "secondary sport >=3 sessions, not already spotlighted",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "surprise",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_activity_pr",
+      "sport": "all",
+      "story_family": "achievement",
+      "metric": "verified_pr_count",
+      "headline": "YOUR RECORDED PERSONAL BESTS",
+      "eligibility": "actual PR flags; no specific type without proof",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "achievement",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_heart_zones",
+      "sport": "all",
+      "story_family": "intensity",
+      "metric": "zone_minutes",
+      "headline": "THE EFFORT BEHIND YOUR YEAR",
+      "eligibility": ">=75% all tracked activity duration has compatible HR zones",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "intensity",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_steps",
+      "sport": "all",
+      "story_family": "wellness",
+      "metric": "daily_step_sum",
+      "headline": "STEP BY STEP",
+      "eligibility": ">=330 days of actual step measurements; no missing-as-zero",
+      "required_evidence": [
+        "daily_wellness"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "private_only",
+      "narrative_placement": "wellness",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_resting_hr",
+      "sport": "all",
+      "story_family": "wellness",
+      "metric": "resting_hr_trend",
+      "headline": "YOUR HEART BETWEEN SESSIONS",
+      "eligibility": ">=20 valid days in each compared period and consent",
+      "required_evidence": [
+        "daily_wellness"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "private_only",
+      "narrative_placement": "wellness",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_body_battery",
+      "sport": "all",
+      "story_family": "wellness",
+      "metric": "body_battery_trend",
+      "headline": "YOUR ENERGY ACROSS THE YEAR",
+      "eligibility": ">=80% daily BB coverage and explicit opt-in",
+      "required_evidence": [
+        "daily_wellness"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "private_only",
+      "narrative_placement": "wellness",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_sleep",
+      "sport": "all",
+      "story_family": "wellness",
+      "metric": "sleep_trend",
+      "headline": "YOUR NIGHTS, RECORDED",
+      "eligibility": ">=80% valid sleep days and explicit opt-in",
+      "required_evidence": [
+        "daily_wellness"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "private_only",
+      "narrative_placement": "wellness",
+      "editorial_priority": 5
+    },
+    {
+      "id": "year_finale",
+      "sport": "all",
+      "story_family": "finale",
+      "metric": "year_summary",
+      "headline": "YOUR YEAR, YOUR STORY",
+      "eligibility": ">=1 verified personal fact",
+      "required_evidence": [
+        "activity_index"
+      ],
+      "claim_guard": "Evidence trace, exact period and quality checks required; avoid false population, medical or emotional claims.",
+      "default_share": "allow_sanitized",
+      "narrative_placement": "finale",
+      "editorial_priority": 5
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "exampleOnly": true,
+  "FICTIONAL_NOTICE": "Numbers below are invented solely to test chapter sequencing; NOT Garmin results or claims about any real person.",
+  "year": 2025,
+  "yearComplete": true,
+  "indexComplete": true,
+  "activityCount": 150,
+  "sportCounts": {"hiit": 68, "running": 51, "cycling": 18, "strength": 13},
+  "options": {"includeEverydayMovement": true, "includeActivityHR": true, "includeWellness": true, "includeSleep": true},
+  "storyCandidates": [
+    {"storyId":"hiit_minutes","chapterId":"sport:hiit","phase":"scale","claimKey":"hiit:minutes:2025","primaryClaim":"You logged 48 hours of HIIT in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://hiit/duration"],"editorialScore":85},
+    {"storyId":"hiit_habit","chapterId":"sport:hiit","phase":"pattern","claimKey":"hiit:weekday:2025","primaryClaim":"Wednesday was the most common HIIT day in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://hiit/weekday"],"editorialScore":85},
+    {"storyId":"hiit_peak","chapterId":"sport:hiit","phase":"peak","claimKey":"hiit:longest:2025","primaryClaim":"One HIIT workout lasted 92 minutes in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://hiit/max_duration"],"editorialScore":90},
+    {"storyId":"running_distance","chapterId":"sport:running","phase":"scale","claimKey":"running:distance:2025","primaryClaim":"You logged 540 km of running in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://running/distance"],"editorialScore":90},
+    {"storyId":"running_habit","chapterId":"sport:running","phase":"pattern","claimKey":"running:start_hour:2025","primaryClaim":"Most of your runs started before 9 AM in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://running/time"],"editorialScore":83},
+    {"storyId":"running_peak","chapterId":"sport:running","phase":"peak","claimKey":"running:max_distance:2025","primaryClaim":"Your longest run was 21 km in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://running/max_distance"],"editorialScore":95},
+    {"storyId":"cycling_time","chapterId":"sport:cycling","phase":"scale","claimKey":"cycling:duration:2025","primaryClaim":"You spent 38 hours cycling in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://cycling/duration"],"editorialScore":80},
+    {"storyId":"cycling_peak","chapterId":"sport:cycling","phase":"peak","claimKey":"cycling:max_distance:2025","primaryClaim":"Your longest ride was 125 km in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://cycling/max_distance"],"editorialScore":88},
+    {"storyId":"steps_total","chapterId":"everyday_movement","phase":"scale","claimKey":"movement:steps:2025","primaryClaim":"You walked 2.6 million measured steps in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://steps/annual"],"editorialScore":86},
+    {"storyId":"steps_peak","chapterId":"everyday_movement","phase":"peak","claimKey":"movement:big_day:2025","primaryClaim":"Your biggest recorded step day had 27,000 steps in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://steps/peak"],"editorialScore":83},
+    {"storyId":"heart_zone","chapterId":"heart_and_effort","phase":"pattern","claimKey":"activity_hr:zone:2025","primaryClaim":"You logged 38 hours in activity HR zones 3 and 4 in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://heart/zones"],"editorialScore":84,"sharePolicy":"allow_sanitized"},
+    {"storyId":"heart_max","chapterId":"heart_and_effort","phase":"peak","claimKey":"activity_hr:peak:2025","primaryClaim":"Your highest recorded workout HR was 185 BPM in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://heart/peak"],"editorialScore":84},
+    {"storyId":"body_battery","chapterId":"wellness_recovery","phase":"scale","claimKey":"wellness:bodybattery:2025","primaryClaim":"Your recorded morning energy had a distinct weekly pattern in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://wellness/bodybattery"],"editorialScore":85},
+    {"storyId":"stress","chapterId":"wellness_recovery","phase":"pattern","claimKey":"wellness:stress:2025","primaryClaim":"Your recorded stress was lowest on Sundays in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://wellness/stress"],"editorialScore":87},
+    {"storyId":"sleep_count","chapterId":"sleep","phase":"scale","claimKey":"sleep:nights:2025","primaryClaim":"There were 330 nights with recorded sleep in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://sleep/count"],"editorialScore":85},
+    {"storyId":"sleep_pattern","chapterId":"sleep","phase":"pattern","claimKey":"sleep:median:2025","primaryClaim":"Your median recorded sleep was 7h 35m in this fictional example","evidenceStatus":"verified","evidenceRefs":["fictional://sleep/median"],"editorialScore":87}
+  ]
+}

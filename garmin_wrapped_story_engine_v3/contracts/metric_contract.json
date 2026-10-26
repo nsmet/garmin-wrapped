@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "description": "Contract for each individual computed measurement supplied to the Story Engine. Must be validated by the upstream metric engine; absence of a metric is never zero.",
+  "required": ["key","period","sport","value","unit","status","observed_count","eligible_count","coverage","source_fields","calculation_version"],
+  "example": {
+    "key": "running.distance_sum",
+    "period": {"startInclusive":"2025-01-01","endExclusive":"2026-01-01","timezone":"Europe/Brussels","complete":true},
+    "sport":"running",
+    "value": null,
+    "unit":"m",
+    "status":"unverified",
+    "observed_count":0,
+    "eligible_count":0,
+    "coverage":0,
+    "source_fields":["activity.distance"],
+    "calculation_version":"2.0.0",
+    "quality_flags":["EXAMPLE_ONLY_NO_MEASURED_VALUE"],
+    "consent":"activity",
+    "source_evidence_ids":[]
+  },
+  "statuses": ["verified","qualified","partial","absent","unavailable","unverified","invalid"]
+}
