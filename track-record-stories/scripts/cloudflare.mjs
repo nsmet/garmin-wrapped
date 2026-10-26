@@ -32,7 +32,7 @@ function verifyBuild(){
   assert.equal(config.vars.PUBLIC_ORIGIN,'https://garmin-wrapped.miniwatt.app');
   assert.equal(config.workers_dev,false);
   assert.equal(config.preview_urls,false);
-  assert.ok(config.routes.some(r=>r.pattern==='garmin-wrapped.miniwatt.app'&&r.custom_domain));
+  assert.ok(config.routes.some(r=>r.pattern==='garmin-wrapped.miniwatt.app'&&r.zone_name==='miniwatt.app'&&r.custom_domain),'The custom hostname must use the miniwatt.app parent zone.');
   for(const name of ['CONNECT_RATE_LIMITER','DATA_RATE_LIMITER'])assert.ok(config.ratelimits.some(r=>r.name===name));
   for(const name of ['SESSION_SECRET','DEV_GARMIN_API_KEY','PERSONAL_OWNER_ID'])assert.ok(!(name in config.vars),`${name} must not be embedded in the deployment.`);
   assert.ok(existsSync('dist/client/onboarding.mjs'));

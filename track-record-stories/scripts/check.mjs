@@ -11,6 +11,7 @@ if(process.argv.includes('--public')){
  const config=JSON.parse(readFileSync('wrangler.cloudflare.jsonc','utf8'));
  assert.equal(config.vars.AUTH_MODE,'visitor');
  assert.equal(config.vars.PUBLIC_ORIGIN,'https://garmin-wrapped.miniwatt.app');
+ assert.ok(config.routes.some(r=>r.pattern==='garmin-wrapped.miniwatt.app'&&r.zone_name==='miniwatt.app'&&r.custom_domain),'The custom hostname must use the miniwatt.app parent zone.');
  assert.ok(config.ratelimits.some(r=>r.name==='CONNECT_RATE_LIMITER'));
  assert.ok(config.ratelimits.some(r=>r.name==='DATA_RATE_LIMITER'));
  assert.equal(config.workers_dev,false);assert.equal(config.preview_urls,false);

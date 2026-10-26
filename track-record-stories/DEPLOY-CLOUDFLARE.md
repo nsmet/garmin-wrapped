@@ -38,7 +38,7 @@ This is a full-stack **Cloudflare Worker with Static Assets**, not a static Page
 
 ## What is already configured
 
-- Custom Domain `garmin-wrapped.miniwatt.app`; `workers.dev` and deployment preview URLs are disabled.
+- Custom Domain `garmin-wrapped.miniwatt.app`, explicitly attached to the `miniwatt.app` parent zone; `workers.dev` and deployment preview URLs are disabled.
 - `AUTH_MODE=visitor`: no Sites account is required. Each browser receives a separately encrypted 20-minute session only after it submits its own Garmin key. Platform identity headers have no authority in visitor mode.
 - `PUBLIC_ORIGIN=https://garmin-wrapped.miniwatt.app`: state-changing requests must originate from that exact domain.
 - `GARMIN_MODE=personal`: the current bring-your-own-key integration. Set it to `disabled` and redeploy to suspend new imports while retaining the demo.
@@ -115,6 +115,8 @@ The separate **Release checks** workflow is manual only. It uses the official Pl
 The optional release-check workflow also verifies the Cloudflare build with an offline deployment dry run. It does not run on pushes or block deployment.
 
 ## Updates, monitoring and rollback
+
+If deployment uploads the Worker but reports Cloudflare error `10084` while attaching the domain, check the parent zone rather than creating a new zone for the subdomain. `miniwatt.app` must be an active zone in the same Cloudflare account identified by GitHub's `CLOUDFLARE_ACCOUNT_ID`. The API token must be scoped to that account and zone and allow Worker deployment and zone route changes. The custom-domain configuration sets `zone_name: "miniwatt.app"` explicitly. If `10084` remains after deploying that configuration, verify the Account ID and token's zone access in Cloudflare, then update the GitHub secrets and start a new deployment. The uploaded Worker does not need to be deleted.
 
 - Later local releases: `npm run deploy:cloudflare`. It retains dashboard-managed variables and existing secrets.
 - Monitoring: use the Worker's Cloudflare logs and `/api/health`. Do not log request bodies, cookies, authorization headers or Garmin responses. No external alert destination is configured.
