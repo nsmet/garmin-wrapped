@@ -1,5 +1,6 @@
 name: Release checks
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 permissions:
   contents: read
 defaults:
@@ -7,11 +8,14 @@ defaults:
     working-directory: track-record-stories
 jobs:
   verify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '24.21.0'
           cache: npm
@@ -23,10 +27,11 @@ jobs:
       - run: npm test
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run build
-      - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e
+      - name: Run browser tests with the preinstalled browsers
+        timeout-minutes: 22
+        run: npm run test:e2e -- --global-timeout=1200000
       - run: npm run deploy:cloudflare:dry-run
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: browser-failures

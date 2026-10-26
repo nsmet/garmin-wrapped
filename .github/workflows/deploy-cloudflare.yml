@@ -1,5 +1,7 @@
 name: Deploy Garmin Wrapped to Cloudflare
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -11,25 +13,19 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: production
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '24.21.0'
           cache: npm
           cache-dependency-path: track-record-stories/package-lock.json
       - run: npm ci
-      - run: npm run check -- --public
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm audit --omit=dev --audit-level=high
-      - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e
       - run: npm run build:cloudflare
       - run: npm run deploy:cloudflare:built

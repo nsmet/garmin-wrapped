@@ -108,9 +108,11 @@ Cloudflare installs the locked npm dependencies. Configure the secret as a **run
 
 The GitHub repository contains the parent `effortbase` folder, with the app in `track-record-stories/`. Workflow files live at the repository root in `.github/workflows/`. Both workflows run commands from `track-record-stories` and cache npm dependencies using `track-record-stories/package-lock.json`. Test-failure uploads also use the app's subdirectory. Keep this structure when pushing updates; nested `track-record-stories/.github/workflows/` files are not discovered by GitHub Actions.
 
-The included **Deploy Garmin Wrapped to Cloudflare** workflow is manual (`workflow_dispatch`). After provisioning the runtime secret once, add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub `production` environment, then run the workflow from Actions. It runs source checks, type checking, tests, the production dependency audit and browser coverage before building and deploying. Do not run both GitHub deployment and Cloudflare Git Builds for the same commits.
+The included **Deploy Garmin Wrapped to Cloudflare** workflow runs on every push to `main` and can also be started manually from Actions. Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub `production` environment. Deployment only installs npm dependencies, builds the Cloudflare target and publishes it. It does not install browsers or run tests. After the first deployment, configure the runtime `SESSION_SECRET` once using the instructions above. Do not run both GitHub deployment and Cloudflare Git Builds for the same commits.
 
-The existing release-check workflow also verifies the Cloudflare build with an offline deployment dry run.
+The separate **Release checks** workflow is manual only. It uses the official Playwright `v1.64.1-noble` container, with Chromium, WebKit and their operating-system dependencies already installed. The npm Playwright version is pinned to match that image; update the package, lockfile and image tag together when upgrading. Both workflows use Ubuntu 24.04 hosts. Deployment allows 15 minutes. Optional release checks allow 30 minutes, with a separate 20-minute browser-suite limit and failure-artifact uploads.
+
+The optional release-check workflow also verifies the Cloudflare build with an offline deployment dry run. It does not run on pushes or block deployment.
 
 ## Updates, monitoring and rollback
 
