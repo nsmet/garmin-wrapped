@@ -44,7 +44,7 @@ test('All sport hours fit small and large measurements inside portrait and lands
       if(a.x<bounds.x-1||b.x>bounds.x+bounds.w+1||a.y<bounds.y-1||b.y>bounds.y+bounds.h+1)clipped.push({sport,w,h,value,text});
       fill(text,x,y,...args);
      };
-     const s={id:sport+'-hours',template:sport==='other'?'cardio':sport,value,chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:'1,234,567'},{label:'AVG MIN / ACTIVITY',value:'999.9'}]}};
+     const s={id:sport+'-hours',template:sport==='other'?'cardio':sport,value,chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:'1,234,567'},{label:'AVG TIME / ACTIVITY',value:'999h 59m 59s'}]}};
      drawDurationPoster(c,bounds,s,p,0);
     }
    }

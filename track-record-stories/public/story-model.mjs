@@ -1,5 +1,6 @@
 // Presentation validation is separate from the measurement engine.
 import {designs} from './visual-system.mjs';
+import {formatNumber,formatDecimal} from './measurement-format.mjs';
 const safeText=v=>typeof v==='string'&&v.length<=100;
 const safeValue=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0;
 export function validChart(chart){
@@ -29,13 +30,13 @@ function displayChart(chart){
 export function chartDescription(chart){
  if(!validChart(chart))return '';
  if(chart.kind==='months'){
-  const values=chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':'unknown coverage'):`${new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(i.value)} ${chart.measure}, ${i.sessions} activities`}${i.state==='current'?' (month in progress)':''}`).join('; ');
+  const values=chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':'unknown coverage'):`${formatNumber(i.value)} ${chart.measure}, ${i.sessions} activities`}${i.state==='current'?' (month in progress)':''}`).join('; ');
   const completed=chart.items.filter(i=>i.state==='complete'&&i.value!==null);
   if(!chart.compare||!completed.length)return values;
   const max=Math.max(...completed.map(i=>i.value)),min=Math.min(...completed.map(i=>i.value));
   return values+`. Peak completed month${completed.filter(i=>i.value===max).length>1?'s (tied)':''}: ${completed.filter(i=>i.value===max).map(i=>i.label).join(', ')}. Quietest completed month${completed.filter(i=>i.value===min).length>1?'s (tied)':''}: ${completed.filter(i=>i.value===min).map(i=>i.label).join(', ')}.`;
  }
- return chart.items.map(i=>`${i.label}: ${i.value}${chart.kind==='sport-mix'?` activities (${Math.round(i.value/chart.total*100)}%)`:chart.kind==='record'?' km':chart.kind==='weekdays'?' activities':i.unit?' '+i.unit:''}`).join('; ');
+ return chart.items.map(i=>`${i.label}: ${chart.kind==='record'?formatDecimal(i.value):i.value}${chart.kind==='sport-mix'?` activities (${Math.round(i.value/chart.total*100)}%)`:chart.kind==='record'?' km':chart.kind==='weekdays'?' activities':i.unit?' '+i.unit:''}`).join('; ');
 }
 export function selectStories(dataset) {
   if(!dataset||!Number.isInteger(dataset.year)||!Array.isArray(dataset.stories))return [];
