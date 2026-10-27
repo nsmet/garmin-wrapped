@@ -108,13 +108,27 @@ Cloudflare installs the locked npm dependencies. Configure the secret as a **run
 
 The GitHub repository contains the parent `effortbase` folder, with the app in `track-record-stories/`. Workflow files live at the repository root in `.github/workflows/`. Both workflows run commands from `track-record-stories` and cache npm dependencies using `track-record-stories/package-lock.json`. Test-failure uploads also use the app's subdirectory. Keep this structure when pushing updates; nested `track-record-stories/.github/workflows/` files are not discovered by GitHub Actions.
 
-The included **Deploy Garmin Wrapped to Cloudflare** workflow runs on every push to `main` and can also be started manually from Actions. Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub `production` environment. Deployment only installs npm dependencies, builds the Cloudflare target and publishes it. It does not install browsers or run tests. After the first deployment, configure the runtime `SESSION_SECRET` once using the instructions above. Do not run both GitHub deployment and Cloudflare Git Builds for the same commits.
+The included **Deploy Garmin Wrapped to Cloudflare** workflow runs on every push to `main` and can also be started manually from Actions. Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub `production` environment. Deployment installs npm dependencies, checks read-only Cloudflare metadata access, builds the Cloudflare target and publishes it. It does not install browsers or run tests. After the first deployment, configure the runtime `SESSION_SECRET` once using the instructions above. Do not run both GitHub deployment and Cloudflare Git Builds for the same commits.
 
 The separate **Release checks** workflow is manual only. It uses the official Playwright `v1.64.1-noble` container, with Chromium, WebKit and their operating-system dependencies already installed. The npm Playwright version is pinned to match that image; update the package, lockfile and image tag together when upgrading. Both workflows use Ubuntu 24.04 hosts. Deployment allows 15 minutes. Optional release checks allow 30 minutes, with a separate 20-minute browser-suite limit and failure-artifact uploads.
 
 The optional release-check workflow also verifies the Cloudflare build with an offline deployment dry run. It does not run on pushes or block deployment.
 
 ## Updates, monitoring and rollback
+
+### Deployment cannot fetch dashboard metadata
+
+If `deploy:cloudflare:built` fails with **Unable to fetch bindings, routes, or services metadata from the dashboard**, the local build has already passed. Wrangler reads the existing configuration when the Worker was last updated through the Cloudflare dashboard. A failure reading any one of its bindings, routes, custom domains, subdomain, environment or schedules produces this generic message. This code is unchanged between Wrangler 4.152.0 and 4.153.0; the upgrade notice alone does not identify a fix.
+
+The deployment workflow now runs **Check Cloudflare metadata access** before building. It makes read-only requests and logs the failing endpoint label, HTTP status and numeric Cloudflare error codes, without printing credentials or binding values. You can also run `node scripts/check-cloudflare-access.mjs` with the same CI credentials. The check identifies metadata access failures; a passing check does not establish upload or route-write permission.
+
+- For **401/403**, verify the existing token in Cloudflare. Cloudflare recommends the **Edit Cloudflare Workers** token template for GitHub Actions. Scope it to the account owning the Worker and the `miniwatt.app` zone; ensure Worker script and route permissions are included. If replacing the token, update `CLOUDFLARE_API_TOKEN` under GitHub **Settings → Environments → production → Environment secrets**. `CLOUDFLARE_ACCOUNT_ID` must identify that same account. Do not paste token values into logs or chat.
+- For **5xx**, check [Cloudflare status](https://www.cloudflarestatus.com/) and rerun the workflow once the API recovers.
+- For **400**, **404**, a network failure or another code, use the endpoint and code from the preflight to investigate rather than broadening token access blindly. An absent Worker with the documented not-found response is allowed through for first deployment.
+
+This preflight does not change the Worker, its secrets, routes or deployment. Leave `SESSION_SECRET` in place; rotating the application's session encryption key does not fix Cloudflare API access.
+
+### Domain attachment and later releases
 
 If deployment uploads the Worker but reports Cloudflare error `10084` while attaching the domain, check the parent zone rather than creating a new zone for the subdomain. `miniwatt.app` must be an active zone in the same Cloudflare account identified by GitHub's `CLOUDFLARE_ACCOUNT_ID`. The API token must be scoped to that account and zone and allow Worker deployment and zone route changes. The custom-domain configuration sets `zone_name: "miniwatt.app"` explicitly. If `10084` remains after deploying that configuration, verify the Account ID and token's zone access in Cloudflare, then update the GitHub secrets and start a new deployment. The uploaded Worker does not need to be deleted.
 

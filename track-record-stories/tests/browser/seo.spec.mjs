@@ -38,6 +38,7 @@ test.describe('Without JavaScript',()=>{
       await page.setViewportSize({width,height:900});
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
     }
+    await page.locator('.entry-about > summary').click();
     const question=page.locator('.recap-faq details').first();
     await question.locator('summary').click();
     await expect(question.locator('p')).toBeVisible();

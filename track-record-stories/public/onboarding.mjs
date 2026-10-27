@@ -3,7 +3,16 @@ import {validatePeriod} from './metrics.mjs';
 const $=id=>document.getElementById(id),shell=$('onboarding'),stage=$('story'),key=$('api-key'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let run=0,motionPaused=reduced.matches,app,controller,lastWasDemo=true,lastDeepLink=false;
 function resetKey(){key.value='';key.type='password';key.removeAttribute('aria-invalid');$('toggle-key').textContent='Show';$('toggle-key').setAttribute('aria-label','Show API key');$('toggle-key').setAttribute('aria-pressed','false');$('key-error').textContent='';}
-function syncMotion(){shell.classList.toggle('motion-paused',motionPaused||reduced.matches||document.hidden);$('loading-pause').textContent=reduced.matches?'Reduced motion':motionPaused?'Play motion':'Pause motion';$('loading-pause').disabled=reduced.matches;$('loading-pause').setAttribute('aria-pressed',String(motionPaused||reduced.matches));}
+function syncMotion(){
+  const paused=motionPaused||reduced.matches;
+  shell.classList.toggle('motion-paused',paused||document.hidden);
+  $('loading-pause').textContent=reduced.matches?'Reduced motion':motionPaused?'Play motion':'Pause motion';
+  $('loading-pause').disabled=reduced.matches;
+  $('loading-pause').setAttribute('aria-pressed',String(paused));
+  $('entry-motion').setAttribute('aria-pressed',String(paused));
+  $('entry-motion').setAttribute('aria-label',reduced.matches?'Homepage animation disabled for reduced motion':paused?'Play homepage animation':'Pause homepage animation');
+  $('entry-motion').disabled=reduced.matches;
+}
 async function disconnect(){try{await api('disconnect');}catch{}}
 function showConnect(focus=true){
   run++;controller?.abort();controller=null;resetKey();key.value=key.defaultValue;app?.clearRecap();
@@ -38,7 +47,7 @@ $('toggle-key').addEventListener('click',()=>{const show=key.type==='password';k
 $('key-help').addEventListener('click',()=>$('key-help-dialog').showModal());$('close-key-help').addEventListener('click',()=>$('key-help-dialog').close());
 $('demo-start').addEventListener('click',()=>start({demo:true,deepLink:true}));$('help-demo').addEventListener('click',()=>start({demo:true,deepLink:true}));
 $('loading-cancel').addEventListener('click',()=>showConnect());$('loading-retry').addEventListener('click',()=>lastWasDemo?start({demo:true,deepLink:lastDeepLink}):showConnect());
-$('loading-pause').addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>showConnect());
+for(const id of ['loading-pause','entry-motion'])$(id).addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>showConnect());
 $('privacy-open').addEventListener('click',()=>{$('coverage-details').replaceChildren();$('privacy-dialog').showModal();});$('close-privacy').addEventListener('click',()=>$('privacy-dialog').close());$('privacy-clear').addEventListener('click',()=>showConnect());
  document.querySelector('.entry-header .brand-name').addEventListener('click',e=>{e.preventDefault();showConnect();});
 document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',()=>{motionPaused=reduced.matches;syncMotion();});
