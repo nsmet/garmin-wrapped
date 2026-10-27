@@ -1,5 +1,11 @@
 # Original asset provenance
 
+## Editorial sport scenes — 27 October 2026
+
+Nine people-free photographic scene backgrounds were generated with the built-in `image_gen` tool for the approved sport story direction. They are delivered as `public/assets/scene-{gym,pool,water,studio,urban,snow,green,court,rock}.webp`, encoded with `cwebp -q 83 -m 6 -sharp_yuv -metadata none`. Existing `track.webp` and `road.webp` are also used as scene photographs. The photographs contain no baked-in text or graphic shapes; the renderer combines them with independent equipment cutouts and animated Canvas geometry. The images are shared only where the environments suit the sports, with sport-specific palettes, subjects and motifs.
+
+Shared prompt: “Create a premium sports editorial PHOTO BACKGROUND ONLY, portrait 9:16 composition for a mobile annual recap. Photorealistic, high contrast, richly textured, beautifully lit, aesthetically consistent with a bold graphic sports campaign. Leave a quieter darker area toward upper left for overlaid live text, and rich detail below and toward right. This is only a background: no geometric overlays, no typography, no text, no logo, no watermarks. Absolutely no people, faces, limbs, silhouettes or equipment.” Individual scenes were an empty dark training gym, outdoor lap pool, open water, sunlit movement studio, urban crosswalk, alpine ski slope, golf green, hard tennis court, and mountain rock face.
+
 ## Blue running shoe — 24 October 2026
 
 `public/assets/shoe-blue.webp` replaces the coral/pink shoe throughout onboarding, loading, live stories, collages, thumbnails and exports. It was recolored with the built-in `image_gen` editing tool, preserving the original shoe design, warm-white midsole and transparent background. The complete edit prompt and source path are recorded in `source-assets/shoe-blue.json`. It uses a new filename so existing browser caches receive the blue version immediately. The original asset remains available in the source collection.

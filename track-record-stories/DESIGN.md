@@ -1,5 +1,7 @@
 # Approved direction
 
+The 27 October sport refresh translates the approved draft posters into live compositions: an editorial scene photograph, oversized live type, independently drawn color planes, a transparent equipment photograph and sport-specific animated paths. Hero and distance slides vary their placement and geometry; data slides keep their individual data layouts with a restrained scene underneath. Sport photos are people-free. These are original scenes, not flattened draft posters, so shapes and subjects remain separately animatable. The same renderer supplies live stories, thumbnails and share cards.
+
 The user's supplied reference combines extreme editorial sport-poster type, colorful modernist geometry and photography. Preserve this direction as the baseline for later work.
 
 The homepage leads with “Your Garmin year, wrapped” and explicitly introduces an end-of-year recap for Garmin. The connection panel explains sport highlights and share cards, with current-year-so-far coverage visible before the key field. A numbered strip describes the annual overview, sport stories and downloadable highlights. Preserve this direct product framing alongside the condensed type, warm paper, cobalt action and photographic track composition.

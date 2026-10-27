@@ -1,4 +1,5 @@
 import {posterLayout} from './poster-layout.mjs';
+import {isSportStory,sportAssets} from './sport-art.mjs';
 // Original compositions: rear geometry → rear motif → photo cutout → front motif.
 // Motifs are decorative, never measurements or GPS traces.
 const P={cream:'#f3f0e8',black:'#101519',white:'#fffaf0',blue:'#1743ed',orange:'#ff7038',pink:'#f23897',mint:'#8de4c4',yellow:'#f2e630'};
@@ -42,8 +43,10 @@ export const designs={
 };
 export const palettes=Object.fromEntries(Object.entries(designs).map(([k,v])=>[k,v.palette]));
 export const assetFiles={...Object.fromEntries(['ridge','shoe','crank','stairs','bench','pillow','clock','kettlebell','dumbbell','goggles','mat','orange','water','boot','oar','ball','elliptical','skis','golf','racket','football','carabiner','rope','road','road-ribbon','track'].map(name=>[name,`assets/${name}.webp`])),shoe:'assets/shoe-blue.webp'};
+for(const name of ['gym','pool','water','studio','urban','snow','green','court','rock'])assetFiles[`scene-${name}`]=`assets/scene-${name}.webp`;
 // Every photographic subject remains a replaceable, independent layer.
 export function requiredAssets(story){
+ if(isSportStory(story))return sportAssets(story);
  if(story.chart)return [];
  if(story.template==='cover'||story.template==='longest'||(story.presentation==='distance'&&story.template==='cycling'))return ['ridge','road-ribbon'];
  if(story.presentation==='distance')return story.template==='running'?['track']:[];
