@@ -145,16 +145,16 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],in
     }
     function monthlyStory(rows,field,measure,id,template,title,unit,evidencePrefix){
       const chart=healthMonths(rows,field,measure);
-      if(chart.items.filter(i=>i.value!==null).length>=2)story(heartChapter(),id,template,title,fmt(median(rows.map(d=>d[field]))),unit,`Monthly medians, with at least 10 recorded ${measure==='hrv'?'nights':'days'} per point.\nGaps show months without enough measurements.`,rows.map(d=>evidencePrefix+d.date),{health:true,phase:'pattern',chart});
+      if(chart.items.filter(i=>i.value!==null).length>=2)story(heartChapter(),id,template,title,'MONTHLY MEDIANS',unit,`Monthly medians, with at least 10 recorded ${measure==='hrv'?'nights':'days'} per point.\nGaps show months without enough measurements.`,rows.map(d=>evidencePrefix+d.date),{health:true,phase:'pattern',chart});
     }
     if(hr.length>=30){
       story(heartChapter(),'resting-hr','heart',['YOUR RESTING','HEART RATE.'],fmt(median(hr.map(d=>d.restingHR))),'BPM · MEDIAN RESTING HEART RATE',`${hr.length} days with Garmin resting-heart-rate records.\nMedian across recorded days only.`,hr.map(d=>'daily:'+d.date),{health:true});
-      monthlyStory(hr,'restingHR','restingHR','resting-hr-monthly','heart',['RESTING HR,','MONTH BY MONTH.'],'BPM · MONTHLY MEDIAN RESTING HR','daily:');
+      monthlyStory(hr,'restingHR','restingHR','resting-hr-monthly','heart',['RESTING HR,','MONTH BY MONTH.'],'BPM · RESTING HEART RATE','daily:');
       quality.push('Resting heart rate uses Garmin’s daily restingValue field. Garmin may substitute the daily minimum when a resting value is unavailable. Monthly medians need at least 10 recorded days; missing days are never zero.');
     }else if(hr.length)quality.push('Resting heart rate: at least 30 recorded days are required.');
     if(variability.length>=30){
       story(heartChapter(),'hrv-median','hrv',['YOUR OVERNIGHT','HRV.'],fmt(median(variability.map(d=>d.hrv))),'MS · MEDIAN OVERNIGHT HRV',`${variability.length} nights with recorded overnight HRV averages.\nMedian across recorded nights only.`,variability.map(d=>'hrv:'+d.date),{health:true});
-      monthlyStory(variability,'hrv','hrv','hrv-monthly','hrv',['HRV THROUGH','THE YEAR.'],'MS · MONTHLY MEDIAN OVERNIGHT HRV','hrv:');
+      monthlyStory(variability,'hrv','hrv','hrv-monthly','hrv',['HRV THROUGH','THE YEAR.'],'MS · OVERNIGHT HRV','hrv:');
     }else quality.push(variability.length?'HRV: at least 30 recorded nights are required.':'HRV: no usable overnight measurements were returned. HRV stories were omitted.');
   }
   const finale=chapter('finale','Your track record');story(finale,'finale','finale',['THAT’S YOUR','TRACK RECORD.'],year,'YOUR RECORDED YEAR'+qualified,`${records.length} activities. ${groups.size} sport families.\nA year with a shape all your own.`,allEvidence,{phase:'payoff',presentation:'receipt',chart:{kind:'summary',items:stats}});

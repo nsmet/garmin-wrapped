@@ -23,7 +23,9 @@ test('Imported heart slides expose recorded metrics and monthly coverage and req
  for(const [id,text] of [['max-hr','187 BPM'],['activity-hr','123.5 BPM'],['resting-hr','55 BPM'],['resting-hr-monthly','JAN: 60 bpm, 20 recorded days'],['hrv-median','60 MS'],['hrv-monthly','FEB: 70 ms, 20 recorded nights']]){
   await navigate(page,id);await expect(page.locator('#story-description')).toContainText(text);
   if(id.endsWith('-monthly')){await expect(page.locator('#story-description')).toContainText('MAR: insufficient measurements (0 recorded');await expect(page.locator('#story-description')).toContainText('NOV: upcoming');}
-  await page.locator('#share').click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-confirm').click();
+  await page.locator('#share').click();await expect(page.locator('#health-share-dialog')).toBeVisible();
+  if(id.endsWith('-monthly'))await expect(page.locator('#health-share-description')).toContainText('MONTHLY MEDIANS');
+  await page.locator('#health-share-confirm').click();
   await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);await expect(page.locator('#download')).toBeEnabled();await page.locator('#close-share').click();
  }
  await page.locator('#share').click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-cancel').click();await expect(page.locator('#health-share-description')).toBeEmpty();

@@ -28,6 +28,7 @@ test('Monthly resting HR uses daily medians, preserves missing months and counts
  const p=make({daily:[...daily,daily[0]]}),s=story(p,'resting-hr-monthly');
  assert.equal(story(p,'resting-hr').value,'60');assert.equal(s.chart.items[0].value,60);assert.equal(s.chart.items[1].value,50);assert.equal(s.chart.items[2].value,null);assert.equal(s.chart.items[2].count,9);assert.equal(s.chart.items[3].value,null);
  assert.match(chartDescription(s.chart),/MAR: insufficient measurements \(9 recorded days\)/);
+ assert.equal(s.value,'MONTHLY MEDIANS');assert.equal(s.unit,'BPM · RESTING HEART RATE');
  assert.throws(()=>make({daily:[...daily,{...daily[0],restingHR:99}]}),/Conflicting daily/);
  assert.equal(story(make({daily:days(1,29,55)}),'resting-hr'),undefined);
  assert.equal(story(make({daily:days(1,30,55)}),'resting-hr-monthly'),undefined);
