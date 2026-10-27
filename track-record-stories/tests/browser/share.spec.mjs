@@ -11,7 +11,7 @@ async function previewPixel(page,x,y){
 
 test('The final card opens a recap picker, changes colors, and downloads the selected card',async({page},testInfo)=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await demo(page);await expect(page.locator('#share')).toHaveText('Choose a card ↗');await page.getByRole('button',{name:'Choose a share card',exact:true}).click();
+ await demo(page);await expect(page.locator('#share')).toHaveText('Choose a card');await page.getByRole('button',{name:'Choose a share card',exact:true}).click();
  const options=page.locator('#share-cards button');expect(await options.count()).toBeGreaterThan(5);await expect(page.locator('#download')).toBeEnabled();
  const chosen=options.nth(1),id=await chosen.getAttribute('data-story-id');await chosen.click();await expect(chosen).toHaveAttribute('aria-pressed','true');
  await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();
