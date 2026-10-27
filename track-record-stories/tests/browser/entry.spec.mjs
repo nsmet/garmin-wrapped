@@ -42,8 +42,15 @@ test.describe('Animated entry',()=>{
     await page.goto('/');
     await expect(page.locator('#entry-intro')).toBeVisible();
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',true);
-    await expect(page.locator('#entry-intro')).not.toBeVisible({timeout:5000});
+    await expect(page.locator('.intro-shared-art .entry-shoe')).toBeAttached();
+    await expect(page.locator('.intro-shared-art .entry-track')).toBeAttached();
+    await expect(page.locator('#intro-year')).toHaveText(String(new Date().getFullYear()));
+    await expect.poll(()=>page.locator('.intro-second').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.9);
+    await expect(page.locator('#entry-intro')).not.toBeVisible({timeout:8000});
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',false);
+    await expect(page.locator('.intro-shared-art')).toHaveCount(0);
+    await expect(page.locator('#api-key')).toBeInViewport();
+    await expect(page.locator('#api-key')).toBeEditable();
     const shoe=page.locator('.entry-shoe');
     const transform=()=>shoe.evaluate(el=>getComputedStyle(el).transform);
     const moving=await transform();

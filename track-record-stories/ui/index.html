@@ -69,14 +69,27 @@
   <link rel="stylesheet" href="onboarding.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="entry.css">
+  <link rel="preload" href="assets/shoe-blue.webp" as="image" fetchpriority="high">
   <script src="entry-intro.js"></script>
 </head>
 <body class="onboarding-active">
 
-  <div id="entry-intro" class="entry-intro" role="region" aria-label="Your Garmin Wrapped — a MINI WATT product">
+  <div id="entry-intro" class="entry-intro" role="region" aria-label="Your Garmin Wrapped intro" hidden>
+    <div class="intro-backdrop" aria-hidden="true"></div>
     <div class="intro-orbit" aria-hidden="true"></div>
-    <div class="intro-title" aria-hidden="true"><span>YOUR GARMIN</span><strong>WRAPPED.</strong><span class="intro-credit">a <b>MINI WATT</b> product <i>⚡</i></span></div>
-    <button id="intro-skip" type="button">Skip intro <span aria-hidden="true"><svg class="entry-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button>
+    <div class="intro-topline"><span>GARMIN WRAPPED <svg class="entry-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span><button id="intro-skip" type="button">Skip intro <svg class="entry-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></button></div>
+    <div class="intro-scene intro-first" aria-hidden="true">
+      <p class="intro-kicker">EVERY EFFORT. ALL YOURS.</p>
+      <div class="intro-heading"><span>YOUR GARMIN</span><strong>WRAPPED<span class="intro-period">.</span></strong></div>
+      <p class="intro-caption">A little perspective on a lot of effort.</p>
+    </div>
+    <div class="intro-scene intro-second" aria-hidden="true">
+      <p class="intro-kicker">THE EARLY STARTS. THE EXTRA MILES.</p>
+      <div class="intro-year-heading"><span>YOUR</span><strong id="intro-year">2026</strong><span>SPORT YEAR.</span></div>
+      <p class="intro-caption">All that movement. One story. Yours.</p>
+    </div>
+    <div class="intro-bottomline" aria-hidden="true"><span>a <b>MINI WATT</b> product <i>⚡</i></span><span class="intro-chapters"><span>01 / THE EFFORT</span><span>02 / THE YEAR</span><span>03 / YOUR STORY</span></span></div>
+    <div class="intro-progress" aria-hidden="true"><span></span></div>
   </div>
   <main class="onboarding" id="onboarding" aria-label="Your Garmin year, wrapped">
     <header class="entry-header">
