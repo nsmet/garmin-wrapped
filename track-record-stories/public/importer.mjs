@@ -7,7 +7,7 @@ export async function api(path,data={},signal){
   return value;
 }
 export async function collectRecap({key,year,timeZone,includeSteps=true,includeHealth=true,signal,onProgress=()=>{}}){
-  const activities=[],daily=[],sleep=[],warnings=[];let complete=false,start=0;
+  const activities=[],daily=[],sleep=[],hrv=[],warnings=[];let complete=false,start=0;
   try{
     onProgress('Connecting securely to Garmin…');await api('connect',{key},signal);key='';
     for(let page=0;page<204;page++){
@@ -25,16 +25,22 @@ export async function collectRecap({key,year,timeZone,includeSteps=true,includeH
       try{daily.push(...(await api('wellness',{year,includeHealth},signal)).daily);}catch(e){if(e.name==='AbortError'||e.code==='GARMIN_AUTH'||e.code==='SESSION_EXPIRED')throw e;warnings.push('Daily movement and wellness were unavailable. These stories were omitted.'+(e.code==='GARMIN_TLS'?' A secure source connection failed. Try importing again later.':''));}
     }
     if(includeHealth){
-      const last=year===new Date().getFullYear()?new Date().getMonth()+1:12;
+      const today=Object.fromEntries(new Intl.DateTimeFormat('en',{timeZone,year:'numeric',month:'numeric'}).formatToParts(new Date()).map(p=>[p.type,p.value]));
+      const last=year===Number(today.year)?Number(today.month):12;
       for(let month=1;month<=last;month++){
         onProgress(`Reading recorded sleep… month ${month} of ${last}`);
         try{sleep.push(...(await api('sleep',{year,month},signal)).sleep);}catch(e){if(e.name==='AbortError'||e.code==='GARMIN_AUTH'||e.code==='SESSION_EXPIRED')throw e;warnings.push('Sleep history was incomplete. Sleep stories were omitted.'+(e.code==='GARMIN_TLS'?' A secure source connection failed. Try importing again later.':''));sleep.length=0;break;}
       }
+      for(let month=1;month<=last;month++){
+        onProgress(`Reading recorded HRV… month ${month} of ${last}`);
+        try{const result=await api('hrv',{year,month},signal);if(!Array.isArray(result.hrv))throw new ImportError('The HRV response was incomplete.','DATA');hrv.push(...result.hrv);}
+        catch(e){if(e.name==='AbortError'||e.code==='GARMIN_AUTH'||e.code==='SESSION_EXPIRED')throw e;warnings.push('HRV history was unavailable or incomplete. HRV stories were omitted.'+(e.code==='GARMIN_TLS'?' A secure source connection failed. Try importing again later.':''));hrv.length=0;break;}
+      }
     }
     onProgress('Checking coverage and building your story…');
-    return buildRecap({year,timeZone,activities,daily:includeSteps?daily:daily.map(({steps,...d})=>d),sleep,indexComplete:complete,includeHealth,warnings});
+    return buildRecap({year,timeZone,activities,daily:includeSteps?daily:daily.map(({steps,...d})=>d),sleep,hrv,indexComplete:complete,includeHealth,warnings});
   }finally{
-    key='';activities.length=0;daily.length=0;sleep.length=0;
+    key='';activities.length=0;daily.length=0;sleep.length=0;hrv.length=0;
     // No recurring connection is needed: clear the token cookie after each import.
     try{await api('disconnect',{});}catch{}
   }

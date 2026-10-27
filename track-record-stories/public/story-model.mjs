@@ -10,6 +10,7 @@ export function validChart(chart){
   case 'duration':return chart.items.length===2&&chart.items.every(i=>safeText(i.value));
   case 'sport-mix':return safeValue(chart.total)&&chart.total>0&&chart.items.every(i=>safeText(i.key)&&safeValue(i.value)&&i.value>0)&&chart.items.reduce((n,i)=>n+i.value,0)===chart.total;
   case 'months':return ['minutes','sessions'].includes(chart.measure)&&typeof chart.compare==='boolean'&&chart.items.length===12&&chart.items.every(i=>['complete','partial','current','future'].includes(i.state)&&(i.value===null||safeValue(i.value))&&(i.sessions===null||safeValue(i.sessions)));
+  case 'health-months':return ['restingHR','hrv'].includes(chart.measure)&&chart.items.length===12&&chart.items.filter(i=>i.value!==null).length>=2&&chart.items.every(i=>['complete','current','future'].includes(i.state)&&Number.isInteger(i.count)&&i.count>=0&&i.count<=31&&(i.value===null||safeValue(i.value)&&i.value>0&&i.value<=(chart.measure==='hrv'?1000:250)&&i.count>=10)&&(i.state!=='future'||i.value===null&&i.count===0));
   case 'record':return chart.items.length<=3&&chart.items.every(i=>safeValue(i.value));
   case 'weekdays':return chart.items.length===7&&chart.items.every(i=>safeValue(i.value));
   default:return false;
@@ -23,12 +24,14 @@ function displayChart(chart){
   if(chart.kind==='summary')item.unit=i.unit;
   if(chart.kind==='sport-mix')item.key=i.key;
   if(chart.kind==='months'){item.state=i.state;item.sessions=i.sessions;}
+  if(chart.kind==='health-months'){item.state=i.state;item.count=i.count;}
   return item;
  });
- return {kind:chart.kind,items,...(chart.kind==='sport-mix'?{total:chart.total}:{}),...(chart.kind==='months'?{measure:chart.measure,compare:chart.compare}:{})};
+ return {kind:chart.kind,items,...(chart.kind==='sport-mix'?{total:chart.total}:{}),...(chart.kind==='months'?{measure:chart.measure,compare:chart.compare}:{}),...(chart.kind==='health-months'?{measure:chart.measure}:{})};
 }
 export function chartDescription(chart){
  if(!validChart(chart))return '';
+ if(chart.kind==='health-months')return chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':`insufficient measurements (${i.count} recorded ${chart.measure==='hrv'?'nights':'days'})`):`${new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(i.value)} ${chart.measure==='hrv'?'ms':'bpm'}, ${i.count} recorded ${chart.measure==='hrv'?'nights':'days'}`}${i.state==='current'?' (month in progress)':''}`).join('; ');
  if(chart.kind==='months'){
   const values=chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':'unknown coverage'):`${formatNumber(i.value)} ${chart.measure}, ${i.sessions} activities`}${i.state==='current'?' (month in progress)':''}`).join('; ');
   const completed=chart.items.filter(i=>i.state==='complete'&&i.value!==null);

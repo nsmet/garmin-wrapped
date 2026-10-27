@@ -62,6 +62,20 @@ function record(c,b,s,p){
  text(c,s.value,x,y+h*.28,Math.min(h*.32,100),w,p[1],{bold:true,condensed:true});text(c,'KM · LONGEST RECORDED',x,y+h*.37,10,w,p[1]);
  s.chart.items.forEach((item,i)=>{const top=y+h*.52+i*h*.15,bw=(w-90)*item.value/max;c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.055));text(c,item.label,x,top+12,10,24,p[1]);text(c,formatDecimal(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
 }
+function healthMonths(c,b,chart,p){
+ const {x,y,w,h}=b,items=chart.items,values=items.filter(i=>i.value!==null).map(i=>i.value),isHrv=chart.measure==='hrv';
+ const low=Math.max(0,Math.floor((Math.min(...values)-5)/5)*5),high=Math.ceil((Math.max(...values)+5)/5)*5;
+ const left=x+28,right=x+w-9,top=y+27,bottom=y+h*.55,step=(right-left)/11;
+ const pointY=value=>bottom-(value-low)/(high-low)*(bottom-top);
+ text(c,`MONTHLY MEDIAN · ${isHrv?'MS':'BPM'}`,x,y+6,9,w,p[1],{bold:true});
+ for(let i=0;i<=2;i++){const value=low+(high-low)*i/2,py=pointY(value);rule(c,left,py,right-left,p[1],.18);text(c,fmt(value),left-7,py+3,8,24,p[1],{align:'right'});}
+ c.strokeStyle=p[1];c.lineWidth=2.5;c.lineJoin='round';c.beginPath();let previous=false;
+ items.forEach((item,i)=>{if(item.value===null){previous=false;return;}const px=left+i*step,py=pointY(item.value);if(previous)c.lineTo(px,py);else c.moveTo(px,py);previous=true;});c.stroke();
+ items.forEach((item,i)=>{const px=left+i*step;if(item.value!==null){c.fillStyle=p[1];c.beginPath();c.arc(px,pointY(item.value),3.5,0,Math.PI*2);c.fill();}text(c,item.label[0],px,bottom+16,8,step,p[1],{align:'center'});});
+ // The monthly table keeps exact medians and coverage readable on a phone.
+ const tableTop=bottom+31,row=(y+h-tableTop)/4,cw=w/3;
+ items.forEach((item,i)=>{const px=x+i%3*cw,py=tableTop+Math.floor(i/3)*row;rule(c,px,py,cw-10,p[1],.2);text(c,item.label+(item.state==='current'?'*':''),px,py+row*.30,8,cw*.35,p[1]);text(c,item.value===null?'—':fmt(item.value),px+cw-12,py+row*.41,Math.min(23,row*.42),cw*.58,p[1],{bold:true,condensed:true,align:'right'});text(c,item.state==='future'?'UPCOMING':`${item.count} ${isHrv?'NIGHTS':'DAYS'}${item.value===null?' / <10':''}`,px,py+row*.81,7,cw-12,p[1]);});
+}
 function weekdays(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1),cw=w/7;
  text(c,s.value,x,y+h*.17,Math.min(w*.13,49),w,p[1],{bold:true,condensed:true});
@@ -84,6 +98,7 @@ export function drawDataPoster(c,w,h,s,time=0,alpha=1,layout=posterLayout(w,h),p
   case 'summary':summary(c,b,s.chart,p,s.presentation==='receipt');break;
   case 'sport-mix':mix(c,b,s.chart,p);break;
   case 'months':months(c,b,s.chart,p);break;
+  case 'health-months':healthMonths(c,b,s.chart,p);break;
   case 'duration':drawDurationPoster(c,b,s,p,time);break;
   case 'record':record(c,b,s,p);break;
   case 'weekdays':weekdays(c,b,s,p);break;

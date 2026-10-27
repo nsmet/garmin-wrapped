@@ -1,4 +1,4 @@
-import {normalizeActivity,normalizeDaily,normalizeSleep,validatePeriod} from '../public/metrics.mjs';
+import {normalizeActivity,normalizeDaily,normalizeSleep,normalizeHrv,validatePeriod} from '../public/metrics.mjs';
 const BASE='https://personal.connectapi.garmin.com';
 export class ApiError extends Error {
   constructor(code,message,status=400,upstreamStatus){super(message);this.code=code;this.status=status;if(Number.isInteger(upstreamStatus)&&upstreamStatus>=100&&upstreamStatus<=599)this.upstreamStatus=upstreamStatus;}
@@ -58,4 +58,11 @@ export async function sleepMonth({year,month},options={}) {
   const rows=await garmin('/sleep-service/sleep/dailySleepSummariesByDate?'+query,options);
   if(rows!==null&&!Array.isArray(rows))throw new ApiError('UPSTREAM_DATA','Garmin returned unsupported sleep summaries.',502);
   try{return {sleep:(rows||[]).map(normalizeSleep)};}catch{throw new ApiError('UPSTREAM_DATA','Some sleep summaries were incomplete.',502);}
+}
+export async function hrvMonth({year,month},options={}) {
+  period(year,'UTC');if(!Number.isInteger(month)||month<1||month>12)throw new ApiError('MONTH_INVALID','Choose a valid month.');
+  const mm=String(month).padStart(2,'0'),last=new Date(Date.UTC(year,month,0)).getUTCDate();
+  const value=await garmin(`/hrv-service/hrv/daily/${year}-${mm}-01/${year}-${mm}-${last}`,options);
+  if(value!==null&&!Array.isArray(value?.hrvSummaries))throw new ApiError('UPSTREAM_DATA','Garmin returned unsupported HRV summaries.',502);
+  try{return {hrv:(value?.hrvSummaries||[]).map(normalizeHrv)};}catch{throw new ApiError('UPSTREAM_DATA','Some HRV summaries were incomplete.',502);}
 }

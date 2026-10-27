@@ -1,4 +1,4 @@
-import {ApiError,exchangeKey,activityPage,wellness,sleepMonth} from './garmin.mjs';
+import {ApiError,exchangeKey,activityPage,wellness,sleepMonth,hrvMonth} from './garmin.mjs';
 const COOKIE='__Host-mini-session',MAX_AGE=1200;
 const budget=new Map();
 const encode=bytes=>btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
@@ -39,7 +39,7 @@ export async function handleApi(request,env={},deps={}) {
   if(!visitor&&!user)return json({error:{code:'SIGN_IN_REQUIRED',message:'Sign in to connect your Garmin account.'}},401);
   if(path==='/api/config')return json({personalEnabled:env.GARMIN_MODE==='personal',sessionMinutes:20});
   try{
-    if(!['/api/connect','/api/disconnect','/api/activities','/api/wellness','/api/sleep'].includes(path))throw new ApiError('NOT_FOUND','This action does not exist.',404);
+    if(!['/api/connect','/api/disconnect','/api/activities','/api/wellness','/api/sleep','/api/hrv'].includes(path))throw new ApiError('NOT_FOUND','This action does not exist.',404);
     if(request.method!=='POST')throw new ApiError('METHOD','Use POST for this action.',405);
     if(request.headers.get('Origin')!==new URL(request.url).origin||request.headers.get('Sec-Fetch-Site')==='cross-site')throw new ApiError('ORIGIN','Open this page directly to continue.',403);
     if(visitor&&(!env.PUBLIC_ORIGIN||new URL(request.url).origin!==env.PUBLIC_ORIGIN))throw new ApiError('ORIGIN','Open this page directly to continue.',403);
@@ -61,11 +61,12 @@ export async function handleApi(request,env={},deps={}) {
     if(path==='/api/activities')return json(await activityPage(input,options));
     if(path==='/api/wellness'){const result=await wellness(input,options);if(input.includeHealth!==true)result.daily=result.daily.map(d=>({date:d.date,steps:d.steps}));return json(result);}
     if(path==='/api/sleep')return json(await sleepMonth(input,options));
+    if(path==='/api/hrv')return json(await hrvMonth(input,options));
     throw new ApiError('NOT_FOUND','This action does not exist.',404);
   }catch(error){
     const known=error instanceof ApiError,status=known?error.status:request.signal.aborted?499:500,code=known?error.code:'REQUEST_FAILED';
     // Explicit allowlist. No headers, user IDs, keys, URLs, bodies, or upstream errors.
-    (deps.log||console.info)(JSON.stringify({event:'api_error',requestId,route:['/api/connect','/api/activities','/api/wellness','/api/sleep','/api/disconnect'].includes(path)?path:'unknown',code,status,...(known&&error.upstreamStatus?{upstreamStatus:error.upstreamStatus}:{}),durationMs:Date.now()-start}));
+    (deps.log||console.info)(JSON.stringify({event:'api_error',requestId,route:['/api/connect','/api/activities','/api/wellness','/api/sleep','/api/hrv','/api/disconnect'].includes(path)?path:'unknown',code,status,...(known&&error.upstreamStatus?{upstreamStatus:error.upstreamStatus}:{}),durationMs:Date.now()-start}));
     return json({error:{code,message:known?error.message:'The request could not complete. Please try again.',requestId}},status,status===401?{'Set-Cookie':cookie('',0)}:status===429?{'Retry-After':'60'}:status===405?{'Allow':'POST'}:{});
   }
 }

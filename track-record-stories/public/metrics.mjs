@@ -10,6 +10,7 @@ const num=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_I
 const dateValid=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
 const median=a=>{const b=[...a].sort((x,y)=>x-y),i=Math.floor(b.length/2);return b.length%2?b[i]:(b[i-1]+b[i])/2;};
 const sum=a=>a.reduce((x,y)=>x+y,0);
+const heartValue=v=>num(v)&&v>0&&v<=250;
 export function validatePeriod(year,timeZone,now=new Date()) {
   try {new Intl.DateTimeFormat('en',{timeZone}).format(now);}catch{throw Error('Choose a valid time zone.');}
   const currentYear=Number(new Intl.DateTimeFormat('en',{timeZone,year:'numeric'}).format(now));
@@ -24,6 +25,8 @@ export function normalizeActivity(a) {
   const fields=['distance','duration','elevationGain','averageSpeed','maxSpeed','averageHR','maxHR','avgPower'];
   const record={id:String(a.activityId),utc,type:typeof a.activityType?.typeKey==='string'?a.activityType.typeKey:'unknown',parentId:a.parentId??null};
   for(const f of fields)record[f]=num(a[f])?a[f]:null;
+  for(const f of ['averageHR','maxHR'])if(!heartValue(record[f]))record[f]=null;
+  if(record.averageHR!==null&&record.maxHR!==null&&record.averageHR>record.maxHR)record.averageHR=record.maxHR=null;
   return record;
 }
 export function normalizeDaily(d) {
@@ -35,9 +38,13 @@ export function normalizeSleep(d) {
   if(!d||!dateValid(d.calendarDate))throw Error('A sleep summary has no valid date.');
   return {date:d.calendarDate,seconds:num(d.sleepTimeSeconds)&&d.sleepTimeSeconds>0&&d.sleepTimeSeconds<=86400?d.sleepTimeSeconds:null};
 }
-export function buildRecap({year,timeZone,activities,daily=[],sleep=[],indexComplete=false,includeHealth=false,warnings=[],now=new Date()}) {
+export function normalizeHrv(d) {
+  if(!d||!dateValid(d.calendarDate))throw Error('An HRV summary has no valid date.');
+  return {date:d.calendarDate,hrv:num(d.lastNightAvg)&&d.lastNightAvg>0&&d.lastNightAvg<=1000&&d.status!=='INVALID'?d.lastNightAvg:null};
+}
+export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],indexComplete=false,includeHealth=false,warnings=[],now=new Date()}) {
   const period=validatePeriod(year,timeZone,now);
-  if(!Array.isArray(activities)||activities.length>20000||!Array.isArray(daily)||!Array.isArray(sleep))throw Error('The imported data is too large or invalid.');
+  if(!Array.isArray(activities)||activities.length>20000||!Array.isArray(daily)||!Array.isArray(sleep)||!Array.isArray(hrv))throw Error('The imported data is too large or invalid.');
   const parts=new Intl.DateTimeFormat('en-CA',{timeZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23',weekday:'long'});
   const ids=new Map(),quality=[],ledger=[],chapters=[],used=new Set();
   const excluded={children:0,duplicates:0,outsidePeriod:0};
@@ -109,7 +116,7 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],indexComp
     ch.stories.sort((a,b)=>['position','scale','pattern','peak'].indexOf(a.phase)-['position','scale','pattern','peak'].indexOf(b.phase));
   }
   function dailyRecords(data,field){
-    const map=new Map();for(const d of data){if(!d||typeof d.date!=='string'||!dateValid(d.date))throw Error('Invalid daily record.');if(!d.date.startsWith(year+'-'))continue;const old=map.get(d.date);if(old&&JSON.stringify(old)!==JSON.stringify(d))throw Error('Conflicting daily records. Please import again.');map.set(d.date,d);}
+    const map=new Map();for(const d of data){if(!d||typeof d.date!=='string'||!dateValid(d.date))throw Error('Invalid daily record.');if(!d.date.startsWith(year+'-')||d.date>`${localNow.year}-${localNow.month}-${localNow.day}`)continue;const old=map.get(d.date);if(old&&JSON.stringify(old)!==JSON.stringify(d))throw Error('Conflicting daily records. Please import again.');map.set(d.date,d);}
     return [...map.values()].filter(d=>num(d[field]));
   }
   const steps=dailyRecords(daily,'steps');
@@ -121,8 +128,34 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],indexComp
     const nights=dailyRecords(sleep,'seconds').filter(d=>d.seconds>0&&d.seconds<=86400);
     if(nights.length>=30){const ch=chapter('sleep','Your recorded sleep'),seconds=median(nights.map(d=>d.seconds)),mins=Math.round(seconds/60);story(ch,'sleep-median','sleep',['OFF THE','CLOCK.'],`${Math.floor(mins/60)}h ${String(mins%60).padStart(2,'0')}m`,'MEDIAN RECORDED SLEEP',`${nights.length} nights with sleep records.\nNo sleep is inferred for missing nights.`,nights.map(d=>'sleep:'+d.date),{health:true});}
     else if(nights.length)quality.push('Sleep: at least 30 recorded nights are required for a sleep pattern.');
-    const hr=dailyRecords(daily,'restingHR').filter(d=>d.restingHR>0&&d.restingHR<=250);
-    if(hr.length>=30){const ch=chapter('heart_and_effort','Recorded resting heart rate');story(ch,'resting-hr','heart',['A RECORDED','RHYTHM.'],fmt(median(hr.map(d=>d.restingHR))),'BPM · MEDIAN RESTING HEART RATE',`${hr.length} recorded days.\nA measurement, without medical interpretation.`,hr.map(d=>'daily:'+d.date),{health:true});}
+    const hr=dailyRecords(daily,'restingHR').filter(d=>heartValue(d.restingHR));
+    const variability=dailyRecords(hrv,'hrv').filter(d=>d.hrv>0&&d.hrv<=1000);
+    const activityHR=records.filter(r=>heartValue(r.maxHR)&&(!heartValue(r.averageHR)||r.averageHR<=r.maxHR));
+    const averageHR=records.filter(r=>heartValue(r.averageHR)&&(!heartValue(r.maxHR)||r.averageHR<=r.maxHR));
+    let heart;
+    const heartChapter=()=>heart??=chapter('heart_and_effort','Your heart rate & HRV');
+    if(activityHR.length)story(heartChapter(),'max-hr','heart',['YOUR HIGHEST','RECORDED HR.'],fmt(Math.max(...activityHR.map(r=>r.maxHR))),'BPM · ACTIVITY PEAK'+qualified,`Highest reported peak across your imported activities.\n${activityHR.length} of ${records.length} activities include a usable maximum.`,activityHR.map(r=>'activity:'+r.id),{health:true,phase:'peak'});
+    if(averageHR.length>=8)story(heartChapter(),'activity-hr','heart',['YOUR HEART','AT WORK.'],fmt(median(averageHR.map(r=>r.averageHR))),'BPM · MEDIAN ACTIVITY AVERAGE',`The median of ${averageHR.length} recorded activity averages.\nEach activity counts once, regardless of duration.`,averageHR.map(r=>'activity:'+r.id),{health:true});
+    function healthMonths(rows,field,measure){
+      return {kind:'health-months',measure,items:months.map((month,i)=>{
+        const days=rows.filter(d=>Number(d.date.slice(5,7))===i+1);
+        const state=month.state==='future'?'future':year===Number(localNow.year)&&i+1===Number(localNow.month)?'current':'complete';
+        return {label:month.label,state,count:days.length,value:days.length>=10?median(days.map(d=>d[field])):null};
+      })};
+    }
+    function monthlyStory(rows,field,measure,id,template,title,unit,evidencePrefix){
+      const chart=healthMonths(rows,field,measure);
+      if(chart.items.filter(i=>i.value!==null).length>=2)story(heartChapter(),id,template,title,fmt(median(rows.map(d=>d[field]))),unit,`Monthly medians, with at least 10 recorded ${measure==='hrv'?'nights':'days'} per point.\nGaps show months without enough measurements.`,rows.map(d=>evidencePrefix+d.date),{health:true,phase:'pattern',chart});
+    }
+    if(hr.length>=30){
+      story(heartChapter(),'resting-hr','heart',['YOUR RESTING','HEART RATE.'],fmt(median(hr.map(d=>d.restingHR))),'BPM · MEDIAN RESTING HEART RATE',`${hr.length} days with Garmin resting-heart-rate records.\nMedian across recorded days only.`,hr.map(d=>'daily:'+d.date),{health:true});
+      monthlyStory(hr,'restingHR','restingHR','resting-hr-monthly','heart',['RESTING HR,','MONTH BY MONTH.'],'BPM · MONTHLY MEDIAN RESTING HR','daily:');
+      quality.push('Resting heart rate uses Garmin’s daily restingValue field. Garmin may substitute the daily minimum when a resting value is unavailable. Monthly medians need at least 10 recorded days; missing days are never zero.');
+    }else if(hr.length)quality.push('Resting heart rate: at least 30 recorded days are required.');
+    if(variability.length>=30){
+      story(heartChapter(),'hrv-median','hrv',['YOUR OVERNIGHT','HRV.'],fmt(median(variability.map(d=>d.hrv))),'MS · MEDIAN OVERNIGHT HRV',`${variability.length} nights with recorded overnight HRV averages.\nMedian across recorded nights only.`,variability.map(d=>'hrv:'+d.date),{health:true});
+      monthlyStory(variability,'hrv','hrv','hrv-monthly','hrv',['HRV THROUGH','THE YEAR.'],'MS · MONTHLY MEDIAN OVERNIGHT HRV','hrv:');
+    }else quality.push(variability.length?'HRV: at least 30 recorded nights are required.':'HRV: no usable overnight measurements were returned. HRV stories were omitted.');
   }
   const finale=chapter('finale','Your track record');story(finale,'finale','finale',['THAT’S YOUR','TRACK RECORD.'],year,'YOUR RECORDED YEAR'+qualified,`${records.length} activities. ${groups.size} sport families.\nA year with a shape all your own.`,allEvidence,{phase:'payoff',presentation:'receipt',chart:{kind:'summary',items:stats}});
   return {schemaVersion:'3.0.0',calculationVersion:'1.0.0',year,period,indexComplete:!!indexComplete,exampleOnly:false,includeHealth,activityAudit,notice:`Recorded ${year}${!period.complete?' · year to date':''}${!indexComplete?' · partial import':''}`,chapters,stories:chapters.flatMap(c=>c.stories.map(s=>({...s,chapterId:c.chapterId}))),metrics:ledger,warnings:[...warnings,...quality]};
