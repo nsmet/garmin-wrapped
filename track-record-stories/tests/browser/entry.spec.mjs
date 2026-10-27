@@ -8,7 +8,10 @@ test('The compact homepage fits phone, tablet and desktop widths and keeps detai
     const title=page.locator('#entry-title');
     await expect(title).toBeVisible();
     expect(await title.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
-    await expect(page.getByRole('button',{name:'Build my Garmin recap'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Build my Garmin recap'})).toBeInViewport();
+    const formBottom=await page.locator('.connect-panel').evaluate(el=>el.getBoundingClientRect().bottom);
+    const headlineTop=await title.evaluate(el=>el.getBoundingClientRect().top);
+    expect(headlineTop).toBeGreaterThanOrEqual(formBottom);
     await expect(page.locator('.entry-privacy')).toContainText('Your recap stays on your device.');
   }
   await expect(page.locator('.recap-faq')).not.toBeVisible();
@@ -102,7 +105,7 @@ test.describe('Animated entry',()=>{
     await expect(page.locator('#intro-skip')).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#entry-intro')).not.toBeVisible();
-    await expect(page.locator('#entry-title')).toBeFocused();
+    await expect(page.locator('#connect-title')).toBeFocused();
     await page.reload();
     await expect(page.locator('#entry-intro')).toBeVisible();
     await page.emulateMedia({reducedMotion:'reduce'});

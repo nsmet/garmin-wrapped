@@ -23,7 +23,7 @@
     window.removeEventListener('resize', placeArt);
     window.removeEventListener('pagehide', onPageHide);
     reduced.removeEventListener('change', onPreference);
-    if (focus) document.getElementById('entry-title')?.focus({preventScroll: true});
+    if (focus) document.getElementById('connect-title')?.focus({preventScroll: true});
   }
   function settleArt() {
     if (finished || settled) return;
