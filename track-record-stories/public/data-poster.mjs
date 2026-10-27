@@ -1,8 +1,8 @@
 import {posterLayout} from './poster-layout.mjs';
 import {palettes} from './visual-system.mjs';
 import {drawDurationPoster} from './duration-posters.mjs';
+import {formatNumber as fmt,formatDecimal} from './measurement-format.mjs';
 
-const fmt=n=>new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(n);
 const colors=['#1743ed','#ff7038','#f23897','#8de4c4','#f2e630','#a18ce4','#0699ac','#b65c23','#79ac29','#ed8bad','#6d99fa','#d3bd87','#923e79','#24715d','#dfbf13','#677a94','#cf4646','#745ab9','#aaaaaa'];
 export function chartColor(key,index=0){const keys=['running','cycling','hiit','strength','walking','hiking','swimming','rowing','yoga','pilates','elliptical','skiing','golf','racket','triathlon','team_sports','climbing','cardio','other'];return colors[Math.max(0,keys.indexOf(key))]||colors[index%colors.length];}
 function text(c,value,x,y,size,max,ink,{bold=false,align='left',condensed=false}={}){
@@ -60,7 +60,7 @@ function months(c,b,chart,p){
 function record(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1);
  text(c,s.value,x,y+h*.28,Math.min(h*.32,100),w,p[1],{bold:true,condensed:true});text(c,'KM · LONGEST RECORDED',x,y+h*.37,10,w,p[1]);
- s.chart.items.forEach((item,i)=>{const top=y+h*.52+i*h*.15,bw=(w-90)*item.value/max;c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.055));text(c,item.label,x,top+12,10,24,p[1]);text(c,fmt(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
+ s.chart.items.forEach((item,i)=>{const top=y+h*.52+i*h*.15,bw=(w-90)*item.value/max;c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.055));text(c,item.label,x,top+12,10,24,p[1]);text(c,formatDecimal(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
 }
 function weekdays(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1),cw=w/7;

@@ -1,4 +1,4 @@
-const fmt=n=>new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(n);
+import {formatDecimal,formatActivityTime} from './measurement-format.mjs';
 function element(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
 
 export function appendActivityAudit(root,audit){
@@ -14,7 +14,7 @@ export function appendActivityAudit(root,audit){
     const list=element('ol'),more=element('button','Show more activities');more.type='button';more.className='secondary-button';let shown=0;
     function appendPage(){
       for(const a of sport.activities.slice(shown,shown+100)){
-        const measures=[a.duration===null?'duration unavailable':`${fmt(a.duration/60)} min`,a.distance===null?'distance unavailable':`${fmt(a.distance/1000)} km`];
+        const measures=[a.duration===null?'duration unavailable':formatActivityTime(a.duration),a.distance===null?'distance unavailable':`${formatDecimal(a.distance/1000)} km`];
         const item=element('li',`${a.date} · ${a.type} · ${measures.join(' · ')} `);
         if(/^\d+$/.test(a.id)){const link=element('a','View in Garmin ↗');link.href='https://connect.garmin.com/modern/activity/'+a.id;link.target='_blank';link.rel='noopener noreferrer';item.append(link);}
         list.append(item);

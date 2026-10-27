@@ -34,7 +34,7 @@ test('The activity breakdown explains sport counts, omissions, dates and source 
   const audit=page.locator('.activity-audit');await expect(audit).toContainText('56 activities counted from 59 returned records');
   await expect(audit).toContainText('1 duplicate records, 1 multisport child records, 1 records outside this year');
   await audit.getByText('Cycling · 52 activities',{exact:true}).click();await expect(audit.locator('li')).toHaveCount(52);
-  await expect(audit).toContainText('Garmin types: indoor_cycling (52)');await expect(audit.locator('li').first()).toContainText('2026-03-10 · indoor_cycling · 30 min · 5 km');
+  await expect(audit).toContainText('Garmin types: indoor_cycling (52)');await expect(audit.locator('li').first()).toContainText('2026-03-10 · indoor_cycling · 30m 00s · 5.0 km');
   await expect(audit.locator('li a').first()).toHaveAttribute('href','https://connect.garmin.com/modern/activity/1');
   await expect(page.locator('#coverage-details')).toContainText('unrecognized Garmin types');
   await page.locator('#close-privacy').click();await page.locator('#close-chapters').click();await page.locator('#share').click();
@@ -46,4 +46,28 @@ test('The activity breakdown explains sport counts, omissions, dates and source 
 test('A story URL opens the fictional demo only after the demo button is chosen',async({page})=>{
   await page.goto('/#running-sessions');await expect(page.locator('#connect-screen')).toBeVisible();await expect(page.locator('#story')).not.toBeVisible();
   await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();await expect(page.locator('.demo-label')).toContainText('FICTIONAL');await expect(page.locator('#story-description')).toContainText('52 RECORDED RUNS');
+});
+
+test('Distance precision matches canvas labels, accessible descriptions and exported cards',async({page})=>{
+ await page.goto('/');
+ const results=await page.evaluate(async()=>{
+  const {buildRecap}=await import('/metrics.mjs'),{datasetFromPlan,sanitizedCard,chartDescription}=await import('/story-model.mjs'),{drawDataPoster}=await import('/data-poster.mjs');
+  const activities=[['running',21040],['running',5000],['cycling',68260],['cycling',10000]].map(([type,distance],i)=>({id:String(i+1),utc:Date.UTC(2025,2,10),type,parentId:null,distance,duration:1801}));
+  const dataset=datasetFromPlan(buildRecap({year:2025,timeZone:'UTC',activities,indexComplete:true}));
+  return dataset.stories.filter(s=>s.id.endsWith('-longest')).flatMap(story=>{
+   const card=sanitizedCard(story,dataset);
+   return [[390,693],[1440,800],[1080,1920]].map(([w,h])=>{
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const context=canvas.getContext('2d'),labels=[],fill=context.fillText.bind(context);
+    context.fillText=(value,...args)=>{labels.push(String(value));fill(value,...args);};
+    drawDataPoster(context,w,h,card);
+    return {id:card.id,labels,description:chartDescription(card.chart),value:card.value};
+   });
+  });
+ });
+ expect(results).toHaveLength(6);
+ for(const result of results){
+  const value=result.id==='running-longest'?'21.0':'68.3';
+  expect(result.value).toBe(value);expect(result.labels).toContain(value);expect(result.labels).toContain(value+' km');expect(result.description).toContain(value+' km');
+  expect(result.labels).toContain(result.id==='running-longest'?'5.0 km':'10.0 km');
+ }
 });
