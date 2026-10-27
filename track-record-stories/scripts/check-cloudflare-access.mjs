@@ -70,6 +70,12 @@ export async function checkCloudflareAccess({accountId,token,workerName,request=
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const config=JSON.parse(readFileSync(new URL('../wrangler.cloudflare.jsonc',import.meta.url),'utf8'));
-  const ok=await checkCloudflareAccess({accountId:process.env.CLOUDFLARE_ACCOUNT_ID,token:process.env.CLOUDFLARE_API_TOKEN,workerName:config.name});
+  const log=line=>{
+    console.log(line);
+    if(process.env.GITHUB_ACTIONS==='true'&&line.startsWith('FAIL:')){
+      console.error(`::error title=Cloudflare metadata access::${line}`);
+    }
+  };
+  const ok=await checkCloudflareAccess({accountId:process.env.CLOUDFLARE_ACCOUNT_ID,token:process.env.CLOUDFLARE_API_TOKEN,workerName:config.name,log});
   if(!ok)process.exitCode=1;
 }
