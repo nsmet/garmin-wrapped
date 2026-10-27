@@ -39,6 +39,19 @@ test.describe('Animated entry',()=>{
   test.use({reducedMotion:'no-preference'});
 
   test('The intro reveals the homepage and the ambient motion can be paused',async({page})=>{
+    await page.addInitScript(()=>{
+      window.entryHandoff=null;
+      new MutationObserver(()=>{
+        if(window.entryHandoff||!document.documentElement.classList.contains('entry-intro-art-settled'))return;
+        window.entryHandoff={
+          foregroundArtwork:document.querySelectorAll('.intro-shared-art').length,
+          backgroundVisibility:getComputedStyle(document.querySelector('.entry-poster .entry-art')).visibility,
+          headlineOpacity:Number(getComputedStyle(document.querySelector('#entry-title')).opacity),
+          formOpacity:Number(getComputedStyle(document.querySelector('.connect-panel')).opacity),
+          introCopyOpacity:Number(getComputedStyle(document.querySelector('.intro-second')).opacity),
+        };
+      }).observe(document,{subtree:true,attributes:true,attributeFilter:['class']});
+    });
     await page.goto('/');
     await expect(page.locator('#entry-intro')).toBeVisible();
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',true);
@@ -48,6 +61,7 @@ test.describe('Animated entry',()=>{
     await expect.poll(()=>page.locator('.intro-second').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.9);
     await expect(page.locator('#entry-intro')).not.toBeVisible({timeout:8000});
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',false);
+    expect(await page.evaluate(()=>window.entryHandoff)).toEqual({foregroundArtwork:0,backgroundVisibility:'visible',headlineOpacity:0,formOpacity:0,introCopyOpacity:0});
     await expect(page.locator('.intro-shared-art')).toHaveCount(0);
     await expect(page.locator('#api-key')).toBeInViewport();
     await expect(page.locator('#api-key')).toBeEditable();
@@ -60,6 +74,25 @@ test.describe('Animated entry',()=>{
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     expect(await transform()).toBe(still);
     await expect(page.getByRole('button',{name:'Play homepage animation'})).toHaveAttribute('aria-pressed','true');
+  });
+
+  test('Slow artwork loads stay hidden, then enter with a fade',async({page})=>{
+    let release;
+    const ready=new Promise(resolve=>{release=resolve;});
+    await page.route('**/assets/shoe-blue.webp',async route=>{await ready;await route.continue();});
+    try{
+      await page.goto('/',{waitUntil:'domcontentloaded'});
+      await expect(page.locator('.intro-shared-art')).toBeAttached();
+      await expect(page.locator('#entry-intro')).not.toHaveClass(/intro-playing/);
+      await expect(page.locator('.intro-orbit')).toHaveCSS('opacity','0');
+      await expect(page.locator('.intro-shared-art')).toHaveCSS('opacity','0');
+      await expect(page.locator('.entry-poster .entry-art')).toHaveCSS('visibility','hidden');
+      release();
+      await expect(page.locator('#entry-intro')).toHaveClass(/intro-playing/);
+      await expect.poll(()=>page.locator('.intro-shared-art').evaluate(el=>Number(getComputedStyle(el).opacity))).toBeGreaterThan(.9);
+      await page.keyboard.press('Escape');
+      await expect(page.locator('#api-key')).toBeEditable();
+    }finally{release();}
   });
 
   test('The intro can be skipped with the keyboard and respects a changed motion preference',async({page})=>{

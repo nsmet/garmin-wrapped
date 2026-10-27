@@ -5,7 +5,7 @@
   const root = document.documentElement;
   root.classList.add('entry-intro-active');
   const timers = new Set();
-  let intro, main, art, target, finished = false;
+  let intro, main, art, target, finished = false, settled = false;
   const later = (callback, delay) => {
     const id = setTimeout(() => { timers.delete(id); callback(); }, delay);
     timers.add(id);
@@ -15,7 +15,7 @@
     if (finished) return;
     finished = true;
     timers.forEach(clearTimeout);
-    root.classList.remove('entry-intro-active', 'entry-intro-revealing');
+    root.classList.remove('entry-intro-active', 'entry-intro-art-settled', 'entry-intro-revealing');
     if (intro) { intro.hidden = true; intro.classList.remove('intro-playing'); }
     if (main) main.inert = false;
     art?.remove();
@@ -24,6 +24,21 @@
     window.removeEventListener('pagehide', onPageHide);
     reduced.removeEventListener('change', onPreference);
     if (focus) document.getElementById('entry-title')?.focus({preventScroll: true});
+  }
+  function settleArt() {
+    if (finished || settled) return;
+    settled = true;
+    // Hand the artwork back to its actual background layer before revealing copy.
+    // Match the ambient loops so changing layers does not change its pose.
+    for (const selector of ['.entry-shoe', '.entry-track', '.entry-runner']) {
+      const source = art.querySelector(selector)?.getAnimations()[0];
+      const destination = target.querySelector(selector)?.getAnimations()[0];
+      if (source && destination) destination.currentTime = source.currentTime;
+    }
+    art.remove();
+    root.classList.add('entry-intro-art-settled');
+    later(() => root.classList.add('entry-intro-revealing'), 120);
+    later(() => finish(), 1500);
   }
   function onKey(event) {
     if (event.key === 'Escape') { event.preventDefault(); finish(true); }
@@ -43,7 +58,7 @@
     art.style.setProperty('--intro-art-final', `translate(${rect.left}px, ${rect.top}px) rotate(0deg) scale(1)`);
   }
   // Independent watchdog: the intro must never depend on the API or main module.
-  later(() => finish(), 8000);
+  later(() => finish(), 10000);
   document.addEventListener('DOMContentLoaded', async () => {
     if (finished) return;
     intro = document.getElementById('entry-intro');
@@ -65,14 +80,20 @@
     document.addEventListener('keydown', onKey);
     reduced.addEventListener('change', onPreference);
     const image = art.querySelector('img');
-    await Promise.race([
-      Promise.allSettled([document.fonts.ready, image?.decode()]),
-      new Promise(resolve => later(resolve, 700)),
+    // Keep both sets of ovals hidden until the shoe is decoded. A slow image
+    // must not expose the artwork once here and again when the timeline starts.
+    const [imageReady] = await Promise.all([
+      image ? image.decode().then(() => true, () => false) : Promise.resolve(true),
+      Promise.race([document.fonts.ready, new Promise(resolve => later(resolve, 700))]),
     ]);
     if (finished) return;
+    if (!imageReady) { finish(); return; }
     placeArt();
+    art.addEventListener('animationend', event => {
+      if (event.target === art && event.animationName === 'intro-art-journey') settleArt();
+    });
     intro.classList.add('intro-playing');
-    later(() => root.classList.add('entry-intro-revealing'), 4150);
-    later(() => finish(), 5600);
+    // The animation event normally owns the handoff; this covers missing CSS.
+    later(() => settleArt(), 5400);
   }, {once: true});
 })();
