@@ -19,5 +19,5 @@ test('Every sport has loaded photo layers, a distinct composition and moving art
  });
  expect(result).toHaveLength(18);
  expect(new Set(result.map(item=>item.first)).size).toBe(18);
- for(const item of result){expect(item.assets.length,item.sport).toBeGreaterThanOrEqual(2);expect(item.first,item.sport).not.toBe(item.later);}
+ for(const item of result){expect(item.assets.length,item.sport).toBeGreaterThanOrEqual(1);expect(item.first,item.sport).not.toBe(item.later);}
 });

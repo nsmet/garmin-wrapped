@@ -18,15 +18,13 @@ test('Every sport has a distinct hours composition even with identical colors an
    c.fillStyle=p[0];c.fillRect(0,0,390,390);
    drawDurationPoster(c,{x:10,y:10,w:370,h:370},s,p,0);
    const pixels=new Uint8Array(await crypto.subtle.digest('SHA-256',c.getImageData(0,0,390,390).data));
-   const firstLabels=[...labels];c.fillStyle=p[0];c.fillRect(0,0,390,390);drawDurationPoster(c,{x:10,y:10,w:370,h:370},s,p,5);
-   const later=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',c.getImageData(0,0,390,390).data))).join(',');
-   output.push({id:s.id,hash:Array.from(pixels).join(','),later,labels:firstLabels,expected:[s.value,'RECORDED HOURS',...s.chart.items.flatMap(i=>[i.value,i.label])]});
+   output.push({id:s.id,hash:Array.from(pixels).join(','),labels,expected:[s.value,'RECORDED HOURS',...s.chart.items.flatMap(i=>[i.value,i.label])]});
   }
   return output;
  });
  expect(result).toHaveLength(19);
  expect(new Set(result.map(s=>s.hash)).size).toBe(19);
- for(const s of result){expect(s.labels.sort(),s.id+' keeps the verified measurements').toEqual(s.expected.sort());expect(s.later,s.id+' keeps its own ambient motion').not.toBe(s.hash);}
+ for(const s of result)expect(s.labels.sort(),s.id+' keeps the verified measurements').toEqual(s.expected.sort());
 });
 
 test('All sport hours fit small and large measurements inside portrait and landscape compositions',async({page})=>{

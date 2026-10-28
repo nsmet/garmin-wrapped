@@ -7,12 +7,9 @@ function accentInk(hex){
 }
 function type(c,value,x,y,size,max,ink,align='left',label=false){
  c.save();const family=label?'"Space Grotesk",Arial':'"Barlow Condensed",Impact,Arial';
- // Art can stretch to the available space; the font keeps its natural shape.
- const matrix=c.getTransform(),sx=Math.hypot(matrix.a,matrix.b),sy=Math.hypot(matrix.c,matrix.d),cx=Math.min(1,sy/sx),cy=Math.min(1,sx/sy);
- c.translate(x,y);c.scale(cx,cy);max/=cx;
  c.font=`${label?600:800} ${size}px ${family}`;
  const width=c.measureText(String(value)).width;if(width>max)size*=max/width;
- c.font=`${label?600:800} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(String(value),0,0);c.restore();
+ c.font=`${label?600:800} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(String(value),x,y);c.restore();
 }
 function rect(c,x,y,w,h,ink){c.fillStyle=ink;c.fillRect(x,y,w,h);}
 function path(c,points,ink,width=8,closed=false){
@@ -33,15 +30,13 @@ function stat(c,s,p,i,x,y,max,{align='left',ink=p[1],size=100}={}){
 function running(c,s,p,t){
  // A sweeping track, with the figures tucked into its open infield.
  for(let i=0;i<3;i++){
-  c.beginPath();c.moveTo(20,970-i*40);c.bezierCurveTo(890,1040-i*60,1130,380,810-i*92,130);
+  c.beginPath();c.moveTo(20,940-i*90);c.bezierCurveTo(890,1040-i*90,1130,380,810-i*92,130);
   c.strokeStyle=i===1?p[3]:p[2];c.lineWidth=i===1?22:34;c.stroke();
  }
- const u=(t*.045)%1,v=1-u;
- c.save();c.globalAlpha*=Math.sin(Math.PI*u)**2;
- oval(c,20*v**3+3*890*v*v*u+3*1130*v*u*u+810*u**3,970*v**3+3*1040*v*v*u+3*380*v*u*u+130*u**3,12,12,p[1]);c.restore();
+ const u=(t*.045)%1;oval(c,810-180*u,130+190*u,12,12,p[1]);
  hours(c,s,p,15,390,370,740);
  stat(c,s,p,0,20,640,450);
- stat(c,s,p,1,20,800,450);
+ rect(c,0,720,475,185,p[0]);stat(c,s,p,1,20,830,450);
 }
 function cycling(c,s,p,t){
  // Chainring, crank arm and a pair of compact specifications below it.
@@ -69,7 +64,6 @@ function strength(c,s,p,t){
  hours(c,s,p,15,485,390,960);
  rect(c,0,620,790,140,p[1]);stat(c,s,p,0,28,710,725,{ink:p[0],size:90});
  rect(c,190,810,810,140,p[3]);stat(c,s,p,1,222,900,745,{ink:accentInk(p[3]),size:90});
- rect(c,30+(Math.sin(t*.32)+1)*240,590,115,6,p[3]);
 }
 function walking(c,s,p,t){
  // Alternating stepping stones, with two statistics at different heights.
@@ -159,7 +153,7 @@ function racket(c,s,p,t){
 }
 function triathlon(c,s,p,t){
  // Three linked chevrons suggest disciplines without implying time splits.
- for(const [i,ink] of [p[2],p[3],p[1]].entries()){const d=Math.sin(t*.35+i*1.4)*12;path(c,[[90+i*290+d,60],[310+i*290+d,60],[440+i*290+d,290],[220+i*290+d,290]],ink,0);}
+ for(const [i,ink] of [p[2],p[3],p[1]].entries())path(c,[[90+i*290,60],[310+i*290,60],[440+i*290,290],[220+i*290,290]],ink,0);
  hours(c,s,p,500,640,370,950,'center');
  path(c,[[500,770],[500,975]],p[2],6);
  stat(c,s,p,0,20,895,440);stat(c,s,p,1,980,895,440,{align:'right'});
@@ -171,7 +165,6 @@ function team(c,s,p,t){
  rect(c,0,620,610,320,p[3]);rect(c,640,620,360,320,p[0]);
  stat(c,s,p,0,25,810,555,{ink:accentInk(p[3]),size:125});stat(c,s,p,1,975,810,310,{align:'right',size:125});
  path(c,[[0,980],[1000,980]],p[2],6);oval(c,500,980,100,80,p[2],6);
- oval(c,500+Math.sin(t*.3)*250,970,10,10,p[3]);
 }
 function climbing(c,s,p,t){
  // Ascending holds and ledges give the statistics a vertical progression.
@@ -179,7 +172,6 @@ function climbing(c,s,p,t){
  hours(c,s,p,1000,350,310,750,'right');
  stat(c,s,p,0,10,650,550);path(c,[[10,715],[565,715]],p[2],16);
  stat(c,s,p,1,975,865,550,{align:'right'});path(c,[[420,930],[990,930]],p[3],16);
- oval(c,870,380+Math.sin(t*.3)*10,10,10,p[1]);
 }
 function cardio(c,s,p,t){
  // An energetic pulse cuts a full-width path around a compact time block.
@@ -195,7 +187,6 @@ function other(c,s,p,t){
  path(c,[[0,275],[960,500],[900,750],[0,535]],p[2],0);
  rect(c,20,365,840,275,p[0]);hours(c,s,p,40,570,330,800);
  path(c,[[0,790],[0,990],[680,990],[680,790]],p[1],0);stat(c,s,p,0,28,915,620,{ink:p[0],size:110});
- path(c,[[780,900],[930,900+Math.sin(t*.32)*16]],p[3],8);
 }
 const compositions={running,cycling,hiit,strength,walking,hiking,swimming,rowing,yoga,pilates,elliptical,skiing,golf,racket,triathlon,team_sports:team,climbing,cardio,other};
 export function drawDurationPoster(c,b,s,p,time=0){
