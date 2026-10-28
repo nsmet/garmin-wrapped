@@ -7,7 +7,7 @@ import {healthMonthExtremes} from './story-model.mjs';
 const colors=['#1743ed','#ff7038','#f23897','#8de4c4','#f2e630','#a18ce4','#0699ac','#b65c23','#79ac29','#ed8bad','#6d99fa','#d3bd87','#923e79','#24715d','#dfbf13','#677a94','#cf4646','#745ab9','#aaaaaa'];
 export function chartColor(key,index=0){const keys=['running','cycling','hiit','strength','walking','hiking','swimming','rowing','yoga','pilates','elliptical','skiing','golf','racket','triathlon','team_sports','climbing','cardio','other'];return colors[Math.max(0,keys.indexOf(key))]||colors[index%colors.length];}
 function text(c,value,x,y,size,max,ink,{bold=false,align='left',condensed=false}={}){
- c.save();const family=condensed?'"Barlow Condensed",Impact':'"Space Grotesk",Arial';c.font=`${bold?800:500} ${size}px ${family}`;
+ c.save();const family=condensed?'"Anton",Impact':'"Space Grotesk",Arial';c.font=`${bold?800:500} ${size}px ${family}`;
  const width=c.measureText(String(value)).width;if(width>max)size*=max/width;
  c.font=`${bold?800:500} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(String(value),x,y);c.restore();
 }
@@ -24,7 +24,7 @@ function summary(c,b,chart,p,receipt){
   items.forEach((item,i)=>{const row=h/items.length,top=y+i*row;rule(c,x,top,w,p[1]);text(c,item.label,x,top+row*.57,11,w*.45,p[1]);text(c,item.value,x+w,top+row*.69,row*.68,w*.48,p[1],{bold:true,condensed:true,align:'right'});});return;
  }
  const rows=Math.ceil(items.length/2),cw=w/2,ch=h/rows;
- items.forEach((item,i)=>{const left=x+(i%2)*cw,top=y+Math.floor(i/2)*ch;rule(c,left,top,cw-12,p[1]);text(c,item.label,left,top+22,10,cw-15,p[1]);text(c,item.value,left,top+ch*.68,Math.min(ch*.49,88),cw-16,p[1],{bold:true,condensed:true});text(c,item.unit,left,top+ch*.88,10,cw-16,p[1]);});
+ items.forEach((item,i)=>{const left=x+(i%2)*cw,top=y+Math.floor(i/2)*ch;rule(c,left,top,cw-12,p[1]);c.fillStyle=i%2?p[3]:p[2];c.fillRect(left,top,Math.min(32,cw*.18),3);text(c,item.label,left,top+22,10,cw-15,p[1]);text(c,item.value,left,top+ch*.68,Math.min(ch*.49,88),cw-16,i===0?p[2]:p[1],{bold:true,condensed:true});text(c,item.unit,left,top+ch*.88,10,cw-16,p[1]);});
 }
 function mix(c,b,chart,p){
  const {x,y,w,h}=b,two=chart.items.length>8,rows=Math.ceil(chart.items.length/(two?2:1));

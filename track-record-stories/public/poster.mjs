@@ -1,10 +1,11 @@
 import {posterLayout} from './poster-layout.mjs';
-import {palettes,drawBackdrop,drawPhoto,drawInterlude,drawWeave,motionProfile} from './visual-system.mjs';
+import {palettes,motionProfile} from './visual-system.mjs';
 import {drawDataPoster} from './data-poster.mjs';
+import {drawLayeredArt} from './layered-art.mjs';
 export {palettes};
 export const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
 function color(a,b,t){return 'rgb('+[1,3,5].map(k=>Math.round(parseInt(a.slice(k,k+2),16)*(1-t)+parseInt(b.slice(k,k+2),16)*t)).join(',')+')';}
-function type(c,str,x,y,size,max,ink,weight=800,family='Barlow Condensed',align='left'){
+function type(c,str,x,y,size,max,ink,weight=800,family='Anton',align='left'){
  c.save();c.font=`${weight} ${size}px "${family}",Impact,Arial,sans-serif`;const width=c.measureText(str).width;if(width>max)size*=max/width;
  c.font=`${weight} ${size}px "${family}",Impact,Arial,sans-serif`;c.fillStyle=ink;c.textBaseline='alphabetic';c.textAlign=align;c.fillText(str,x,y);c.restore();
 }
@@ -23,12 +24,12 @@ function typography(c,w,h,s,alpha,offset,time,layout,palette){
   const size=Math.min(max*.31,b.h/(lines*.87+.8));
   const top=b.y+size*.82;
   s.title.forEach((line,i)=>type(c,line,b.x,top+i*size*.87,size,max,p[1]));
-  type(c,s.template==='cover'?s.value:s.value+' '+s.unit,b.x,top+(lines-1)*size*.87+size*.66,s.template==='cover'?size*.43:15*layout.unit,max,p[1],700,s.template==='cover'?'Barlow Condensed':'Space Grotesk');
+  type(c,s.template==='cover'?s.value:s.value+' '+s.unit,b.x,top+(lines-1)*size*.87+size*.66,s.template==='cover'?size*.43:15*layout.unit,max,p[1],700,s.template==='cover'?'Anton':'Space Grotesk');
  }else{
-  const titleSize=Math.min(54*layout.unit,max*.12,b.h*.27/Math.max(lines,1)),gap=titleSize*.94,top=b.y+titleSize*.83;
+  const titleSize=Math.min(74*layout.unit,max*.18,b.h*.34/Math.max(lines,1)),gap=titleSize*.94,top=b.y+titleSize*.83;
   s.title.forEach((line,i)=>type(c,line,b.x,top+i*gap,titleSize,max,p[1]));
   const labelSize=12*layout.unit,labelGap=24*layout.unit;
-  const metric=Math.min(max*.53,(b.h-lines*gap-labelGap)/(1+(values.length-1)*.8));
+  const metric=Math.min(max*.63,(b.h-lines*gap-labelGap)/(1+(values.length-1)*.8));
   const start=top+(lines-1)*gap+metric*.94;
   values.forEach((line,i)=>type(c,line,b.x,start+i*metric*.8,metric,max,p[1]));
   type(c,s.unit,b.x,start+(values.length-1)*metric*.8+labelGap,labelSize,max,p[1],600,'Space Grotesk');
@@ -56,14 +57,15 @@ export function renderPoster(c,w,h,{from,to=from,progress=1,time=0,assets={},chr
  if(transition){c.save();reveal(c,w,h,t,to);c.fillStyle=b[0];c.fillRect(0,0,w,h);c.restore();}
  const outgoing={alpha:1-ease(progress/.64),offset:-t},incoming={alpha:ease((progress-.20)/.80),offset:1-t};
  const layers=transition?[[from,outgoing],[to,incoming]]:[[to,{alpha:1,offset:0}]];
- // Reserve the actual DOM header/footer and keep imagery in its composition column.
- c.save();c.beginPath();c.rect(layout.wide?layout.art.x-layout.gap/2:0,layout.art.y,w,layout.art.h);c.clip();
- for(const [s,phase] of layers)artLayer(c,w,h,s,phase,time,alpha=>drawBackdrop(c,w,h,s,time,alpha,layout,palette),layout);
- for(const [s,phase] of layers)artLayer(c,w,h,s,phase,time,alpha=>drawPhoto(c,w,h,s,time,assets,alpha,'rear',layout),layout);
- drawWeave(c,w,h,from,to,t,time,false,p,layout);
- for(const [s,phase] of layers)artLayer(c,w,h,s,phase,time,alpha=>drawInterlude(c,w,h,s,time,alpha,layout,palette),layout);
- for(const [s,phase] of layers)artLayer(c,w,h,s,phase,time,alpha=>drawPhoto(c,w,h,s,time,assets,alpha,'subject',layout),layout);
- drawWeave(c,w,h,from,to,t,time,true,p,layout);c.restore();
+ // Composition layers are independently animated and stay inside the reserved art region.
+ for(const [s,phase] of layers){
+  // Sport data cards retain their visual identity. In portrait, the artwork is
+  // a quiet watermark so it cannot compete with measured charts; in wide
+  // layouts it occupies the spare column beneath the headline.
+  const artLayout=s.chart&&layout.wide?{...layout,art:{x:layout.content.x,y:layout.content.y+layout.content.h*.43,w:layout.content.w*.42,h:layout.content.h*.55}}:layout;
+  const strength=s.chart?(layout.wide?.24:.07):1;
+  artLayer(c,w,h,s,phase,time,alpha=>drawLayeredArt(c,w,h,s,time,assets,artLayout,palette||palettes[s.template],alpha*strength),artLayout);
+ }
  if(transition){typography(c,w,h,from,1-ease(progress/.36),-h*.018*t,time,layout,palette);typography(c,w,h,to,ease((progress-.45)/.55),h*.023*(1-t),time,layout,palette);}else typography(c,w,h,to,1,0,time,layout,palette);
  if(chrome){
   const pad=w*.056;type(c,'GARMIN WRAPED',pad,h*.048,w*.048,w*.68,b[1],800);type(c,String(year),w-pad,h*.048,w*.03,w*.18,b[1],600,'Space Grotesk','right');

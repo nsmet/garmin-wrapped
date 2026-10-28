@@ -72,3 +72,7 @@ Use case: photorealistic-natural. Asset type: original sports photography for a 
 
 `public/social-preview.jpg` is a 1200 × 630 JPEG composed from the existing blue shoe, track motif and homepage palette. The layout source is `source-assets/social-preview.html`; render it at 1200 × 630 after its image loads, then export as JPEG at quality 85. It contains no personal recap data. It is used by the Open Graph and Twitter metadata and application structured data.
 
+
+## Layered poster assets (28 October)
+
+The independent transparent PNG sources are in `source-assets/layers/`; alpha-preserving WebP copies in `public/assets/layers/` are loaded by the app to keep downloads small. Existing equipment and landscape files were decoded losslessly from the existing alpha WebPs. New PNG fragments were created with the built-in image generation tool from the saved sport poster concepts or the matching existing scene as an art-direction reference: curved running track, gym floor, pool water, open water, crosswalk, grass, court, studio floor, bicycle wheel, bicycle handlebars, golf ball and golf club. The prompts asked for isolated photorealistic fragments, real transparency, no people, logos, text or rectangular backgrounds; the track, court and studio fragments additionally asked for the entire organic silhouette inside the canvas. The bicycle and golf prompts requested only the named object. The individual source images and animation treatment are catalogued in `LAYERED-ART.md`.

@@ -54,6 +54,7 @@ test('All 184 design templates keep their typography clear at desktop and mobile
  const templates=await page.evaluate(async()=>{const {makeLibrary,extensions}=await import('/story-library.mjs');const catalog=await fetch('/story-catalog.json').then(r=>r.json());return [...makeLibrary(catalog),...extensions].map(s=>({id:s.id,title:s.title.join(' ')}));});
  for(const [width,height] of [[1440,900],[768,1024],[320,568]]){
   await page.setViewportSize({width,height});
+  await expect.poll(()=>page.locator('#poster').evaluate(canvas=>{const ratio=Math.min(devicePixelRatio||1,2),box=canvas.getBoundingClientRect();return canvas.width===Math.round(box.width*ratio)&&canvas.height===Math.round(box.height*ratio);})).toBe(true);
   for(const {id,title} of templates){
    await navigate(page,id,browserName);await expect(page.locator('#story-title')).toHaveText(title);
    await fits(page,`${width}×${height} ${id}`);
