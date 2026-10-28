@@ -16,6 +16,6 @@ test('Library concepts never become verified recap claims',()=>{assert.equal(sel
 import {renderPoster} from '../public/poster.mjs';
 import {recapSequence} from '../public/recap-sequence.mjs';
 test('Every recap and library template renders finite geometry at mobile and desktop sizes',()=>{
- const c=new Proxy({measureText:s=>({width:s.length*30}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>k in o?o[k]:(...args)=>{for(const a of args)if(typeof a==='number')assert.ok(Number.isFinite(a),String(k));},set:(o,k,v)=>{o[k]=v;return true;}});
+ const c=new Proxy({measureText:s=>({width:s.length*30}),getTransform:()=>({a:1,b:0,c:0,d:1}),createLinearGradient:()=>({addColorStop(){}})},{get:(o,k)=>k in o?o[k]:(...args)=>{for(const a of args)if(typeof a==='number')assert.ok(Number.isFinite(a),String(k));},set:(o,k,v)=>{o[k]=v;return true;}});
  const all=[...recapSequence(dataset),...library];for(const [w,h] of [[320,620],[390,844],[1280,800]])for(let i=0;i<all.length;i++){renderPoster(c,w,h,{from:all[i],chrome:true});renderPoster(c,w,h,{from:all[i],to:all[(i+1)%all.length],progress:.5,time:8});}
 });

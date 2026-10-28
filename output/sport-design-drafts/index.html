@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sport story design drafts</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#101519;color:#f8f5ed;font-family:Arial,sans-serif}main{max-width:1600px;margin:auto;padding:clamp(24px,5vw,80px)}header{max-width:850px;margin-bottom:48px}h1{font-size:clamp(42px,7vw,96px);line-height:.92;letter-spacing:-.055em;margin:12px 0 24px;text-transform:uppercase}p{line-height:1.5;color:#caccc9;max-width:72ch}.eyebrow{color:#ff7038;font-size:12px;letter-spacing:.15em;font-weight:bold;text-transform:uppercase}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:28px 18px}.card{margin:0}.card img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:3px}.card a{color:inherit;text-decoration:none}.card a:hover img{outline:3px solid #ff7038}.card h2{font-size:19px;margin:14px 0 5px}.card p{font-size:13px;margin:0;line-height:1.4}.number{color:#ff7038;font-size:11px;letter-spacing:.1em}.note{border-top:1px solid #454b4c;margin-top:60px;padding-top:20px;font-size:14px}
+  </style>
+</head>
+<body><main>
+  <header><div class="eyebrow">Effortbase · Art direction · Draft 01</div><h1>Every sport.<br>Its own story.</h1><p>18 portrait concepts for the existing sport categories. Each is a static visual draft with fictional sample statistics. Click any image to view it at full size. The motion descriptions show how photographic layers and geometry could interact in the eventual implementation.</p></header>
+  <div class="grid" id="gallery"></div>
+  <p class="note">These are flattened image-generation concepts, not production-ready layered assets. Final slides would use separate photos, geometric layers and live text. Copy, numbers and comparison claims are placeholders.</p>
+</main>
+<script>
+const cards=[
+['running','Running','Track lanes sweep around the shoe; colored arcs carry into the next running slide.'],
+['cycling','Cycling','Road ribbons travel through the landscape; a circular wheel motif turns gently.'],
+['hiit','HIIT','Angular bursts expand and retract in quick, controlled pulses.'],
+['strength','Strength','Stepped color blocks build between slides while weights remain grounded.'],
+['walking','Walking','Zigzag paths advance across an urban scene in a measured rhythm.'],
+['hiking','Hiking','Contour lines trace the landscape while layered ridges shift subtly.'],
+['swimming','Swimming','Pool lanes glide and translucent waves cross behind and in front of the goggles.'],
+['rowing','Rowing','Ripples spread from the oar and pass through color fields.'],
+['yoga','Yoga','Soft arches open and close slowly around a grounded mat.'],
+['pilates','Pilates','Overlapping circles move in a slow, balanced counterpoint.'],
+['elliptical','Elliptical','Orbital curves move around the flywheel in an even cadence.'],
+['skiing','Skiing & snowboarding','Slalom ribbons sweep down the slope and connect successive slides.'],
+['golf','Golf','Target rings expand quietly around the green and flag.'],
+['racket','Racket sports','Court lines and diagonal color panels slide across the frame.'],
+['triathlon','Triathlon & multisport','Three bands weave together, then separate into sport-specific transitions.'],
+['team-sports','Team sports','Pitch markings and bold diagonal bands shift across the field.'],
+['climbing','Climbing & bouldering','A route line climbs past the rock and between angular color planes.'],
+['cardio','Cardio & fitness','Pulse ribbons travel through the scene in a controlled rhythmic loop.']
+];
+document.getElementById('gallery').innerHTML=cards.map(([file,title,motion],i)=>`<article class="card"><a href="${file}.png"><img src="${file}.png" alt="${title} poster draft" loading="lazy"><h2><span class="number">${String(i+1).padStart(2,'0')} /</span> ${title}</h2></a><p>${motion}</p></article>`).join('');
+</script></body></html>

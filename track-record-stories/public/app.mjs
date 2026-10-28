@@ -30,7 +30,7 @@ function sync(){
   $('caption').textContent=s.caption;$('story-title').textContent=s.title.join(' ');$('story-description').textContent=`${s.value.replace('\n',' ')} ${s.unit}. ${s.caption.replace('\n',' ')} ${chartDescription(s.chart)} ${s.libraryOnly?'Template. No personal data. '+s.eligibility:dataset.notice}.`;
   $('mini-watt-offer').hidden=!s.promotional;stage.classList.toggle('is-promotion',!!s.promotional);
   $('back').disabled=state.index===0;$('advance').setAttribute('aria-label',state.index===stories.length-1?'Choose a share card':'Next story');
-  $('share').textContent=state.index===stories.length-1?'Choose a card ↗':'Share card ↗';
+  $('share-label').textContent=state.index===stories.length-1?'Choose a card':'Share card';
   $('motion').textContent=reduced.matches?'Still':state.paused?'Play':'Pause';$('motion').disabled=reduced.matches;$('motion').setAttribute('aria-pressed',String(state.paused));
   const shareable=s.promotional?recap.some(card=>canRequestShare(card,dataset)):canRequestShare(s,dataset);
   $('share').disabled=!shareable;$('advance').disabled=state.index===stories.length-1&&!shareable;

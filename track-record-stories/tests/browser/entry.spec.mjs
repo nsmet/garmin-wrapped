@@ -23,9 +23,9 @@ test('The compact homepage fits phone, tablet and desktop widths and keeps detai
   await expect(page.locator('#privacy-dialog')).toBeVisible();
 });
 
-test('Reduced motion goes straight to a usable homepage, with fonts served locally',async({page})=>{
-  const external=[];
-  page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:5173/'))external.push(request.url());});
+test('Reduced motion goes straight to a usable homepage, with fonts served locally',async({page,baseURL})=>{
+  const external=[],origin=new URL(baseURL).origin;
+  page.on('request',request=>{if(new URL(request.url()).origin!==origin)external.push(request.url());});
   await page.goto('/');
   await page.evaluate(()=>document.fonts.ready);
   await expect(page.locator('#entry-intro')).not.toBeVisible();
