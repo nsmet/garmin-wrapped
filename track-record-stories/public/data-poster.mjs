@@ -2,6 +2,7 @@ import {posterLayout} from './poster-layout.mjs';
 import {palettes} from './visual-system.mjs';
 import {drawDurationPoster} from './duration-posters.mjs';
 import {formatNumber as fmt,formatDecimal} from './measurement-format.mjs';
+import {healthMonthExtremes} from './story-model.mjs';
 
 const colors=['#1743ed','#ff7038','#f23897','#8de4c4','#f2e630','#a18ce4','#0699ac','#b65c23','#79ac29','#ed8bad','#6d99fa','#d3bd87','#923e79','#24715d','#dfbf13','#677a94','#cf4646','#745ab9','#aaaaaa'];
 export function chartColor(key,index=0){const keys=['running','cycling','hiit','strength','walking','hiking','swimming','rowing','yoga','pilates','elliptical','skiing','golf','racket','triathlon','team_sports','climbing','cardio','other'];return colors[Math.max(0,keys.indexOf(key))]||colors[index%colors.length];}
@@ -71,18 +72,25 @@ function record(c,b,s,p){
  s.chart.items.forEach((item,i)=>{const top=y+h*.55+i*h*.14,bw=(w-94)*item.value/max;rule(c,x,top-10,w,p[1],.13);c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.06));text(c,item.label,x,top+12,10,24,p[1]);text(c,formatDecimal(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
 }
 function healthMonths(c,b,chart,p){
- const {x,y,w,h}=b,items=chart.items,values=items.filter(i=>i.value!==null).map(i=>i.value),isHrv=chart.measure==='hrv';
+ const {x,y,w,h}=b,items=chart.items,values=items.filter(i=>i.value!==null).map(i=>i.value),isHrv=chart.measure==='hrv',isActivity=chart.measure==='activityHR',extremes=healthMonthExtremes(chart);
  const low=Math.max(0,Math.floor((Math.min(...values)-5)/5)*5),high=Math.ceil((Math.max(...values)+5)/5)*5;
- const left=x+28,right=x+w-9,top=y+27,bottom=y+h*.55,step=(right-left)/11;
+ const badgeH=Math.min(43,Math.max(28,h*.12)),left=x+28,right=x+w-9,top=y+(extremes?badgeH+29:27),bottom=y+h*(extremes?.52:.55),step=(right-left)/11;
  const pointY=value=>bottom-(value-low)/(high-low)*(bottom-top);
- text(c,`MONTHLY MEDIAN · ${isHrv?'MS':'BPM'}`,x,y+6,9,w,p[1],{bold:true});
+ text(c,`MONTHLY ${isHrv?'MEDIAN':'AVERAGE'} · ${isHrv?'MS':'BPM'}`,x,y+6,9,w*.7,p[1],{bold:true});
+ if(items.some(item=>item.state==='current'))text(c,'* SO FAR',x+w,y+6,8,w*.27,p[1],{align:'right'});
+ if(extremes){
+  const ink=color=>{const n=parseInt(color.slice(1),16),l=.299*(n>>16)+.587*((n>>8)&255)+.114*(n&255);return l>130?'#101519':'#fffaf0';};
+  const label=list=>list[0].label+(list[0].state==='current'?'*':'')+(list.length>1?` +${list.length-1}`:'');
+  const tied=extremes.high===extremes.low,boxes=tied?[['ALL RECORDED MONTHS TIED',extremes.highest,extremes.high,p[1]]]:[['HIGHEST AVERAGE',extremes.highest,extremes.high,p[2]],['LOWEST AVERAGE',extremes.lowest,extremes.low,p[3]]];
+  boxes.forEach(([name,list,value,color],i)=>{const bw=(w-(boxes.length-1)*7)/boxes.length,bx=x+i*(bw+7),by=y+13;c.fillStyle=color;c.fillRect(bx,by,bw,badgeH);const foreground=ink(color);text(c,name,bx+8,by+11,8,bw-16,foreground,{bold:true});text(c,`${tied?'':label(list)+'  '}${fmt(value)} ${isHrv?'MS':'BPM'}`,bx+8,by+badgeH-5,Math.min(22,badgeH*.52),bw-16,foreground,{bold:true,condensed:true});});
+ }
  for(let i=0;i<=2;i++){const value=low+(high-low)*i/2,py=pointY(value);rule(c,left,py,right-left,p[1],.18);text(c,fmt(value),left-7,py+3,8,24,p[1],{align:'right'});}
  c.strokeStyle=p[1];c.lineWidth=2.5;c.lineJoin='round';c.beginPath();let previous=false;
  items.forEach((item,i)=>{if(item.value===null){previous=false;return;}const px=left+i*step,py=pointY(item.value);if(previous)c.lineTo(px,py);else c.moveTo(px,py);previous=true;});c.stroke();
- items.forEach((item,i)=>{const px=left+i*step;if(item.value!==null){c.fillStyle=p[1];c.beginPath();c.arc(px,pointY(item.value),3.5,0,Math.PI*2);c.fill();}text(c,item.label[0],px,bottom+16,8,step,p[1],{align:'center'});});
- // The monthly table keeps exact medians and coverage readable on a phone.
- const tableTop=bottom+31,row=(y+h-tableTop)/4,cw=w/3;
- items.forEach((item,i)=>{const px=x+i%3*cw,py=tableTop+Math.floor(i/3)*row;rule(c,px,py,cw-10,p[1],.2);text(c,item.label+(item.state==='current'?'*':''),px,py+row*.30,8,cw*.35,p[1]);text(c,item.value===null?'—':fmt(item.value),px+cw-12,py+row*.41,Math.min(23,row*.42),cw*.58,p[1],{bold:true,condensed:true,align:'right'});text(c,item.state==='future'?'UPCOMING':`${item.count} ${isHrv?'NIGHTS':'DAYS'}${item.value===null?' / <10':''}`,px,py+row*.81,7,cw-12,p[1]);});
+ items.forEach((item,i)=>{const px=left+i*step;if(item.value!==null){const hi=extremes&&extremes.high!==extremes.low&&item.value===extremes.high,lo=extremes&&extremes.high!==extremes.low&&item.value===extremes.low;c.fillStyle=hi?p[2]:lo?p[3]:p[1];c.beginPath();c.arc(px,pointY(item.value),hi||lo?5:3.5,0,Math.PI*2);c.fill();}text(c,item.label[0],px,bottom+13,8,step,p[1],{align:'center'});});
+ // A ruled table gives each month its value and source count, including gaps.
+ const tableTop=bottom+23,row=(y+h-tableTop)/4,cw=w/3;
+ items.forEach((item,i)=>{const px=x+i%3*cw,py=tableTop+Math.floor(i/3)*row,hi=extremes&&extremes.high!==extremes.low&&item.value===extremes.high,lo=extremes&&extremes.high!==extremes.low&&item.value===extremes.low;rule(c,px,py,cw-10,p[1],.25);if(hi||lo){c.fillStyle=hi?p[2]:p[3];c.fillRect(px,py+2,5,5);}text(c,(hi?'↑ ':lo?'↓ ':'')+item.label+(item.state==='current'?'*':''),px+(hi||lo?8:0),py+row*.32,8,cw*.48,p[1]);text(c,item.value===null?'—':fmt(item.value),px+cw-12,py+row*.43,Math.min(23,row*.42),cw*.48,p[1],{bold:true,condensed:true,align:'right'});text(c,item.state==='future'?'UPCOMING':`${item.count} ${isHrv?'NIGHTS':isActivity?'ACTIVITIES':'DAYS'}${item.value===null&&!isActivity?' / <10':''}`,px,py+row*.83,7,cw-12,p[1]);});
 }
 function weekdays(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1),cw=w/7;

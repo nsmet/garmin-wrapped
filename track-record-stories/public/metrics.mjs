@@ -10,6 +10,8 @@ const num=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_I
 const dateValid=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
 const median=a=>{const b=[...a].sort((x,y)=>x-y),i=Math.floor(b.length/2);return b.length%2?b[i]:(b[i-1]+b[i])/2;};
 const sum=a=>a.reduce((x,y)=>x+y,0);
+const mean=a=>sum(a)/a.length;
+const chartMean=a=>Math.round(mean(a)*10)/10;
 const heartValue=v=>num(v)&&v>0&&v<=250;
 export function validatePeriod(year,timeZone,now=new Date()) {
   try {new Intl.DateTimeFormat('en',{timeZone}).format(now);}catch{throw Error('Choose a valid time zone.');}
@@ -135,22 +137,30 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],in
     let heart;
     const heartChapter=()=>heart??=chapter('heart_and_effort','Your heart rate & HRV');
     if(activityHR.length)story(heartChapter(),'max-hr','heart',['YOUR HIGHEST','RECORDED HR.'],fmt(Math.max(...activityHR.map(r=>r.maxHR))),'BPM · ACTIVITY PEAK'+qualified,`Highest reported peak across your imported activities.\n${activityHR.length} of ${records.length} activities include a usable maximum.`,activityHR.map(r=>'activity:'+r.id),{health:true,phase:'peak'});
-    if(averageHR.length>=8)story(heartChapter(),'activity-hr','heart',['YOUR HEART','AT WORK.'],fmt(median(averageHR.map(r=>r.averageHR))),'BPM · MEDIAN ACTIVITY AVERAGE',`The median of ${averageHR.length} recorded activity averages.\nEach activity counts once, regardless of duration.`,averageHR.map(r=>'activity:'+r.id),{health:true});
+    if(averageHR.length){
+      story(heartChapter(),'activity-hr','heart',['YOUR HEART','AT WORK.'],fmt(mean(averageHR.map(r=>r.averageHR))),'BPM · AVERAGE ACTIVITY HEART RATE'+qualified,`${averageHR.length} of ${records.length} activities have heart-rate averages.\nEach activity counts once, regardless of duration.`,averageHR.map(r=>'activity:'+r.id),{health:true});
+      const chart={kind:'health-months',measure:'activityHR',compare:!!indexComplete,items:months.map((month,i)=>{
+        const rows=averageHR.filter(r=>Number(r.date.slice(5,7))===i+1);
+        return {label:month.label,state:month.state,count:rows.length,value:rows.length?chartMean(rows.map(r=>r.averageHR)):null};
+      })};
+      story(heartChapter(),'activity-hr-monthly','heart',['YOUR HEART RATE,','MONTH BY MONTH.'],'MONTHLY AVERAGES','BPM · ACTIVITY HEART RATE',`Average of recorded activity averages in each month.\n${!indexComplete?'Partial import: highest and lowest months are not ranked.':chart.items.filter(i=>i.value!==null).length<2?'One month has activity heart-rate records.':'High and low compare the months shown.'}`,averageHR.map(r=>'activity:'+r.id),{health:true,phase:'pattern',chart});
+    }
     function healthMonths(rows,field,measure){
-      return {kind:'health-months',measure,items:months.map((month,i)=>{
+      return {kind:'health-months',measure,compare:measure==='restingHR',items:months.map((month,i)=>{
         const days=rows.filter(d=>Number(d.date.slice(5,7))===i+1);
         const state=month.state==='future'?'future':year===Number(localNow.year)&&i+1===Number(localNow.month)?'current':'complete';
-        return {label:month.label,state,count:days.length,value:days.length>=10?median(days.map(d=>d[field])):null};
+        return {label:month.label,state,count:days.length,value:days.length>=10?(measure==='hrv'?median(days.map(d=>d[field])):chartMean(days.map(d=>d[field]))):null};
       })};
     }
     function monthlyStory(rows,field,measure,id,template,title,unit,evidencePrefix){
       const chart=healthMonths(rows,field,measure);
-      if(chart.items.filter(i=>i.value!==null).length>=2)story(heartChapter(),id,template,title,'MONTHLY MEDIANS',unit,`Monthly medians, with at least 10 recorded ${measure==='hrv'?'nights':'days'} per point.\nGaps show months without enough measurements.`,rows.map(d=>evidencePrefix+d.date),{health:true,phase:'pattern',chart});
+      const hrv=measure==='hrv';
+      if(chart.items.filter(i=>i.value!==null).length>=2)story(heartChapter(),id,template,title,hrv?'MONTHLY MEDIANS':'MONTHLY AVERAGES',unit,`Monthly ${hrv?'medians':'averages'}, with at least 10 recorded ${hrv?'nights':'days'} per point.\n${hrv?'Gaps show months without enough measurements.':'High and low compare the months shown.'}`,rows.map(d=>evidencePrefix+d.date),{health:true,phase:'pattern',chart});
     }
     if(hr.length>=30){
-      story(heartChapter(),'resting-hr','heart',['YOUR RESTING','HEART RATE.'],fmt(median(hr.map(d=>d.restingHR))),'BPM · MEDIAN RESTING HEART RATE',`${hr.length} days with Garmin resting-heart-rate records.\nMedian across recorded days only.`,hr.map(d=>'daily:'+d.date),{health:true});
+      story(heartChapter(),'resting-hr','heart',['YOUR RESTING','HEART RATE.'],fmt(mean(hr.map(d=>d.restingHR))),'BPM · AVERAGE RESTING HEART RATE',`${hr.length} days with Garmin resting-heart-rate records.\nAverage across recorded days only.`,hr.map(d=>'daily:'+d.date),{health:true});
       monthlyStory(hr,'restingHR','restingHR','resting-hr-monthly','heart',['RESTING HR,','MONTH BY MONTH.'],'BPM · RESTING HEART RATE','daily:');
-      quality.push('Resting heart rate uses Garmin’s daily restingValue field. Garmin may substitute the daily minimum when a resting value is unavailable. Monthly medians need at least 10 recorded days; missing days are never zero.');
+      quality.push('Resting heart rate uses Garmin’s daily restingValue field. Garmin may substitute the daily minimum when a resting value is unavailable. Monthly averages need at least 10 recorded days; missing days are never zero.');
     }else if(hr.length)quality.push('Resting heart rate: at least 30 recorded days are required.');
     if(variability.length>=30){
       story(heartChapter(),'hrv-median','hrv',['YOUR OVERNIGHT','HRV.'],fmt(median(variability.map(d=>d.hrv))),'MS · MEDIAN OVERNIGHT HRV',`${variability.length} nights with recorded overnight HRV averages.\nMedian across recorded nights only.`,variability.map(d=>'hrv:'+d.date),{health:true});

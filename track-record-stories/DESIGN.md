@@ -2,6 +2,10 @@
 
 The 27 October sport refresh translates the approved draft posters into live compositions: an editorial scene photograph, oversized live type, independently drawn color planes, a transparent equipment photograph and sport-specific animated paths. Hero and distance slides vary their placement and geometry; data slides keep their individual data layouts with a restrained scene underneath. Sport photos are people-free. These are original scenes, not flattened draft posters, so shapes and subjects remain separately animatable. The same renderer supplies live stories, thumbnails and share cards.
 
+## Heart rate and HRV
+
+Heart-rate and HRV cards use the shared editorial scene, brand colors, paper caption and animated rhythm graphics. Monthly charts keep the measured line still, give all 12 months a labeled value and source count, and use clear high/low callouts for average activity and resting heart rate. Ties, missing months and a current month in progress are labeled. The same composition renders in the live recap, thumbnails and portrait exports.
+
 ## 27 October — editorial collage refinement
 
 The follow-up design review adjusts the swimming, rowing, golf, yoga, Pilates, walking, elliptical and sleep crops to protect the recognizable subject above the caption. Elliptical and rowing graphics no longer intrude into the metric labels. Resting heart rate uses a dedicated abstract rhythm composition without strength equipment. Texture is quieter, share-caption width stays inside its paper panel, and navigation uses vector arrow marks.

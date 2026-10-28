@@ -81,6 +81,9 @@ export function editorialBackdrop(c,b,s,p,t,front=false){
   else if(k==='hiit')polygon(c,[[730,720],[840,650],[800,850],[920,780],[720,1070],[780,850],[680,910]],p[3]);
   else if(['walking','active'].includes(k))stroke(c,[[0,970],[250,970],[250,860],[490,860],[490,750]],p[3],26);
   else if(k==='sleep')ring(c,600,470,490,540,-.15,p[2],3,.2,2.6);
+  else if(k==='heart'||k==='hrv'){
+   for(let i=0;i<2;i++){c.beginPath();c.moveTo(-80,820+i*42);c.bezierCurveTo(250,800+i*42,360,610+i*42,530,700+i*42);c.bezierCurveTo(750,810+i*42,850,570+i*42,1100,610+i*42);c.strokeStyle=i?p[1]:p[2];c.lineWidth=i?4:28;c.stroke();}
+  }
   else if(k==='yoga')stroke(c,[[60,920],[940,920]],p[3],24);
   else if(k==='racket')stroke(c,[[0,800],[1000,510]],p[1],5);
   else if(k==='climbing')stroke(c,[[130,1040],[290,750],[220,590],[430,380]],p[1],6);
@@ -156,6 +159,10 @@ export function editorialBackdrop(c,b,s,p,t,front=false){
 }
 export function editorialPhoto(c,b,s,assets,t,depth){
  const k=s.template,drift=Math.sin(t*.30)*.008;
+ if(k==='heart'||k==='hrv'){
+  if(depth==='rear')photoFill(c,assets['scene-studio'],b,[[0,.53],[1,.18],[1,1],[0,1]],Math.sin(t*.12)*2);
+  return;
+ }
  const landscape=['cover','longest','elevation','hiking','skiing'].includes(k)||(k==='cycling'&&s.presentation==='distance');
  if(landscape){
   if(depth==='rear')cutout(c,assets.ridge,b,.49,k==='cover'?.35:.42,1.45,0);

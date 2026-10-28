@@ -48,6 +48,7 @@ for(const name of ['gym','pool','water','studio','urban','snow','green','court',
 // Every photographic subject remains a replaceable, independent layer.
 export function requiredAssets(story){
  if(isSportStory(story))return sportAssets(story);
+ if(['heart','hrv'].includes(story.template)&&(!story.chart||story.chart.kind==='health-months'))return ['scene-studio'];
  if(story.chart)return [];
  if(story.template==='cover')return ['ridge'];
  if(story.template==='longest'||(story.presentation==='distance'&&story.template==='cycling'))return ['ridge','road-ribbon'];
@@ -73,8 +74,10 @@ export function drawBackdrop(c,w,h,story,time,opacity=1,layout,palette){
  c.save();c.globalAlpha=opacity;editorialBackdrop(c,artBox(w,h,layout),story,palette||palettes[story.template],time+motionProfile(story).phase);c.restore();
 }
 export function drawPhoto(c,w,h,story,time,assets,opacity=1,depth='subject',layout){
- if(story.chart||opacity<.001)return;
- c.save();c.globalAlpha=opacity;editorialPhoto(c,artBox(w,h,layout),story,assets,time+motionProfile(story).phase,depth);c.restore();
+ if(opacity<.001)return;
+ const healthChart=story.chart?.kind==='health-months'&&['heart','hrv'].includes(story.template);
+ if(story.chart&&!healthChart)return;
+ c.save();c.globalAlpha=opacity*(healthChart?.12:1);editorialPhoto(c,artBox(w,h,layout),story,assets,time+motionProfile(story).phase,depth);c.restore();
 }
 export function drawInterlude(c,w,h,story,time,opacity=1,layout,palette){
  if(story.chart||opacity<.001)return;

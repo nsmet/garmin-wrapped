@@ -10,7 +10,7 @@ export function validChart(chart){
   case 'duration':return chart.items.length===2&&chart.items.every(i=>safeText(i.value));
   case 'sport-mix':return safeValue(chart.total)&&chart.total>0&&chart.items.every(i=>safeText(i.key)&&safeValue(i.value)&&i.value>0)&&chart.items.reduce((n,i)=>n+i.value,0)===chart.total;
   case 'months':return ['minutes','sessions'].includes(chart.measure)&&typeof chart.compare==='boolean'&&chart.items.length===12&&chart.items.every(i=>['complete','partial','current','future'].includes(i.state)&&(i.value===null||safeValue(i.value))&&(i.sessions===null||safeValue(i.sessions)));
-  case 'health-months':return ['restingHR','hrv'].includes(chart.measure)&&chart.items.length===12&&chart.items.filter(i=>i.value!==null).length>=2&&chart.items.every(i=>['complete','current','future'].includes(i.state)&&Number.isInteger(i.count)&&i.count>=0&&i.count<=31&&(i.value===null||safeValue(i.value)&&i.value>0&&i.value<=(chart.measure==='hrv'?1000:250)&&i.count>=10)&&(i.state!=='future'||i.value===null&&i.count===0));
+  case 'health-months':return ['activityHR','restingHR','hrv'].includes(chart.measure)&&typeof chart.compare==='boolean'&&chart.items.length===12&&chart.items.filter(i=>i.value!==null).length>=(chart.measure==='activityHR'?1:2)&&chart.items.every(i=>['complete','partial','current','future'].includes(i.state)&&Number.isInteger(i.count)&&i.count>=0&&i.count<=(chart.measure==='activityHR'?20000:31)&&(i.value===null||safeValue(i.value)&&i.value>0&&i.value<=(chart.measure==='hrv'?1000:250)&&i.count>=(chart.measure==='activityHR'?1:10))&&(i.state!=='future'||i.value===null&&i.count===0))&&(!chart.compare||chart.items.every(i=>i.state!=='partial'));
   case 'record':return chart.items.length<=3&&chart.items.every(i=>safeValue(i.value));
   case 'weekdays':return chart.items.length===7&&chart.items.every(i=>safeValue(i.value));
   default:return false;
@@ -27,11 +27,25 @@ function displayChart(chart){
   if(chart.kind==='health-months'){item.state=i.state;item.count=i.count;}
   return item;
  });
- return {kind:chart.kind,items,...(chart.kind==='sport-mix'?{total:chart.total}:{}),...(chart.kind==='months'?{measure:chart.measure,compare:chart.compare}:{}),...(chart.kind==='health-months'?{measure:chart.measure}:{})};
+ return {kind:chart.kind,items,...(chart.kind==='sport-mix'?{total:chart.total}:{}),...(['months','health-months'].includes(chart.kind)?{measure:chart.measure,compare:chart.compare}:{})};
+}
+export function healthMonthExtremes(chart){
+ if(!validChart(chart)||chart.kind!=='health-months'||!chart.compare)return null;
+ const items=chart.items.filter(i=>i.value!==null&&['complete','current'].includes(i.state));
+ if(items.length<2)return null;
+ const high=Math.max(...items.map(i=>i.value)),low=Math.min(...items.map(i=>i.value));
+ return {high,low,highest:items.filter(i=>i.value===high),lowest:items.filter(i=>i.value===low)};
 }
 export function chartDescription(chart){
  if(!validChart(chart))return '';
- if(chart.kind==='health-months')return chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':`insufficient measurements (${i.count} recorded ${chart.measure==='hrv'?'nights':'days'})`):`${new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(i.value)} ${chart.measure==='hrv'?'ms':'bpm'}, ${i.count} recorded ${chart.measure==='hrv'?'nights':'days'}`}${i.state==='current'?' (month in progress)':''}`).join('; ');
+ if(chart.kind==='health-months'){
+  const unit=chart.measure==='hrv'?'ms':'bpm',countUnit=chart.measure==='hrv'?'nights':chart.measure==='activityHR'?'activities':'days';
+  const values=chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':i.state==='partial'?'unknown coverage':`insufficient measurements (${i.count} recorded ${countUnit})`):`${formatNumber(i.value)} ${unit}, ${i.count} recorded ${countUnit}`}${i.state==='current'?' (month in progress)':''}`).join('; ');
+  const extremes=healthMonthExtremes(chart);if(!extremes)return values;
+  if(extremes.high===extremes.low)return `${values}. All ${extremes.highest.length} recorded months are tied at ${formatNumber(extremes.high)} ${unit}.`;
+  const name=items=>items.map(i=>i.label+(i.state==='current'?' (so far)':'')).join(', ');
+  return `${values}. Highest monthly average${extremes.highest.length>1?'s (tied)':''}: ${name(extremes.highest)}, ${formatNumber(extremes.high)} ${unit}. Lowest monthly average${extremes.lowest.length>1?'s (tied)':''}: ${name(extremes.lowest)}, ${formatNumber(extremes.low)} ${unit}.`;
+ }
  if(chart.kind==='months'){
   const values=chart.items.map(i=>`${i.label}: ${i.value===null?(i.state==='future'?'upcoming':'unknown coverage'):`${formatNumber(i.value)} ${chart.measure}, ${i.sessions} activities`}${i.state==='current'?' (month in progress)':''}`).join('; ');
   const completed=chart.items.filter(i=>i.state==='complete'&&i.value!==null);
