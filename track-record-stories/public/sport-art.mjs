@@ -11,7 +11,7 @@ export const sportScenes={
  triathlon:{scene:'scene-water',subject:'triad',motif:'triad'},team_sports:{scene:'scene-green',subject:'football',motif:'pitch'},
  climbing:{scene:'scene-rock',subject:'carabiner',motif:'holds'},cardio:{scene:'scene-gym',subject:'rope',motif:'pulse'}
 };
-export const isSportStory=s=>!!sportScenes[s.template];
+export const isSportStory=s=>!s.id?.startsWith('other-')&&!!sportScenes[s.template];
 export function sportAssets(s){const d=sportScenes[s.template];if(!d)return [];return [d.scene,...(d.subject==='triad'?['goggles','crank','shoe']:[d.subject])];}
 const tau=Math.PI*2;
 function poly(c,points,color){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=color;c.fill();}
@@ -19,7 +19,7 @@ function circle(c,x,y,r,color){c.beginPath();c.arc(x,y,r,0,tau);c.fillStyle=colo
 function stroke(c,color,width,draw){c.beginPath();draw(c);c.lineWidth=width;c.lineCap='round';c.lineJoin='round';c.strokeStyle=color;c.stroke();}
 function cover(c,img){if(!img?.naturalWidth)return;const scale=Math.max(1000/img.naturalWidth,1000/img.naturalHeight),w=img.naturalWidth*scale,h=img.naturalHeight*scale;c.drawImage(img,(1000-w)/2,(1000-h)/2,w,h);}
 function subject(c,img,x,y,size,angle){if(!img?.naturalWidth)return;c.save();c.translate(x,y);c.rotate(angle);const scale=size/Math.max(img.naturalWidth,img.naturalHeight);c.drawImage(img,-img.naturalWidth*scale/2,-img.naturalHeight*scale/2,img.naturalWidth*scale,img.naturalHeight*scale);c.restore();}
-function variant(s){let n=0;for(const ch of s.id||s.template)n=(n*31+ch.charCodeAt(0))>>>0;return n;}
+function variant(s){let n=0;for(const ch of s.template)n=(n*31+ch.charCodeAt(0))>>>0;return n;}
 function planes(c,p,kind,drift,distance){
  // The large forms are deliberately different, even where sports share a scene.
  c.globalAlpha*=.88;

@@ -1,8 +1,8 @@
 import {posterLayout} from './poster-layout.mjs';
 import {palettes} from './visual-system.mjs';
 import {drawDurationPoster} from './duration-posters.mjs';
+import {formatNumber as fmt,formatDecimal} from './measurement-format.mjs';
 
-const fmt=n=>new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(n);
 const colors=['#1743ed','#ff7038','#f23897','#8de4c4','#f2e630','#a18ce4','#0699ac','#b65c23','#79ac29','#ed8bad','#6d99fa','#d3bd87','#923e79','#24715d','#dfbf13','#677a94','#cf4646','#745ab9','#aaaaaa'];
 export function chartColor(key,index=0){const keys=['running','cycling','hiit','strength','walking','hiking','swimming','rowing','yoga','pilates','elliptical','skiing','golf','racket','triathlon','team_sports','climbing','cardio','other'];return colors[Math.max(0,keys.indexOf(key))]||colors[index%colors.length];}
 function text(c,value,x,y,size,max,ink,{bold=false,align='left',condensed=false}={}){
@@ -14,23 +14,31 @@ function rule(c,x,y,w,ink,alpha=.25){c.save();c.globalAlpha=alpha;c.fillStyle=in
 function donut(c,x,y,r,items,total,ink,paper){
  let angle=-Math.PI/2;c.lineWidth=r*.28;
  for(const [i,item] of items.entries()){const arc=item.value/total*Math.PI*2;c.beginPath();c.strokeStyle=chartColor(item.key,i);c.arc(x,y,r,angle+.012,angle+Math.max(.013,arc-.012));c.stroke();angle+=arc;}
- text(c,fmt(total),x,y+r*.12,r*.65,r*1.4,ink,{bold:true,condensed:true,align:'center'});
+ text(c,fmt(total),x,y+r*.14,r*.78,r*1.4,ink,{bold:true,condensed:true,align:'center'});
  text(c,'ACTIVITIES',x,y+r*.40,r*.13,r*1.3,ink,{align:'center'});
 }
 function summary(c,b,chart,p,receipt){
  const {x,y,w,h}=b,items=chart.items;
  if(receipt){
+  c.fillStyle=p[2];c.fillRect(x,y-5,w,3);
   items.forEach((item,i)=>{const row=h/items.length,top=y+i*row;rule(c,x,top,w,p[1]);text(c,item.label,x,top+row*.57,11,w*.45,p[1]);text(c,item.value,x+w,top+row*.69,row*.68,w*.48,p[1],{bold:true,condensed:true,align:'right'});});return;
  }
  const rows=Math.ceil(items.length/2),cw=w/2,ch=h/rows;
- items.forEach((item,i)=>{const left=x+(i%2)*cw,top=y+Math.floor(i/2)*ch;rule(c,left,top,cw-12,p[1]);text(c,item.label,left,top+22,10,cw-15,p[1]);text(c,item.value,left,top+ch*.68,Math.min(ch*.49,88),cw-16,p[1],{bold:true,condensed:true});text(c,item.unit,left,top+ch*.88,10,cw-16,p[1]);});
+ items.forEach((item,i)=>{
+  const left=x+(i%2)*cw,top=y+Math.floor(i/2)*ch,filled=i===0,ink=filled?p[0]:p[1],inset=filled?12:5;
+  if(filled){c.fillStyle=p[1];c.fillRect(left,top,cw-8,ch-8);}else rule(c,left+5,top,cw-13,p[1]);
+  text(c,item.label,left+inset,top+22,10,cw-20,ink);
+  text(c,item.value,left+inset,top+ch*.68,Math.min(ch*.52,98),cw-25,ink,{bold:true,condensed:true});
+  text(c,item.unit,left+inset,top+ch*.88,9,cw-25,ink);
+  if(i===1){c.fillStyle=p[2];c.fillRect(left+5,top+ch-13,cw-13,5);}
+ });
 }
 function mix(c,b,chart,p){
  const {x,y,w,h}=b,two=chart.items.length>8,rows=Math.ceil(chart.items.length/(two?2:1));
- const row=Math.min(25,(h*.51)/Math.max(rows,1)),legendH=row*rows,r=Math.min(w*.22,(h-legendH-16)/2.45,105);
+ const row=Math.min(32,(h*.43)/Math.max(rows,1)),legendH=row*rows,r=Math.min(w*.31,(h-legendH-26)/2.35,134);
  donut(c,x+w/2,y+r*1.15,r,chart.items,chart.total,p[1],p[0]);
- const top=y+Math.max(r*2.5,h-legendH);
- chart.items.forEach((item,i)=>{const col=two?Math.floor(i/rows):0,offset=two?i%rows:i,cw=w/(two?2:1),left=x+col*cw,base=top+offset*row;c.fillStyle=chartColor(item.key,i);c.fillRect(left,base+2,7,7);text(c,item.label,left+13,base+9,two?9:11,cw*.62,p[1]);text(c,`${fmt(item.value)}  ${Math.round(item.value/chart.total*100)}%`,left+cw-5,base+9,two?9:11,cw*.29,p[1],{bold:true,align:'right'});});
+ const top=y+Math.max(r*2.4+12,h-legendH);
+ chart.items.forEach((item,i)=>{const col=two?Math.floor(i/rows):0,offset=two?i%rows:i,cw=w/(two?2:1),left=x+col*cw,base=top+offset*row;c.fillStyle=chartColor(item.key,i);c.fillRect(left,base+3,7,7);text(c,item.label,left+15,base+11,two?9:12,cw*.61,p[1]);text(c,`${fmt(item.value)}  ${Math.round(item.value/chart.total*100)}%`,left+cw-5,base+11,two?9:12,cw*.29,p[1],{bold:true,align:'right'});if(row>23)rule(c,left,base+row-7,cw-7,p[1],.13);});
 }
 export function monthExtremes(chart){
  const items=chart.items.filter(i=>i.state==='complete'&&i.value!==null);
@@ -59,13 +67,14 @@ function months(c,b,chart,p){
 }
 function record(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1);
- text(c,s.value,x,y+h*.28,Math.min(h*.32,100),w,p[1],{bold:true,condensed:true});text(c,'KM · LONGEST RECORDED',x,y+h*.37,10,w,p[1]);
- s.chart.items.forEach((item,i)=>{const top=y+h*.52+i*h*.15,bw=(w-90)*item.value/max;c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.055));text(c,item.label,x,top+12,10,24,p[1]);text(c,fmt(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
+ text(c,s.value,x,y+h*.31,Math.min(h*.38,132),w,p[1],{bold:true,condensed:true});text(c,'KM · LONGEST RECORDED',x,y+h*.40,10,w,p[1]);
+ s.chart.items.forEach((item,i)=>{const top=y+h*.55+i*h*.14,bw=(w-94)*item.value/max;rule(c,x,top-10,w,p[1],.13);c.fillStyle=i===0?p[2]:p[3];c.fillRect(x+27,top,bw,Math.max(9,h*.06));text(c,item.label,x,top+12,10,24,p[1]);text(c,formatDecimal(item.value)+' km',x+w,top+12,11,58,p[1],{align:'right'});});
 }
 function weekdays(c,b,s,p){
  const {x,y,w,h}=b,max=Math.max(...s.chart.items.map(i=>i.value),1),cw=w/7;
- text(c,s.value,x,y+h*.17,Math.min(w*.13,49),w,p[1],{bold:true,condensed:true});
- s.chart.items.forEach((item,i)=>{const bh=(h*.46)*item.value/max,left=x+i*cw+4,base=y+h*.81;c.fillStyle=item.value===max?p[2]:p[3];c.fillRect(left,base-bh,cw-10,Math.max(2,bh));text(c,item.value,left+(cw-10)/2,base-bh-10,12,cw-6,p[1],{align:'center'});text(c,item.label.slice(0,3).toUpperCase(),left+(cw-10)/2,base+23,9,cw-6,p[1],{align:'center'});});
+ text(c,s.value,x,y+h*.20,Math.min(w*.19,h*.25,64),w,p[1],{bold:true,condensed:true});
+ rule(c,x,y+h*.81,w,p[1],.25);
+ s.chart.items.forEach((item,i)=>{const bh=(h*.43)*item.value/max,left=x+i*cw+4,base=y+h*.81;c.save();c.globalAlpha*=item.value===max?1:.72;c.fillStyle=item.value===max?p[2]:p[3];if(item.value>0)c.fillRect(left,base-bh,cw-10,bh);c.restore();text(c,item.value,left+(cw-10)/2,base-bh-10,12,cw-6,p[1],{align:'center'});text(c,item.label.slice(0,3).toUpperCase(),left+(cw-10)/2,base+23,9,cw-6,p[1],{align:'center'});});
 }
 export function drawDataPoster(c,w,h,s,time=0,alpha=1,layout=posterLayout(w,h),palette){
  if(!s.chart||alpha<.001)return;

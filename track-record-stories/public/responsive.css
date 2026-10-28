@@ -137,3 +137,17 @@ dialog{width:min(960px,calc(100% - 40px));max-width:960px;padding:clamp(22px,3vw
  .footer-top{padding-bottom:10px}
  .footer-bottom{padding-top:3px;min-height:47px}
 }
+/* Editorial caption cutout over the photographic bleed. */
+.story .footer-top{align-items:flex-end}
+.story .footer-copy{position:relative;padding:14px 26px 14px 0;max-width:min(76%,580px);isolation:isolate}
+.story .footer-copy::before{content:'';position:absolute;z-index:-1;inset:0 -18px 0 calc(-1 * var(--page-gutter));background:var(--paper);clip-path:polygon(0 0,90% 0,100% 100%,0 100%)}
+.story .footer-top p{max-width:none}
+.story .footer-bottom{position:relative;background:var(--paper)}
+.story .footer-bottom::before{content:'';position:absolute;z-index:-1;inset:-1px calc(-1 * var(--page-gutter)) -40px;background:var(--paper)}
+.story .advance{background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
+@media(max-width:599px){.story .footer-copy{padding:10px 18px 10px 0;max-width:calc(100% - 64px)}.story .footer-top{padding-bottom:10px}}
+/* Consistent vector marks instead of font-dependent arrow glyphs. */
+.external-mark{display:inline-block;width:12px;height:12px;flex:none;vertical-align:-1px}
+.brand-product .external-mark{width:11px;height:11px;align-self:center;margin-left:1px}
+#share{display:inline-flex;align-items:center;gap:6px}
+#share .external-mark{width:12px;height:12px}

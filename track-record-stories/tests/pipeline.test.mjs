@@ -40,6 +40,26 @@ const annual=()=>{
 };
 import {chartDescription,validChart} from '../public/story-model.mjs';
 import {monthExtremes} from '../public/data-poster.mjs';
+test('Distance records, totals and averages use one decimal across sports and exports without rounding source metrics',()=>{
+ const p=make({activities:[run(1,{distance:21040}),run(2,{distance:5000}),run(3,{activityType:{typeKey:'cycling'},distance:68260}),run(4,{activityType:{typeKey:'cycling'},distance:5000})]});
+ const d=datasetFromPlan(p);
+ for(const [sport,longest,total,average,described] of [['running','21.0','26.0','13.0','21.0 km'],['cycling','68.3','73.3','36.6','68.3 km']]){
+  const record=d.stories.find(s=>s.id===`${sport}-longest`),distance=d.stories.find(s=>s.id===`${sport}-distance`);
+  assert.equal(record.value,longest);assert.equal(distance.value,total);assert.ok(distance.caption.startsWith(average+' km per'));
+  const card=sanitizedCard(record,d);assert.equal(card.value,longest);assert.ok(chartDescription(card.chart).includes(described));assert.ok(chartDescription(card.chart).includes('5.0 km'));
+ }
+ assert.equal(p.metrics.find(m=>m.key==='running.distance_max').value,21040);
+ assert.equal(d.stories.find(s=>s.id==='running-longest').chart.items[0].value,21.04);
+ assert.equal(d.stories.find(s=>s.id==='running-sessions').value,'2');
+});
+test('Hours keep one decimal while average activity time keeps seconds in the card, caption and export',()=>{
+ const d=datasetFromPlan(make({activities:[run(1,{duration:1801}),run(2,{duration:1860})]}));
+ const s=d.stories.find(s=>s.id==='running-hours');
+ assert.equal(s.value,'1.0');assert.match(s.caption,/30m 31s per activity/);
+ assert.deepEqual(s.chart.items[1],{label:'AVG TIME / ACTIVITY',value:'30m 31s'});
+ assert.match(chartDescription(sanitizedCard(s,d).chart),/AVG TIME \/ ACTIVITY: 30m 31s/);
+ assert.equal(d.metrics.find(m=>m.key==='running.duration_sum').value,3661);
+});
 test('Year overview counts each activity, active day and sport exactly once and sums recorded minutes',()=>{
  const p=annual(),stats=p.stories.find(s=>s.id==='year-summary').chart.items;
  assert.deepEqual(stats.map(i=>[i.label,i.value]),[['ACTIVITIES','3'],['MINUTES','210'],['ACTIVE DAYS','2'],['SPORTS','3']]);

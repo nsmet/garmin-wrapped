@@ -1,11 +1,11 @@
 // Versioned measurement + chapter pipeline. Only allowlisted, typed fields enter it.
 import registry from './sport-registry.mjs';
 import {sportContent} from './story-content.mjs';
+import {formatNumber as fmt,formatDecimal,formatActivityTime} from './measurement-format.mjs';
 const aliases = new Map(registry.sports.flatMap(s=>[s.key,...s.aliases_to_validate].map(k=>[k,s.key])));
 const labels = Object.fromEntries(registry.sports.map(s=>[s.key,s.label]));
 labels.other='Other activities';
 const distanceSports=new Set(['running','cycling','walking','hiking','swimming','rowing','skiing','triathlon']);
-const fmt=n=>new Intl.NumberFormat('en',{maximumFractionDigits:1}).format(n);
 const num=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_INTEGER;
 const dateValid=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
 const median=a=>{const b=[...a].sort((x,y)=>x-y),i=Math.floor(b.length/2);return b.length%2?b[i]:(b[i-1]+b[i])/2;};
@@ -73,7 +73,7 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],indexComp
   const annualDuration=metric('year.duration_sum',records,'duration',sum,'s');
   const activeDays=new Set(records.map(r=>r.date)).size;
   const stats=[{label:'ACTIVITIES',value:fmt(records.length),unit:'recorded sessions'},
-    ...(annualDuration.status==='verified'?[{label:'MINUTES',value:fmt(annualDuration.value/60),unit:`${fmt(annualDuration.value/3600)} recorded hours`}]:[]),
+    ...(annualDuration.status==='verified'?[{label:'MINUTES',value:fmt(annualDuration.value/60),unit:`${formatDecimal(annualDuration.value/3600)} recorded hours`}]:[]),
     {label:'ACTIVE DAYS',value:fmt(activeDays),unit:'days with an activity'},
     {label:'SPORTS',value:fmt(groups.size),unit:'recorded activity families'}];
   story(overview,'cover','cover',['YOUR YEAR','IN MOTION.'],year,'YOUR RECORDED EFFORT',`${records.length} activities. ${activeDays} active days${qualified}.\nThe numbers. The sports. The standout moments.`,allEvidence,{phase:'position'});
@@ -95,12 +95,12 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],indexComp
     const content=kind=>sportContent(sport,kind);
     story(ch,`${sport}-sessions`,template,content('sessions').title,rows.length,'RECORDED '+content('sessions').noun.toUpperCase()+qualified,`${rows.length} ${content('sessions').noun} in your recorded year${qualified}.\n${fmt(rows.length/records.length*100)}% of all recorded activities.`,evidence,{phase:'position',presentation:'hero',geometry:content('sessions').geometry});
     const duration=metric(`${sport}.duration_sum`,rows,'duration',sum,'s');
-    if(duration.value>0)story(ch,`${sport}-hours`,template,content('hours').title,fmt(duration.value/3600),'RECORDED HOURS'+qualified,`${fmt(duration.value/60)} recorded minutes of ${labels[sport].toLowerCase()}.\n${fmt(duration.value/60/rows.length)} minutes per activity, on average.`,[duration.key],{presentation:'duration',chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:fmt(duration.value/60)},{label:'AVG MIN / ACTIVITY',value:fmt(duration.value/60/rows.length)}]}});
+    if(duration.value>0)story(ch,`${sport}-hours`,template,content('hours').title,formatDecimal(duration.value/3600),'RECORDED HOURS'+qualified,`${fmt(duration.value/60)} recorded minutes of ${labels[sport].toLowerCase()}.\n${formatActivityTime(duration.value/rows.length)} per activity, on average.`,[duration.key],{presentation:'duration',chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:fmt(duration.value/60)},{label:'AVG TIME / ACTIVITY',value:formatActivityTime(duration.value/rows.length)}]}});
     if(distanceSports.has(sport)){
       const distance=metric(`${sport}.distance_sum`,rows,'distance',sum,'m');
-      if(distance.value>0)story(ch,`${sport}-distance`,template,content('distance').title,fmt(distance.value/1000),'RECORDED KILOMETRES'+qualified,`${fmt(distance.value/1000/rows.length)} km per ${content('sessions').noun==='runs'?'run':sport==='cycling'?'ride':'activity'}, on average.\nTotal distance across ${rows.length} recorded activities.`,[distance.key],{presentation:'distance',geometry:content('distance').geometry});
+      if(distance.value>0)story(ch,`${sport}-distance`,template,content('distance').title,formatDecimal(distance.value/1000),'RECORDED KILOMETRES'+qualified,`${formatDecimal(distance.value/1000/rows.length)} km per ${content('sessions').noun==='runs'?'run':sport==='cycling'?'ride':'activity'}, on average.\nTotal distance across ${rows.length} recorded activities.`,[distance.key],{presentation:'distance',geometry:content('distance').geometry});
       const longest=metric(`${sport}.distance_max`,rows,'distance',a=>Math.max(...a),'m');
-      if(longest.value>0&&rows.length>1&&indexComplete)story(ch,`${sport}-longest`,template,content('longest').title,fmt(longest.value/1000),'KM · LONGEST RECORDED'+qualified,`The longest distance among ${rows.length} recorded ${content('sessions').noun}.\nYour ${rows.length===2?'two':'three'} longest distances, side by side.`,[longest.key],{phase:'peak',presentation:'record',chart:{kind:'record',items:rows.map(r=>r.distance/1000).sort((a,b)=>b-a).slice(0,3).map((value,i)=>({label:String(i+1).padStart(2,'0'),value}))}});
+      if(longest.value>0&&rows.length>1&&indexComplete)story(ch,`${sport}-longest`,template,content('longest').title,formatDecimal(longest.value/1000),'KM · LONGEST RECORDED'+qualified,`The longest distance among ${rows.length} recorded ${content('sessions').noun}.\nYour ${rows.length===2?'two':'three'} longest distances, side by side.`,[longest.key],{phase:'peak',presentation:'record',chart:{kind:'record',items:rows.map(r=>r.distance/1000).sort((a,b)=>b-a).slice(0,3).map((value,i)=>({label:String(i+1).padStart(2,'0'),value}))}});
     }
     if(rows.length>=8){
       const days=Object.entries(Object.groupBy(rows,r=>r.weekday)).map(([k,v])=>[k,v.length]).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
