@@ -16,7 +16,7 @@ let shareURL=null,shareBlob=null,toastTimer,loadingStory=false,viewVersion=0,sha
 let shareColorway='original',shareVersion=0,sharePickerVersion=0;
 const assetPromises={};
 function loadAssets(story){if(!story)return Promise.resolve();return Promise.all(requiredAssets(story).map(name=>assetPromises[name]||(assetPromises[name]=new Promise(resolve=>{const img=new Image();assets[name]=img;const timer=setTimeout(fail,8000);function fail(){clearTimeout(timer);delete assetPromises[name];resolve();}img.onload=()=>{clearTimeout(timer);draw();resolve();};img.onerror=()=>{toast('An image could not load. The story remains available.');fail();};img.src=assetFiles[name];}))));}
-const fonts=document.fonts?document.fonts.ready:Promise.resolve();
+const fonts=document.fonts?Promise.all([document.fonts.ready,document.fonts.load('400 30px Anton')]):Promise.resolve();
 const ready=fonts;
 
 function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4500);}

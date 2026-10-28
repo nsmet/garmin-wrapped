@@ -6,7 +6,7 @@ function accentInk(hex){
  return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722>.179?'#101519':'#fffaf0';
 }
 function type(c,value,x,y,size,max,ink,align='left',label=false){
- c.save();const family=label?'"Space Grotesk",Arial':'"Barlow Condensed",Impact,Arial';
+ c.save();const family=label?'"Space Grotesk",Arial':'"Anton",Impact,Arial';
  c.font=`${label?600:800} ${size}px ${family}`;
  const width=c.measureText(String(value)).width;if(width>max)size*=max/width;
  c.font=`${label?600:800} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(String(value),x,y);c.restore();

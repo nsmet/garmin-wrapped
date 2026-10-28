@@ -72,3 +72,24 @@ Use case: photorealistic-natural. Asset type: original sports photography for a 
 
 `public/social-preview.jpg` is a 1200 × 630 JPEG composed from the existing blue shoe, track motif and homepage palette. The layout source is `source-assets/social-preview.html`; render it at 1200 × 630 after its image loads, then export as JPEG at quality 85. It contains no personal recap data. It is used by the Open Graph and Twitter metadata and application structured data.
 
+
+## Layered poster assets (28 October)
+
+The independent transparent PNG sources are in `source-assets/layers/`; alpha-preserving WebP copies in `public/assets/layers/` are loaded by the app to keep downloads small. Existing equipment and landscape files were decoded losslessly from the existing alpha WebPs. New PNG fragments were created with the built-in image generation tool from the saved sport poster concepts or the matching existing scene as an art-direction reference: curved running track, gym floor, pool water, open water, crosswalk, grass, court, studio floor, bicycle wheel, bicycle handlebars, golf ball and golf club. The prompts asked for isolated photorealistic fragments, real transparency, no people, logos, text or rectangular backgrounds; the track, court and studio fragments additionally asked for the entire organic silhouette inside the canvas. The bicycle and golf prompts requested only the named object. The individual source images and animation treatment are catalogued in `LAYERED-ART.md`.
+
+The built-in image-generation prompts used the following shared instructions: make a separate photorealistic transparent PNG layer for an animated editorial sports poster, compositable over colored geometry, with no people, text, logos, equipment other than the named subject, or rectangular scene. The named reference images were used for art direction. Individual requests were:
+
+| PNG | Reference | Subject and framing requested |
+| --- | --- | --- |
+| `running-track.png` | `output/sport-design-drafts/running.png` | A complete red track fragment with three white lanes, seen from above at an angle; a sweeping ribbon with textured organic edges and tapered ends fully inside the image. |
+| `gym-floor.png` | `public/assets/scene-gym.webp` | A dark textured rubber gym-floor patch in low perspective and warm directional light, with an irregular top edge. |
+| `pool-water.png` | `public/assets/scene-pool.webp` | Turquoise pool water with receding lane lines and an irregular, rippling outline; no horizon. |
+| `open-water.png` | `public/assets/scene-water.webp` | Dark blue rippling water with crisp sunlight reflections and a natural watery silhouette; no horizon. |
+| `crosswalk.png` | `public/assets/scene-urban.webp` | Wet asphalt and white crosswalk stripes in oblique perspective, with an irregular contour. |
+| `green.png` | `public/assets/scene-green.webp` | A low patch of lush fairway grass in perspective with an irregular grass edge, no mountains or sky. |
+| `court.png` | `public/assets/scene-court.webp` | A complete isolated blue and orange hard-court patch with white markings and gritty texture, in low perspective, inside the image bounds. |
+| `studio-floor.png` | `public/assets/scene-studio.webp` | An isolated irregular patch of warm stone studio floor with dappled sunlight and leaf shadows, in low perspective. |
+| `bike-wheel.png` | `output/sport-design-drafts/cycling.png` | A complete black road-bike front wheel with tire, rim, spokes and disc rotor, at a slight three-quarter angle, without frame or handlebars. |
+| `bike-bars.png` | `output/sport-design-drafts/cycling.png` | Black road-bike drop handlebars and brake levers at a three-quarter angle, without wheel or frame. |
+| `golf-ball.png` | `output/sport-design-drafts/golf.png` | A single white dimpled golf ball seen slightly from above in directional light. |
+| `golf-club.png` | `public/assets/golf.webp` | A complete silver golf iron, head and shaft, seen diagonally, without a ball or tee. |

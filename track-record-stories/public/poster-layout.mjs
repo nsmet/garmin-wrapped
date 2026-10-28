@@ -8,6 +8,6 @@ export function posterLayout(w,h,{bounds,chrome=false}={}){
  const unit=Math.min(wide?1.7:1.45,wide?Math.max(.7,Math.min(w/1120,h/740)):w/390);
  const gap=wide?content.w*.055:16*unit;
  const text=wide?{...content,y:top+content.h*.13,w:content.w*.43,h:content.h*.74}:{...content,h:content.h*.49};
- const art=wide?{x:pad+content.w*.49,y:top,w:content.w*.51,h:content.h}:{x:w*.015,y:top+content.h*.51,w:w*.97,h:content.h*.49};
+ const art=wide?{x:pad+content.w*.49,y:top,w:w-(pad+content.w*.49),h:content.h}:{x:0,y:top+content.h*.42,w,h:content.h*.58};
  return {wide,pad,content,text,art,gap,unit};
 }
