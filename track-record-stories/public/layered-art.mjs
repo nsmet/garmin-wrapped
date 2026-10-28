@@ -99,7 +99,8 @@ function paths(c,p,m,t,front){
 export function drawLayeredArt(c,w,h,s,time,assets,layout,p,opacity=1){
  const d=layerDesigns[s.template];if(!d||(s.chart&&!layeredAssets(s).length)||opacity<.001)return;
  const motif=s.libraryOnly?(familyMotifs[s.family]||d.motif):d.motif;
- const b=layout.art,ratio=b.w/b.h,rate=({running:1,cycling:.85,hiit:1.15,strength:.55,walking:.7,hiking:.55,swimming:.8,rowing:.6,yoga:.38,pilates:.45,elliptical:.85,skiing:.95,golf:.48,racket:.85,triathlon:.78,team_sports:.72,climbing:.6,cardio:1.05,sleep:.36,recovery:.4,hrv:.4})[s.template]||.65,phase=time*rate+(s.template.length%7)*.4,drift=Math.sin(phase*.30);
+ const running=s.template==='running';
+ const b=running&&!layout.wide?{...layout.art,h:h-layout.art.y}:layout.art,ratio=b.w/b.h,rate=({running:1,cycling:.85,hiit:1.15,strength:.55,walking:.7,hiking:.55,swimming:.8,rowing:.6,yoga:.38,pilates:.45,elliptical:.85,skiing:.95,golf:.48,racket:.85,triathlon:.78,team_sports:.72,climbing:.6,cardio:1.05,sleep:.36,recovery:.4,hrv:.4})[s.template]||.65,phase=time*rate+(s.template.length%7)*.4,drift=Math.sin(phase*.30);
  c.save();c.globalAlpha=opacity;c.beginPath();c.rect(b.x,b.y,b.w,b.h);c.clip();c.translate(b.x,b.y);c.scale(b.w/1000,b.h/1000);
  background(c,p,motif,phase,ratio);
  if(d.ground){
@@ -107,14 +108,15 @@ export function drawLayeredArt(c,w,h,s,time,assets,layout,p,opacity=1){
   // The mountain source has a straight lower edge: give it an organic lower
   // silhouette, while leaving its naturally cut-out skyline intact.
   if(d.ground==='ridge'){c.beginPath();c.ellipse(500,515,510,345,0,0,TAU);c.clip();}
-  image(c,assets[d.ground],500,560,1120,700,ratio);c.restore();
+  if(running)image(c,assets[d.ground],layout.wide?500:440,layout.wide?500:590,1500,layout.wide?1000:1200,ratio);
+  else image(c,assets[d.ground],500,560,1120,700,ratio);c.restore();
  }
  if(d.extra){c.save();c.translate(-drift*8,0);c.beginPath();c.ellipse(500,600,350,310,-.16,0,TAU);c.clip();image(c,assets[d.extra],500,600,720,650,ratio,-.25);c.restore();}
  c.save();c.globalAlpha*=.85;paths(c,p,motif,phase,false);c.restore();
  if(d.subjects.length===1){
-  const x=s.presentation==='distance'?720:620,y=600;
+  const x=running?(layout.wide?(s.chart?620:750):790):(s.presentation==='distance'?720:620),y=running?(layout.wide?500:480):600;
   const move=d.grounded?0:drift*9;
-  image(c,assets[d.subjects[0]],x+move,y+move*.5,780,650,ratio,(d.angle||0)+(d.grounded?0:Math.sin(phase*.23)*.018));
+  image(c,assets[d.subjects[0]],x+move,y+move*.5,running?1350:780,running?950:650,ratio,(d.angle||0)+(d.grounded?0:Math.sin(phase*.23)*.018));
  }else d.subjects.forEach((name,i)=>{
   const positions=s.template==='cycling'?[[740,570],[730,290]]:s.template==='golf'?[[400,700],[670,510]]:d.subjects.length===2?[[660,480],[400,740]]:[[240,680],[690,470],[750,790]];
   const [x,y]=positions[i],size=s.template==='cycling'?(i===0?720:560):s.template==='golf'?440:520,maxHeight=s.template==='cycling'?(i===0?720:420):500;
@@ -122,4 +124,21 @@ export function drawLayeredArt(c,w,h,s,time,assets,layout,p,opacity=1){
  });
  c.save();c.globalAlpha*=.75;paths(c,p,motif,phase,true);c.restore();
  c.restore();
+ if(running&&layout.wide){
+  // Fade the vector ribbons into the paper where the art column ends,
+  // instead of leaving a straight, rectangular crop against the text column.
+  const left=c.createLinearGradient(b.x,0,b.x+b.w*.2,0);
+  left.addColorStop(0,p[0]);left.addColorStop(1,p[0]+'00');
+  const bottom=c.createLinearGradient(0,b.y+b.h*.82,0,b.y+b.h);
+  bottom.addColorStop(0,p[0]+'00');bottom.addColorStop(1,p[0]);
+  c.save();c.globalAlpha=opacity;c.fillStyle=left;c.fillRect(b.x,b.y,b.w*.2,b.h);c.fillStyle=bottom;c.fillRect(b.x,b.y+b.h*.82,b.w,b.h*.18);
+  if(s.chart){const right=c.createLinearGradient(b.x+b.w*.82,0,b.x+b.w,0);right.addColorStop(0,p[0]+'00');right.addColorStop(1,p[0]);c.fillStyle=right;c.fillRect(b.x+b.w*.82,b.y,b.w*.18,b.h);}
+  c.restore();
+ }else if(running){
+  // Let the track reach the bottom of the screen, then fade it beneath the
+  // navigation and caption so their contrast remains predictable.
+  const start=layout.content.y+layout.content.h,g=c.createLinearGradient(0,start,0,h);
+  g.addColorStop(0,p[0]+'00');g.addColorStop(.55,p[0]+'d9');g.addColorStop(1,p[0]);
+  c.save();c.globalAlpha=opacity;c.fillStyle=g;c.fillRect(0,start,w,h-start);c.restore();
+ }
 }
