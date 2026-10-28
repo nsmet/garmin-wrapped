@@ -40,3 +40,29 @@ test('Running layers move independently while grounded strength layers stay stil
  expect(result.strength0.dumbbell).toEqual(result.strength5.dumbbell);
  expect(result.strength0['gym-floor']).toEqual(result.strength5['gym-floor']);
 });
+
+test('Running hero artwork stays prominent on phone, desktop and share layouts',async({page})=>{
+ await page.goto('/');
+ const placements=await page.evaluate(async()=>{
+  const {requiredAssets,assetFiles,palettes}=await import('/visual-system.mjs');
+  const {drawLayeredArt}=await import('/layered-art.mjs');const {posterLayout}=await import('/poster-layout.mjs');
+  const story={id:'running-sessions',template:'running'};
+  const assets=Object.fromEntries(await Promise.all(requiredAssets(story).map(async name=>{const img=new Image();img.src=assetFiles[name];await img.decode();return [name,img];})));
+  return [[320,568,false],[390,844,false],[1440,900,false],[390,390*16/9,true]].map(([w,h,share])=>{
+   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const c=canvas.getContext('2d'),draw=c.drawImage.bind(c),found={};
+   const layout=posterLayout(w,h,share?{bounds:{top:h*.115,bottom:h*.85},chrome:'share'}:{});
+   c.drawImage=(img,x,y,iw,ih)=>{
+    const name=Object.keys(assets).find(key=>assets[key]===img),t=c.getTransform();
+    const points=[[x,y],[x+iw,y],[x,y+ih],[x+iw,y+ih]].map(([px,py])=>t.transformPoint({x:px,y:py}));
+    const left=Math.max(0,layout.art.x,Math.min(...points.map(p=>p.x))),right=Math.min(w,layout.art.x+layout.art.w,Math.max(...points.map(p=>p.x)));
+    found[name]=Math.max(0,right-left)/w;return draw(img,x,y,iw,ih);
+   };
+   drawLayeredArt(c,w,h,story,0,assets,layout,palettes.running);
+   return {w,share,...found};
+  });
+ });
+ for(const result of placements){
+  expect(result.shoe,JSON.stringify(result)).toBeGreaterThan(result.w>=700?.28:.6);
+  expect(result['running-track'],JSON.stringify(result)).toBeGreaterThan(result.w>=700?.3:.85);
+ }
+});
