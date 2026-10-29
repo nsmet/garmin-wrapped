@@ -5,11 +5,13 @@ function accentInk(hex){
  const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
  return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722>.179?'#101519':'#fffaf0';
 }
-function type(c,value,x,y,size,max,ink,align='left',label=false){
+function type(c,value,x,y,size,max,ink,align='left',label=false,outline=null){
  c.save();const family=label?'"Space Grotesk",Arial':'"Anton",Impact,Arial';
  c.font=`${label?600:800} ${size}px ${family}`;
  const width=c.measureText(String(value)).width;if(width>max)size*=max/width;
- c.font=`${label?600:800} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';c.fillText(String(value),x,y);c.restore();
+ c.font=`${label?600:800} ${size}px ${family}`;c.fillStyle=ink;c.textAlign=align;c.textBaseline='alphabetic';
+ if(outline){c.strokeStyle=outline;c.lineWidth=label?14:12;c.lineJoin='round';c.strokeText(String(value),x,y);}
+ c.fillText(String(value),x,y);c.restore();
 }
 function rect(c,x,y,w,h,ink){c.fillStyle=ink;c.fillRect(x,y,w,h);}
 function path(c,points,ink,width=8,closed=false){
@@ -24,8 +26,11 @@ function hours(c,s,p,x,y,size,max,align='left',ink=p[1]){
  type(c,'RECORDED HOURS',x,y+46,28,max,ink,align,true);
 }
 function stat(c,s,p,i,x,y,max,{align='left',ink=p[1],size=100}={}){
- const item=s.chart.items[i];type(c,item.value,x,y,size,max,ink,align);
- type(c,item.label,x,y+42,26,max,ink,align,true);
+ // These photos cross small statistics on phones; a paper-colored outline
+ // keeps the figures readable without hiding the artwork in a solid panel.
+ const item=s.chart.items[i],outline=['walking','swimming','pilates','climbing'].includes(s.template)?p[0]:null;
+ type(c,item.value,x,y,size,max,ink,align,false,outline);
+ type(c,item.label,x,y+42,26,max,ink,align,true,outline);
 }
 function running(c,s,p,t){
  // A sweeping track, with the figures tucked into its open infield.

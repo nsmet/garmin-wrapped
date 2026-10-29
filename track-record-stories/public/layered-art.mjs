@@ -39,6 +39,26 @@ export function layeredAssets(s){
  return [...new Set([d.ground,d.extra,...d.subjects].filter(Boolean))];
 }
 const familyMotifs={distance:'track',peak:'target',habit:'steps',intensity:'burst',technical:'pulse',terrain:'contour',location:'contour',trend:'steps',achievement:'target',identity:'triad',volume:'stack',surprise:'burst',wellness:'ripple',opening:'horizon',foundation:'arch',finale:'triad'};
+// Each scene has its own focal point and scale. Coordinates are in the
+// artwork's 1000-unit space; the image helper preserves the asset's aspect.
+const subjectPlacement={
+ hiit:[690,510,1250,1000],strength:[690,530,1450,1100],walking:[720,500,1350,1000],
+ hiking:[700,510,1350,1000],swimming:[610,540,1400,1000],rowing:[700,500,1300,1050],
+ yoga:[650,540,1400,1000],elliptical:[700,490,1250,1100],skiing:[700,490,1250,1100],
+ racket:[690,510,1400,1050],team_sports:[700,510,1300,1050],climbing:[700,510,1300,1050],
+ cardio:[610,530,1400,1000],active:[700,500,1300,1050],morning:[700,500,1300,1050],
+ recovery:[680,530,1400,1050],sleep:[680,530,1400,1050],energy:[680,510,1300,1050],
+ nutrition:[680,510,1300,1050],hydration:[680,510,1300,1050],calendar:[700,500,1300,1050],
+ miniwatt:[700,500,1300,1050]
+};
+const groupedSubjects={
+ cycling:[[770,570,1050,1120],[670,390,1050,750]],
+ pilates:[[710,450,1050,950],[410,710,1050,800]],
+ golf:[[350,660,780,780],[690,440,1050,1000]],
+ triathlon:[[250,690,820,760],[700,420,850,820],[720,680,850,760]],
+ mix:[[250,690,820,760],[700,420,850,820],[720,680,850,760]],
+ finale:[[250,690,820,760],[700,420,850,820],[720,680,850,760]]
+};
 const TAU=Math.PI*2;
 function disk(c,x,y,r,color,ratio=1){c.beginPath();c.ellipse(x,y,r/ratio,r,0,0,TAU);c.fillStyle=color;c.fill();}
 function poly(c,points,color){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=color;c.fill();}
@@ -96,49 +116,56 @@ function paths(c,p,m,t,front){
   stroke(c,p[2],14,k=>{k.moveTo(-40,960);k.lineTo(1050,450);});
  }
 }
-export function drawLayeredArt(c,w,h,s,time,assets,layout,p,opacity=1){
+export function drawLayeredArt(c,w,h,s,time,assets,layout,p,opacity=1,edgeOpacity=opacity){
  const d=layerDesigns[s.template];if(!d||(s.chart&&!layeredAssets(s).length)||opacity<.001)return;
  const motif=s.libraryOnly?(familyMotifs[s.family]||d.motif):d.motif;
  const running=s.template==='running';
- const b=running&&!layout.wide?{...layout.art,h:h-layout.art.y}:layout.art,ratio=b.w/b.h,rate=({running:1,cycling:.85,hiit:1.15,strength:.55,walking:.7,hiking:.55,swimming:.8,rowing:.6,yoga:.38,pilates:.45,elliptical:.85,skiing:.95,golf:.48,racket:.85,triathlon:.78,team_sports:.72,climbing:.6,cardio:1.05,sleep:.36,recovery:.4,hrv:.4})[s.template]||.65,phase=time*rate+(s.template.length%7)*.4,drift=Math.sin(phase*.30);
+ const b=!layout.wide?{...layout.art,h:h-layout.art.y}:layout.art,ratio=b.w/b.h,rate=({running:1,cycling:.85,hiit:1.15,strength:.55,walking:.7,hiking:.55,swimming:.8,rowing:.6,yoga:.38,pilates:.45,elliptical:.85,skiing:.95,golf:.48,racket:.85,triathlon:.78,team_sports:.72,climbing:.6,cardio:1.05,sleep:.36,recovery:.4,hrv:.4})[s.template]||.65,phase=time*rate+(s.template.length%7)*.4,drift=Math.sin(phase*.30);
  c.save();c.globalAlpha=opacity;c.beginPath();c.rect(b.x,b.y,b.w,b.h);c.clip();c.translate(b.x,b.y);c.scale(b.w/1000,b.h/1000);
  background(c,p,motif,phase,ratio);
  if(d.ground){
   c.save();c.translate(d.grounded?0:drift*9,d.grounded?0:Math.sin(phase*.17)*5);
   // The mountain source has a straight lower edge: give it an organic lower
   // silhouette, while leaving its naturally cut-out skyline intact.
-  if(d.ground==='ridge'){c.beginPath();c.ellipse(500,515,510,345,0,0,TAU);c.clip();}
+  if(d.ground==='ridge'){c.beginPath();c.ellipse(500,560,620,420,0,0,TAU);c.clip();}
   if(running)image(c,assets[d.ground],layout.wide?500:440,layout.wide?500:590,1500,layout.wide?1000:1200,ratio);
-  else image(c,assets[d.ground],500,560,1120,700,ratio);c.restore();
+  else image(c,assets[d.ground],d.ground==='open-water'?650:500,layout.wide?530:590,1500,layout.wide?1050:1200,ratio);c.restore();
  }
- if(d.extra){c.save();c.translate(-drift*8,0);c.beginPath();c.ellipse(500,600,350,310,-.16,0,TAU);c.clip();image(c,assets[d.extra],500,600,720,650,ratio,-.25);c.restore();}
+ if(d.extra){c.save();c.translate(-drift*8,0);c.beginPath();c.ellipse(500,610,500,430,-.16,0,TAU);c.clip();image(c,assets[d.extra],500,610,1100,1000,ratio,-.25);c.restore();}
  c.save();c.globalAlpha*=.85;paths(c,p,motif,phase,false);c.restore();
  if(d.subjects.length===1){
-  const x=running?(layout.wide?(s.chart?620:750):790):(s.presentation==='distance'?720:620),y=running?(layout.wide?500:480):600;
+  const [px,py,maxW,maxH]=subjectPlacement[s.template]||[700,510,1300,1050];
+  const x=running?(layout.wide?(s.chart?620:750):790):px-(layout.wide&&s.chart?130:0),y=running?(layout.wide?500:480):py;
   const move=d.grounded?0:drift*9;
-  image(c,assets[d.subjects[0]],x+move,y+move*.5,running?1350:780,running?950:650,ratio,(d.angle||0)+(d.grounded?0:Math.sin(phase*.23)*.018));
+  image(c,assets[d.subjects[0]],x+move,y+move*.5,running?1350:maxW,running?950:maxH,ratio,(d.angle||0)+(d.grounded?0:Math.sin(phase*.23)*.018));
  }else d.subjects.forEach((name,i)=>{
-  const positions=s.template==='cycling'?[[740,570],[730,290]]:s.template==='golf'?[[400,700],[670,510]]:d.subjects.length===2?[[660,480],[400,740]]:[[240,680],[690,470],[750,790]];
-  const [x,y]=positions[i],size=s.template==='cycling'?(i===0?720:560):s.template==='golf'?440:520,maxHeight=s.template==='cycling'?(i===0?720:420):500;
+  const [px,y,size,maxHeight]=(groupedSubjects[s.template]||[])[i]||[500,520,1000,900];
+  const x=px-(layout.wide&&s.chart?100:0);
   image(c,assets[name],x+(d.grounded?0:Math.sin(phase*.22+i)*6),y,size,maxHeight,ratio,(i-1)*.10);
  });
  c.save();c.globalAlpha*=.75;paths(c,p,motif,phase,true);c.restore();
  c.restore();
- if(running&&layout.wide){
-  // Fade the vector ribbons into the paper where the art column ends,
-  // instead of leaving a straight, rectangular crop against the text column.
+ if(!running){
+  // Hide the straight top of the artwork's safe region as large elements
+  // emerge behind the typography, especially on the multi-object cards.
+  const top=c.createLinearGradient(0,b.y-1,0,b.y+b.h*.13);
+  top.addColorStop(0,p[0]);top.addColorStop(.08,p[0]);top.addColorStop(1,p[0]+'00');
+  c.save();c.globalAlpha=edgeOpacity;c.fillStyle=top;c.fillRect(b.x,b.y-1,b.w,b.h*.13+1);c.restore();
+ }
+ if(layout.wide){
+  // Fade the artwork into the paper at the edge of the art column.
   const left=c.createLinearGradient(b.x,0,b.x+b.w*.2,0);
   left.addColorStop(0,p[0]);left.addColorStop(1,p[0]+'00');
   const bottom=c.createLinearGradient(0,b.y+b.h*.82,0,b.y+b.h);
   bottom.addColorStop(0,p[0]+'00');bottom.addColorStop(1,p[0]);
-  c.save();c.globalAlpha=opacity;c.fillStyle=left;c.fillRect(b.x,b.y,b.w*.2,b.h);c.fillStyle=bottom;c.fillRect(b.x,b.y+b.h*.82,b.w,b.h*.18);
+  c.save();c.globalAlpha=edgeOpacity;c.fillStyle=left;c.fillRect(b.x,b.y,b.w*.2,b.h);c.fillStyle=bottom;c.fillRect(b.x,b.y+b.h*.82,b.w,b.h*.18);
   if(s.chart){const right=c.createLinearGradient(b.x+b.w*.82,0,b.x+b.w,0);right.addColorStop(0,p[0]+'00');right.addColorStop(1,p[0]);c.fillStyle=right;c.fillRect(b.x+b.w*.82,b.y,b.w*.18,b.h);}
   c.restore();
- }else if(running){
-  // Let the track reach the bottom of the screen, then fade it beneath the
-  // navigation and caption so their contrast remains predictable.
-  const start=layout.content.y+layout.content.h,g=c.createLinearGradient(0,start,0,h);
-  g.addColorStop(0,p[0]+'00');g.addColorStop(.55,p[0]+'d9');g.addColorStop(1,p[0]);
-  c.save();c.globalAlpha=opacity;c.fillStyle=g;c.fillRect(0,start,w,h-start);c.restore();
+ }else{
+  // Let the scene reach the footer, then fade it into its paper color before
+  // the caption and navigation so small text stays readable on every palette.
+  const start=layout.content.y+layout.content.h-(running?0:h*.04),g=c.createLinearGradient(0,start,0,h);
+  g.addColorStop(0,p[0]+'00');g.addColorStop(running?.55:.30,running?p[0]+'d9':p[0]);g.addColorStop(1,p[0]);
+  c.save();c.globalAlpha=edgeOpacity;c.fillStyle=g;c.fillRect(0,start,w,h-start);c.restore();
  }
 }

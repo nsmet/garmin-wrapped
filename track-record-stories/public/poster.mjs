@@ -57,14 +57,15 @@ export function renderPoster(c,w,h,{from,to=from,progress=1,time=0,assets={},chr
  if(transition){c.save();reveal(c,w,h,t,to);c.fillStyle=b[0];c.fillRect(0,0,w,h);c.restore();}
  const outgoing={alpha:1-ease(progress/.64),offset:-t},incoming={alpha:ease((progress-.20)/.80),offset:1-t};
  const layers=transition?[[from,outgoing],[to,incoming]]:[[to,{alpha:1,offset:0}]];
- // Composition layers are independently animated and stay inside the reserved art region.
+ // Composition layers move independently; portrait art may extend behind the footer.
  for(const [s,phase] of layers){
   // Sport data cards retain their visual identity. In portrait, the artwork is
   // subdued so measured charts stay readable; in wide layouts it occupies the
-  // spare column beneath the headline. Running has a more prominent treatment.
+  // spare column beneath the headline.
   const artLayout=s.chart&&layout.wide?{...layout,art:{x:layout.content.x,y:layout.content.y+layout.content.h*.43,w:layout.content.w*.42,h:layout.content.h*.55}}:layout;
-  const strength=s.chart?(s.template==='running'?(layout.wide?.85:.22):(layout.wide?.24:.07)):1;
-  artLayer(c,w,h,s,phase,time,alpha=>drawLayeredArt(c,w,h,s,time,assets,artLayout,palette||palettes[s.template],alpha*strength),artLayout);
+  const strength=s.chart?(layout.wide?.85:.22):1;
+  // The edge fade follows the transition, not the subdued chart-art opacity.
+  artLayer(c,w,h,s,phase,time,alpha=>drawLayeredArt(c,w,h,s,time,assets,artLayout,palette||palettes[s.template],alpha*strength,s.template==='running'?alpha*strength:alpha),artLayout);
  }
  if(transition){typography(c,w,h,from,1-ease(progress/.36),-h*.018*t,time,layout,palette);typography(c,w,h,to,ease((progress-.45)/.55),h*.023*(1-t),time,layout,palette);}else typography(c,w,h,to,1,0,time,layout,palette);
  if(chrome){
