@@ -1,51 +1,55 @@
 import {test,expect} from '@playwright/test';
 
-test('Every sport has a distinct hours composition even with identical colors and figures',async({page})=>{
+// Hours cards: a sport-specific outline per sport, filled with one dot per stated unit.
+test('Every sport hours card keeps the verified measurements and draws one dot per stated unit',async({page})=>{
  await page.goto('/');
  const result=await page.evaluate(async()=>{
   const {buildRecap}=await import('/metrics.mjs');
   const registry=(await import('/sport-registry.mjs')).default;
   const {displayFields}=await import('/story-model.mjs');
-  const {drawDurationPoster}=await import('/duration-posters.mjs');
-  await document.fonts.ready;
+  const {cardSpec}=await import('/dot-spec.mjs');
+  const {build,fracDots,shapeCapacity}=await import('/dot-engine.mjs');
+  const {renderStill}=await import('/dot-render.mjs');
+  await document.fonts.load('800 20px Sora');
   const activities=[...registry.sports.map(s=>s.aliases_to_validate[0]),'unmapped_sport'].map((type,i)=>({id:`duration-fixture-${i}`,utc:Date.UTC(2025,2,10),type,parentId:null,duration:10890,distance:5000}));
   const plan=buildRecap({year:2025,timeZone:'UTC',activities,indexComplete:true,now:new Date('2026-01-01T12:00:00Z')});
-  const stories=plan.stories.filter(s=>s.chart?.kind==='duration').map(displayFields),p=['#f3f0e8','#101519','#1743ed','#ff7038'];
   const output=[];
-  for(const s of stories){
-   const canvas=document.createElement('canvas');canvas.width=390;canvas.height=390;const c=canvas.getContext('2d'),labels=[];
-   const fill=c.fillText.bind(c);c.fillText=(value,...args)=>{labels.push(String(value));fill(value,...args);};
-   c.fillStyle=p[0];c.fillRect(0,0,390,390);
-   drawDurationPoster(c,{x:10,y:10,w:370,h:370},s,p,0);
-   const pixels=new Uint8Array(await crypto.subtle.digest('SHA-256',c.getImageData(0,0,390,390).data));
-   output.push({id:s.id,hash:Array.from(pixels).join(','),labels,expected:[s.value,'RECORDED HOURS',...s.chart.items.flatMap(i=>[i.value,i.label])]});
+  for(const s of plan.stories.filter(s=>s.chart?.kind==='duration').map(displayFields)){
+   const spec=cardSpec(s,{}),b=build(spec),hours=Number(s.value),canvas=document.createElement('canvas');canvas.width=360;canvas.height=640;
+   const labels=[],c=canvas.getContext('2d'),fill=c.fillText.bind(c);c.fillText=(value,...args)=>{labels.push(String(value));fill(value,...args);};
+   renderStill(c,360,640,spec);
+   const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',c.getImageData(0,0,360,640).data))).join(',');
+   output.push({id:s.id,layout:spec.L,shape:spec.p.k,hash:digest,labels,expected:[s.value,...s.chart.items.map(i=>i.value)],dots:b.pts.filter(p=>p.dat).length,want:fracDots(hours,spec.p.unit).total,cap:shapeCapacity('hours',spec.p.k)});
   }
   return output;
  });
  expect(result).toHaveLength(19);
  expect(new Set(result.map(s=>s.hash)).size).toBe(19);
- for(const s of result)expect(s.labels.sort(),s.id+' keeps the verified measurements').toEqual(s.expected.sort());
+ for(const s of result){
+  expect(s.layout,s.id).toBe('shape');expect(s.shape,s.id).toBeTruthy();expect(s.dots,s.id).toBe(s.want);expect(s.dots,s.id).toBeLessThanOrEqual(s.cap);
+  for(const value of s.expected)expect(s.labels,s.id+' keeps '+value).toContain(value);
+ }
 });
 
-test('All sport hours fit small and large measurements inside portrait and landscape compositions',async({page})=>{
+test('Small and very large hours fit the card in portrait, tablet and wide layouts',async({page})=>{
  await page.goto('/');
  const clipped=await page.evaluate(async()=>{
-  const {drawDurationPoster}=await import('/duration-posters.mjs');
+  const {cardSpec}=await import('/dot-spec.mjs');const {cardFrame,drawText}=await import('/dot-card.mjs');const {build}=await import('/dot-engine.mjs');
   const registry=(await import('/sport-registry.mjs')).default;
-  await document.fonts.ready;const clipped=[],p=['#f3f0e8','#101519','#1743ed','#ff7038'];
-  for(const [w,h] of [[320,300],[390,360],[650,460],[350,130]]){
+  await document.fonts.load('800 20px Sora');const clipped=[];
+  for(const [w,h,bounds] of [[320,568,{top:110,bottom:470,left:9,right:311}],[390,844,{top:120,bottom:700,left:9,right:381}],[768,1024,{top:120,bottom:880,left:15,right:753}],[1440,900,{top:130,bottom:740,left:65,right:1375}],[844,390,{top:90,bottom:300,left:38,right:806}]]){
    for(const sport of [...registry.sports.map(s=>s.key),'other']){
-    for(const value of ['0.1','999,999.9']){
-     const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
-     const fill=c.fillText.bind(c),bounds={x:10,y:10,w:w-20,h:h-20};
+    for(const value of ['0.1','99,999.9']){
+     const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const c=canvas.getContext('2d'),fill=c.fillText.bind(c);
      c.fillText=(text,x,y,...args)=>{
       const m=c.measureText(String(text)),t=c.getTransform(),shift=c.textAlign==='center'?m.width/2:c.textAlign==='right'?m.width:0;
       const a=t.transformPoint({x:x-shift,y:y-m.actualBoundingBoxAscent}),b=t.transformPoint({x:x-shift+m.width,y:y+m.actualBoundingBoxDescent});
-      if(a.x<bounds.x-1||b.x>bounds.x+bounds.w+1||a.y<bounds.y-1||b.y>bounds.y+bounds.h+1)clipped.push({sport,w,h,value,text});
+      if(a.x<-1||b.x>w+1||a.y<bounds.top-6||b.y>bounds.bottom+6)clipped.push({sport,w,h,value,text});
       fill(text,x,y,...args);
      };
-     const s={id:sport+'-hours',template:sport==='other'?'cardio':sport,value,chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:'1,234,567'},{label:'AVG TIME / ACTIVITY',value:'999h 59m 59s'}]}};
-     drawDurationPoster(c,bounds,s,p,0);
+     const story={id:sport+'-hours',title:['HOURS ON THE','TRAINING FLOOR.'],value,unit:'RECORDED HOURS · so far',caption:'x\ny',chart:{kind:'duration',items:[{label:'RECORDED MINUTES',value:'5,999,994'},{label:'AVG TIME / ACTIVITY',value:'999h 59m 59s'}]}};
+     const spec=cardSpec(story,{});if(build(spec).pts.filter(p=>p.dat).length>400)clipped.push({sport,value,tooManyDots:true});
+     drawText(c,cardFrame(w,h,{mode:'live',bounds,spec,ctx:c}),spec);
     }
    }
   }

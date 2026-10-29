@@ -1,3 +1,14 @@
+# Current direction: one dot per activity (October 2026)
+
+The recap now follows the *Garmin Wraped — One dot per activity* design canvas (89 cards). Navy ground, Sora type, and light that comes only from the dots: bright data dots, exactly as many as the card's legend says, and faint guide dots that draw the sport (track, wheel, court, dial). Each card enters with rising titles, counting heroes and dots that fly in (from the previous card's dots when navigating); ambient loops continue while reading. Reduced motion shows the settled card; pause freezes everything; hidden tabs and open dialogs stop rendering.
+
+- Portrait screens show the card as designed, fitted between the header and the caption/controls. Wide screens (tablet landscape, desktop) put the type in a left column and the dot artwork, scaled up, in a right column.
+- Exports are the full 360 × 640 card at 3× (1080 × 1920) with branding, year, caption and data notice. Original keeps the navy and sport colours; Paper, Cobalt, Orange and Mint recolour type and dots by role so highlights stay distinct.
+- The design library shows all 89 cards with two fictional sample years, next to the 184 concept templates (guide dots only, no data).
+- [DOT-DESIGN.md](DOT-DESIGN.md) maps every card to its story and admission rule.
+
+The sections below describe the previous poster direction; the onboarding and loading screens still use it.
+
 # Approved direction
 
 The 18 sport poster concepts are saved as visual references in `output/sport-design-drafts/` (open `index.html` for the gallery). They are static examples with fictional statistics; the live recap uses the restored design.

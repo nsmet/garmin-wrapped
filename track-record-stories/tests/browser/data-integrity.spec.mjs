@@ -51,15 +51,16 @@ test('A story URL opens the fictional demo only after the demo button is chosen'
 test('Distance precision matches canvas labels, accessible descriptions and exported cards',async({page})=>{
  await page.goto('/');
  const results=await page.evaluate(async()=>{
-  const {buildRecap}=await import('/metrics.mjs'),{datasetFromPlan,sanitizedCard,chartDescription}=await import('/story-model.mjs'),{drawDataPoster}=await import('/data-poster.mjs');
+  const {buildRecap}=await import('/metrics.mjs'),{datasetFromPlan,sanitizedCard,chartDescription}=await import('/story-model.mjs');
+  const {cardSpec}=await import('/dot-spec.mjs'),{cardFrame,drawText}=await import('/dot-card.mjs'),{renderStill}=await import('/dot-render.mjs');
   const activities=[['running',21040],['running',5000],['cycling',68260],['cycling',10000]].map(([type,distance],i)=>({id:String(i+1),utc:Date.UTC(2025,2,10),type,parentId:null,distance,duration:1801}));
   const dataset=datasetFromPlan(buildRecap({year:2025,timeZone:'UTC',activities,indexComplete:true}));
   return dataset.stories.filter(s=>s.id.endsWith('-longest')).flatMap(story=>{
-   const card=sanitizedCard(story,dataset);
-   return [[390,693],[1440,800],[1080,1920]].map(([w,h])=>{
+   const card=sanitizedCard(story,dataset),spec=cardSpec(card,{});
+   return [[390,844,'live'],[1440,900,'live'],[1080,1920,'export']].map(([w,h,mode])=>{
     const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const context=canvas.getContext('2d'),labels=[],fill=context.fillText.bind(context);
     context.fillText=(value,...args)=>{labels.push(String(value));fill(value,...args);};
-    drawDataPoster(context,w,h,card);
+    if(mode==='export')renderStill(context,w,h,spec);else drawText(context,cardFrame(w,h,{mode,bounds:{top:120,bottom:h-140,left:20,right:w-20},spec,ctx:context}),spec);
     return {id:card.id,labels,description:chartDescription(card.chart),value:card.value};
    });
   });
@@ -67,7 +68,7 @@ test('Distance precision matches canvas labels, accessible descriptions and expo
  expect(results).toHaveLength(6);
  for(const result of results){
   const value=result.id==='running-longest'?'21.0':'68.3';
-  expect(result.value).toBe(value);expect(result.labels).toContain(value);expect(result.labels).toContain(value+' km');expect(result.description).toContain(value+' km');
-  expect(result.labels).toContain(result.id==='running-longest'?'5.0 km':'10.0 km');
+  expect(result.value).toBe(value);expect(result.labels).toContain(value);expect(result.labels).toContain('1 · '+value+' km');expect(result.description).toContain(value+' km');
+  expect(result.labels).toContain(result.id==='running-longest'?'2 · 5.0 km':'2 · 10.0 km');
  }
 });

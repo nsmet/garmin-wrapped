@@ -59,7 +59,7 @@ export async function handleApi(request,env={},deps={}) {
     const session=await unseal(match?.slice(COOKIE.length+1)||'',env.SESSION_SECRET,user);
     const options={...deps,token:session.token,signal:request.signal};
     if(path==='/api/activities')return json(await activityPage(input,options));
-    if(path==='/api/wellness'){const result=await wellness(input,options);if(input.includeHealth!==true)result.daily=result.daily.map(d=>({date:d.date,steps:d.steps}));return json(result);}
+    if(path==='/api/wellness'){const result=await wellness(input,options);if(input.includeHealth!==true)result.daily=result.daily.map(d=>({date:d.date,steps:d.steps,floors:d.floors}));return json(result);}
     if(path==='/api/sleep')return json(await sleepMonth(input,options));
     if(path==='/api/hrv')return json(await hrvMonth(input,options));
     throw new ApiError('NOT_FOUND','This action does not exist.',404);

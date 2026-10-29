@@ -18,8 +18,8 @@ test('The final card opens a recap picker, changes colors, and downloads the sel
  await expect.poll(()=>previewPixel(page,5,5)).toEqual([23,67,237,255]);
  await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);
  const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toBe(`garmin-wraped-2025-${id}-cobalt-fictional-demo.png`);await file.saveAs(testInfo.outputPath('selected-card.png'));
- // The old navigation bar at 9% height is now completely clear paper.
- expect(await previewPixel(page,65,174)).toEqual([23,67,237,255]);
+ // Exports carry no navigation: the right margin beside the title stays clear.
+ expect(await previewPixel(page,1070,330)).toEqual([23,67,237,255]);
  await page.locator('#close-share').click();await expect(page.locator('#share-cards button')).toHaveCount(0);await expect(page.locator('#share-preview')).not.toHaveAttribute('src',/.+/);expect(errors).toEqual([]);
 });
 

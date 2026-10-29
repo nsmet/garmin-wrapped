@@ -1,92 +1,183 @@
 import {canShare,canRequestShare,sanitizedCard,datasetFromPlan,displayFields,chartDescription} from './story-model.mjs';
-import {renderPoster,palettes} from './poster.mjs';
-import {renderShareCard,shareColorways} from './share-card.mjs';
-import {requiredAssets,assetFiles,transitionDuration} from './visual-system.mjs';
+import {shareColorways,renderShareCard} from './share-card.mjs';
 import {makeLibrary,extensions} from './story-library.mjs';
 import {appendActivityAudit} from './activity-audit.mjs';
 import {recapSequence} from './recap-sequence.mjs';
+import {cardSpec,recapContext} from './dot-spec.mjs';
+import {sampleStories,sampleContext,SAMPLE_GROUPS} from './dot-samples.mjs';
+import {cardFrame,drawBackground,drawText,collectDots,createDotBuffer,drawDots2D,snapshotDots,TEXT_SETTLE} from './dot-card.mjs';
+import {renderStill} from './dot-render.mjs';
+import {loadThree,createDotRenderer} from './dot-scene.mjs';
+import {ease} from './dot-engine.mjs';
 
-let dataset=null,demoDataset,recap=[],library=[],libraryLoad;
-async function ensureLibrary(){if(!libraryLoad)libraryLoad=fetch('./story-catalog.json').then(r=>{if(!r.ok)throw Error('Library unavailable');return r.json();}).then(c=>{library=[...makeLibrary(c),...extensions];for(const group of [...new Set(library.map(s=>s.group))]){const o=document.createElement('option');o.value=group;o.textContent=group;$('story-group').append(o);}return library;}).catch(e=>{libraryLoad=null;throw e;});return libraryLoad;}
+let dataset=null,demoDataset,recap=[],library=[],libraryLoad,context={};
+const sampleCtx={full:sampleContext('full'),light:sampleContext('light')};
+async function ensureLibrary(){if(!libraryLoad)libraryLoad=fetch('./story-catalog.json').then(r=>{if(!r.ok)throw Error('Library unavailable');return r.json();}).then(c=>{library=[...sampleStories('full'),...sampleStories('light'),...makeLibrary(c),...extensions];for(const group of [...new Set(library.map(s=>s.group))]){const o=document.createElement('option');o.value=group;o.textContent=group;$('story-group').append(o);}return library;}).catch(e=>{libraryLoad=null;throw e;});return libraryLoad;}
 let stories=recap,libraryMode=false,page=0,gridVersion=0;
-const $=id=>document.getElementById(id),canvas=$('poster'),ctx=canvas.getContext('2d'),stage=$('story');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)'),assets={};
-const state={index:0,from:0,to:0,progress:1,elapsed:0,duration:1000,time:0,last:0,raf:0,paused:reduced.matches,busy:false,w:0,h:0};
+const $=id=>document.getElementById(id),canvas=$('poster'),ctx=canvas.getContext('2d'),stage=$('story'),backdrop=$('backdrop'),bctx=backdrop.getContext('2d');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+// clock: seconds of animation time (stops while paused); enter: clock time the current card appeared
+const state={index:0,from:0,to:0,progress:1,elapsed:0,duration:900,clock:0,enter:0,fromEnter:0,last:0,raf:0,paused:reduced.matches,busy:false,w:0,h:0,dpr:1,lastDots:0,textDirty:true,bgDirty:true,morph:null};
 let shareURL=null,shareBlob=null,toastTimer,loadingStory=false,viewVersion=0,shareStory=null;
 let shareColorway='original',shareVersion=0,sharePickerVersion=0;
-const assetPromises={};
-function loadAssets(story){if(!story)return Promise.resolve();return Promise.all(requiredAssets(story).map(name=>assetPromises[name]||(assetPromises[name]=new Promise(resolve=>{const img=new Image();assets[name]=img;const timer=setTimeout(fail,8000);function fail(){clearTimeout(timer);delete assetPromises[name];resolve();}img.onload=()=>{clearTimeout(timer);draw();resolve();};img.onerror=()=>{toast('An image could not load. The story remains available.');fail();};img.src=assetFiles[name];}))));}
-const fonts=document.fonts?document.fonts.ready:Promise.resolve();
-const ready=fonts;
+const fonts=document.fonts?Promise.all([document.fonts.load('800 40px Sora'),document.fonts.load('600 12px Sora'),document.fonts.load('400 12px Sora')]).then(()=>document.fonts.ready).catch(()=>{}):Promise.resolve();
+const ready=Promise.all([fonts,loadThree()]);
+
+/* ---------- specs and frames ---------- */
+const specCache=new Map(),frameCache=new Map();
+function healthTag(s){if(!s.health)return '';return s.sample||!dataset?.exampleOnly?'HEALTH CARD · ASKS BEFORE SHARING':'HEALTH CARD · FICTIONAL DEMO';}
+function specFor(s){
+ let sp=specCache.get(s);if(sp)return sp;
+ sp=cardSpec(s,s.sample?sampleCtx[s.sample]:context);sp.healthTag=healthTag(s);specCache.set(s,sp);return sp;
+}
+function frameFor(s){
+ const key=s.id+'|'+state.w+'x'+state.h+'|'+JSON.stringify(state.bounds);let f=frameCache.get(s);
+ if(!f||f.key!==key){f={key,frame:cardFrame(state.w,state.h,{mode:'live',bounds:state.bounds,spec:specFor(s),ctx})};frameCache.set(s,f);}
+ return f.frame;
+}
+// Export / thumbnail spec: built from the sanitized display fields, never the full story.
+function exportSpec(display,source,{notice,year}){
+ const sp=source.sample?cardSpec(source,sampleCtx[source.sample]):cardSpec(display,source.libraryOnly?{}:context);
+ return {...sp,notice,right:sp.right==='GARMIN WRAPED'?`GARMIN WRAPED · ${year}`:sp.right};
+}
+
+/* ---------- dot layer: Three.js when available, 2D sprites otherwise ---------- */
+let dotCanvas=null,dotGL=null,dot2d=null;const dotBuf=createDotBuffer();
+function mountDotLayer(){
+ dotCanvas?.remove();dotGL?.dispose();dotGL=null;dot2d=null;
+ dotCanvas=document.createElement('canvas');dotCanvas.id='dots';dotCanvas.setAttribute('aria-hidden','true');backdrop.after(dotCanvas);
+ dotGL=createDotRenderer(dotCanvas,{opaque:true});
+ if(dotGL){dotCanvas.dataset.renderer='webgl';dotCanvas.addEventListener('webglcontextlost',()=>{toast('The 3D layer was reset. The story continues in 2D.');fallback2D();});}
+ else fallback2D();
+ sizeDots();
+}
+function fallback2D(){dotGL?.dispose();dotGL=null;dotCanvas?.remove();dotCanvas=document.createElement('canvas');dotCanvas.id='dots';dotCanvas.dataset.renderer='2d';dotCanvas.setAttribute('aria-hidden','true');backdrop.after(dotCanvas);dot2d=dotCanvas.getContext('2d');sizeDots();}
+function sizeDots(){if(!dotCanvas||!state.w)return;if(dotGL)dotGL.setSize(state.w,state.h,state.dpr);else{dotCanvas.width=Math.round(state.w*state.dpr);dotCanvas.height=Math.round(state.h*state.dpr);dot2d.setTransform(state.dpr,0,0,state.dpr,0,0);}}
 
 function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4500);}
-function draw(){if(!state.w||!stories[state.from]||!stories[state.to])return;renderPoster(ctx,state.w,state.h,{from:stories[state.from],to:stories[state.to],progress:state.progress,time:state.time,assets,bounds:state.bounds});const p=palettes[stories[state.busy&&state.progress<.5?state.from:state.to].template];stage.style.setProperty('--ink',p[1]);stage.style.setProperty('--paper',p[0]);}
-function preloadNeighbors(){for(const i of [state.index+1,state.index-1])if(stories[i])void loadAssets(stories[i]);}
+const settled=()=>reduced.matches;
+function introOf(enter){return settled()?null:Math.max(0,state.clock-enter);}
+function ambientOf(enter){return settled()?30:Math.max(0,state.clock-enter);}
+
+function draw(force=false){
+ if(!state.w||!stories[state.to])return;
+ const to=stories[state.to],from=stories[state.from],transition=state.busy&&from!==to,k=ease(state.progress);
+ const toFrame=frameFor(to),toSpec=specFor(to),fromSpec=transition?specFor(from):null,fromFrame=transition?frameFor(from):null;
+ if(state.bgDirty||transition||force){
+  drawBackground(bctx,state.w,state.h,toSpec,toFrame,null);
+  if(transition&&k<1){bctx.save();bctx.globalAlpha=1-k;drawBackground(bctx,state.w,state.h,fromSpec,fromFrame,null);bctx.restore();}
+  state.bgDirty=transition;
+ }
+ // dots
+ dotBuf.n=0;
+ const clip=toFrame.wide?toFrame.clip:null;
+ if(transition)collectDots(dotBuf,fromSpec,{t:ambientOf(state.fromEnter),intro:null,fade:1-ease(state.progress/.45),frame:fromFrame});
+ collectDots(dotBuf,toSpec,{t:ambientOf(state.enter),intro:introOf(state.enter),frame:toFrame,from:state.morph});
+ if(dotGL)dotGL.draw(dotBuf,{additive:true,clip});
+ else if(dot2d){dot2d.clearRect(0,0,state.w,state.h);dot2d.save();if(clip){dot2d.beginPath();dot2d.rect(clip.x,clip.y,clip.w,clip.h);dot2d.clip();}drawDots2D(dot2d,dotBuf);dot2d.restore();}
+ // text: only while it animates or after a change
+ const intro=introOf(state.enter);
+ if(force||state.textDirty||transition||(intro!=null&&intro<TEXT_SETTLE+.2)){
+  ctx.clearRect(0,0,state.w,state.h);
+  if(transition)drawText(ctx,fromFrame,fromSpec,{intro:null,alpha:1-ease(state.progress/.3)});
+  drawText(ctx,toFrame,toSpec,{intro:transition?Math.max(0,intro-.15):intro});
+  state.textDirty=false;
+ }
+ placeActions(to,toFrame);
+}
+function placeActions(s,frame){
+ const sp=specFor(s),lay=frame.textLayout,T=frame.text,actions=$('card-actions');
+ const showShare=!!sp.share&&!s.libraryOnly,showCta=!!sp.cta&&!!s.promotional;
+ $('finale-share').hidden=!showShare;$('mini-watt-offer').hidden=!showCta;actions.hidden=!showShare&&!showCta;
+ if(actions.hidden)return;
+ const y=showCta?(frame.wide?lay.bottom+18:196):(frame.wide?lay.bottom+22:556);
+ actions.style.setProperty('--x',T.x+18*T.s+'px');actions.style.setProperty('--y',T.y+y*T.s+'px');actions.style.setProperty('--s',String(Math.max(1,Math.min(T.s,1.6))));
+}
 function sync(){
-  const s=stories[state.index];if(!s)return;const p=palettes[s.template];stage.style.setProperty('--ink',p[1]);stage.style.setProperty('--paper',p[0]);
-  $('chapter-name').textContent=s.promotional?'ONE MORE RIDE?':s.libraryOnly?s.group.toUpperCase():s.id.replaceAll('-',' ').toUpperCase();$('position').textContent=`${String(state.index+1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`;
-  document.querySelector('.demo-label').textContent=s.libraryOnly?'TEMPLATE · NO PERSONAL DATA':dataset.exampleOnly?'FICTIONAL DATA · DESIGN PREVIEW':dataset.notice.toUpperCase();
-  $('edition-year').textContent=s.libraryOnly?'DESIGN LIBRARY':`${dataset.year}${dataset.exampleOnly?' / DEMO':''}`;
-  $('caption').textContent=s.caption;$('story-title').textContent=s.title.join(' ');$('story-description').textContent=`${s.value.replace('\n',' ')} ${s.unit}. ${s.caption.replace('\n',' ')} ${chartDescription(s.chart)} ${s.libraryOnly?'Template. No personal data. '+s.eligibility:dataset.notice}.`;
-  $('mini-watt-offer').hidden=!s.promotional;stage.classList.toggle('is-promotion',!!s.promotional);
-  $('back').disabled=state.index===0;$('advance').setAttribute('aria-label',state.index===stories.length-1?'Choose a share card':'Next story');
-  $('share').textContent=state.index===stories.length-1?'Choose a card ↗':'Share card ↗';
-  $('motion').textContent=reduced.matches?'Still':state.paused?'Play':'Pause';$('motion').disabled=reduced.matches;$('motion').setAttribute('aria-pressed',String(state.paused));
-  const shareable=s.promotional?recap.some(card=>canRequestShare(card,dataset)):canRequestShare(s,dataset);
-  $('share').disabled=!shareable;$('advance').disabled=state.index===stories.length-1&&!shareable;
-  [...$('progress').children].forEach((el,i)=>el.className=i===Math.floor(state.index/stories.length*$('progress').children.length)?'current':i<state.index/stories.length*$('progress').children.length?'passed':'');
-  document.querySelectorAll('.chapter-tile').forEach((el,i)=>el.setAttribute('aria-current',String(i===state.index)));
-  document.querySelector('meta[name="theme-color"]').content=p[0];measureBounds();
+ const s=stories[state.index];if(!s)return;const sp=specFor(s);
+ $('chapter-name').textContent=s.promotional?'ONE MORE RIDE?':s.libraryOnly?String(s.group).toUpperCase():sp.grp;$('position').textContent=`${String(state.index+1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`;
+ document.querySelector('.demo-label').textContent=s.sample?'FICTIONAL SAMPLE · DESIGN PREVIEW':s.libraryOnly?'TEMPLATE · NO PERSONAL DATA':dataset.exampleOnly?'FICTIONAL DATA · DESIGN PREVIEW':dataset.notice.toUpperCase();
+ $('edition-year').textContent=s.libraryOnly?'DESIGN LIBRARY':`${dataset.year}${dataset.exampleOnly?' / DEMO':''}`;
+ {const [c1,...rest]=s.caption.split('\n'),r=document.createElement('span');r.className='caption-rest';r.textContent=rest.join('\n');$('caption').replaceChildren(c1,...(rest.length?['\n',r]:[]));}$('dot-key').textContent=sp.legend;$('dot-key').hidden=!sp.legend;$('story-title').textContent=s.title.join(' ');
+ $('story-description').textContent=`${s.value.replace('\n',' ')} ${s.unit}. ${s.caption.replace('\n',' ')} ${chartDescription(s.chart)} ${sp.legend?sp.legend.charAt(0).toUpperCase()+sp.legend.slice(1)+'.':''} ${s.sample?'Fictional sample from the dot design. Not a recap result.':s.libraryOnly?'Template. No personal data. '+s.eligibility:dataset.notice}.`;
+ stage.classList.toggle('is-promotion',!!s.promotional);
+ $('back').disabled=state.index===0;$('advance').setAttribute('aria-label',state.index===stories.length-1?'Choose a share card':'Next story');
+ $('share').textContent=state.index===stories.length-1?'Choose a card ↗':'Share card ↗';
+ $('motion').textContent=reduced.matches?'Still':state.paused?'Play':'Pause';$('motion').disabled=reduced.matches;$('motion').setAttribute('aria-pressed',String(state.paused));
+ const shareable=s.promotional?recap.some(card=>canRequestShare(card,dataset)):canRequestShare(s,dataset);
+ $('share').disabled=!shareable;$('advance').disabled=state.index===stories.length-1&&!shareable;
+ [...$('progress').children].forEach((el,i)=>el.className=i===Math.floor(state.index/stories.length*$('progress').children.length)?'current':i<state.index/stories.length*$('progress').children.length?'passed':'');
+ document.querySelectorAll('.chapter-tile').forEach((el,i)=>el.setAttribute('aria-current',String(i===state.index)));
+ stage.dataset.story=s.id;stage.style.setProperty('--accent',sp.acc);measureBounds();state.textDirty=true;state.bgDirty=true;
 }
 async function go(index){
-  if(state.busy||loadingStory||index<0||index>=stories.length||index===state.index)return;
-  const version=viewVersion;loadingStory=true;await loadAssets(stories[index]);if(version!==viewVersion)return;loadingStory=false;
-  state.from=state.index;state.to=index;state.elapsed=0;state.duration=transitionDuration(stories[state.from],stories[state.to]);state.progress=0;state.busy=true;stage.classList.add('transitioning');
-  if(reduced.matches||state.paused)finish();
-  history.replaceState(null,'','#'+stories[index].id);start();
+ if(state.busy||loadingStory||index<0||index>=stories.length||index===state.index)return;
+ const version=viewVersion;loadingStory=true;await ready;if(version!==viewVersion)return;loadingStory=false;
+ const from=stories[state.index];
+ // the incoming dots fly in from where the outgoing ones are now
+ state.morph=reduced.matches||state.paused?null:snapshotDots(specFor(from),{t:ambientOf(state.enter),intro:introOf(state.enter),frame:frameFor(from)});
+ state.from=state.index;state.to=index;state.fromEnter=state.enter;state.enter=state.clock;state.elapsed=0;state.duration=900;state.progress=0;state.busy=true;stage.classList.add('transitioning');
+ if(reduced.matches||state.paused)finish();
+ history.replaceState(null,'','#'+stories[index].id);sync();start();
 }
-function finish(){state.index=state.to;state.from=state.to;state.progress=1;state.busy=false;stage.classList.remove('transitioning');sync();draw();preloadNeighbors();}
+function finish(){state.index=state.to;state.from=state.to;state.progress=1;state.busy=false;if(state.paused||reduced.matches){state.morph=null;state.enter=state.clock-10;}stage.classList.remove('transitioning');sync();draw(true);}
+function blocked(){return stage.hidden||document.hidden||$('chapters-dialog').open||$('share-dialog').open||$('privacy-dialog').open||$('health-share-dialog').open;}
 function tick(now){
-  state.raf=0;if(stage.hidden||document.hidden||$('chapters-dialog').open||$('share-dialog').open||$('privacy-dialog').open||$('health-share-dialog').open)return;
-  const dt=Math.min(state.last?now-state.last:16,50);state.last=now;
-  if(!state.paused&&!reduced.matches)state.time+=dt/1000;
-  if(state.busy){state.elapsed+=dt;state.progress=Math.min(1,state.elapsed/state.duration);if(state.progress===1)finish();}
-  draw();if(state.busy||(!state.paused&&!reduced.matches))state.raf=requestAnimationFrame(tick);
+ state.raf=0;if(blocked())return;
+ const dt=Math.min(state.last?now-state.last:16,50);state.last=now;
+ const moving=!state.paused&&!reduced.matches;
+ if(moving)state.clock+=dt/1000;
+ if(state.busy){state.elapsed+=dt;state.progress=Math.min(1,state.elapsed/state.duration);if(state.progress===1){finish();state.raf=requestAnimationFrame(tick);return;}}
+ // ambient loops settle to ~30 fps once the intro is over
+ const intro=state.clock-state.enter;
+ if(state.busy||intro<TEXT_SETTLE+.3||now-state.lastDots>=32){state.lastDots=now;draw();}
+ if(state.busy||moving)state.raf=requestAnimationFrame(tick);
 }
-function start(){if(!stage.hidden&&!state.raf&&!document.hidden&&!$('chapters-dialog').open&&!$('share-dialog').open&&!$('privacy-dialog').open&&!$('health-share-dialog').open){state.last=0;state.raf=requestAnimationFrame(tick);}}
-function measureBounds(){if(stage.hidden)return;const r=stage.getBoundingClientRect(),label=stage.querySelector('.chapter-label').getBoundingClientRect(),footer=stage.querySelector('footer').getBoundingClientRect();state.bounds={top:label.bottom-r.top+24,bottom:footer.top-r.top-20,pad:parseFloat(getComputedStyle(stage.querySelector('.story-chrome')).paddingLeft)};}
-function resize(){measureBounds();const r=stage.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);state.w=r.width;state.h=r.height;canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);draw();}
+function start(){if(!blocked()&&!state.raf){state.last=0;state.raf=requestAnimationFrame(tick);}}
+function stop(){cancelAnimationFrame(state.raf);state.raf=0;}
+function measureBounds(){
+ if(stage.hidden)return;const r=stage.getBoundingClientRect(),label=stage.querySelector('.chapter-label').getBoundingClientRect(),footer=stage.querySelector('footer').getBoundingClientRect(),pad=parseFloat(getComputedStyle(stage.querySelector('.story-chrome')).paddingLeft);
+ const b={top:label.bottom-r.top+8,bottom:footer.top-r.top-8,left:pad*(r.width>=900?1:.4),right:r.width-pad*(r.width>=900?1:.4)};
+ if(JSON.stringify(b)!==JSON.stringify(state.bounds)){state.bounds=b;state.textDirty=state.bgDirty=true;}
+}
+function resize(){measureBounds();const r=stage.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);state.w=r.width;state.h=r.height;state.dpr=d;
+ for(const c of [canvas,backdrop]){c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);}ctx.setTransform(d,0,0,d,0,0);bctx.setTransform(d,0,0,d,0,0);sizeDots();state.textDirty=state.bgDirty=true;draw(true);}
 function closeDialog(id){$(id).close();if(id==='chapters-dialog')$('chapters-button').setAttribute('aria-expanded','false');start();}
-function outputCanvas(story,index,width=1080){const out=document.createElement('canvas');out.width=width;out.height=Math.round(width*16/9);const c=out.getContext('2d');c.scale(width/390,width/390);renderPoster(c,390,390*16/9,{from:displayCard(story),time:1.4,assets,chrome:true,index,total:story.libraryOnly?library.length:recap.length,year:dataset.year,notice:story.libraryOnly?'Template · no personal data':dataset.notice});return out;}
-async function openChapters(){
-  if(state.busy||loadingStory)return;$('chapters-dialog').showModal();$('chapters-button').setAttribute('aria-expanded','true');
-  await fonts;page=0;renderGrid();
+function thumbnail(story,width=270){
+ const out=document.createElement('canvas');out.width=width;out.height=Math.round(width*16/9);
+ const notice=story.sample?'Fictional sample · design preview':story.libraryOnly?'Template · no personal data':dataset.exampleOnly?'Fictional data':dataset.notice;
+ renderStill(out.getContext('2d'),out.width,out.height,exportSpec(story.libraryOnly?story:displayFields(story),story,{notice,year:dataset.year}));return out;
 }
-function progressBars(){ $('progress').replaceChildren();for(let i=0;i<Math.min(stories.length,24);i++)$('progress').append(document.createElement('span'));}
-function activate(s){stories=s.libraryOnly?library:recap;libraryMode=!!s.libraryOnly;state.index=state.from=state.to=stories.indexOf(s);state.progress=1;state.busy=false;progressBars();history.replaceState(null,'','#'+s.id);sync();draw();preloadNeighbors();closeDialog('chapters-dialog');}
+async function openChapters(){
+ if(state.busy||loadingStory)return;$('chapters-dialog').showModal();$('chapters-button').setAttribute('aria-expanded','true');
+ await ready;page=0;renderGrid();
+}
+function progressBars(){$('progress').replaceChildren();for(let i=0;i<Math.min(stories.length,24);i++)$('progress').append(document.createElement('span'));}
+function activate(s){stories=s.libraryOnly?library:recap;libraryMode=!!s.libraryOnly;state.index=state.from=state.to=stories.indexOf(s);state.progress=1;state.busy=false;state.morph=null;state.enter=state.clock;progressBars();history.replaceState(null,'','#'+s.id);sync();draw(true);closeDialog('chapters-dialog');}
 async function renderGrid(){
  const version=++gridVersion,isLibrary=$('library-mode').value==='library',query=$('story-search').value.trim().toLowerCase(),group=$('story-group').value;
  if(isLibrary){try{await ensureLibrary();}catch{$('library-count').textContent='The design library could not load. Try again.';return;}if(version!==gridVersion)return;}
  const items=(isLibrary?library:recap).filter(s=>(!isLibrary||!group||s.group===group)&&(!query||(s.title.join(' ')+' '+s.id+' '+(s.group||'')).toLowerCase().includes(query)));
- const recordedCount=items.filter(s=>!s.promotional).length;
- $('library-count').textContent=recordedCount===0&&items.some(s=>s.promotional)?'A MINI WATT invitation':`${recordedCount} ${isLibrary?'templates · metrics appear only with supporting data':dataset.exampleOnly?'fictional example stories':'verified recorded stories'}${items.some(s=>s.promotional)?' + a MINI WATT invitation':''}`;
+ const recordedCount=items.filter(s=>!s.promotional).length,samples=items.filter(s=>s.sample).length;
+ $('library-count').textContent=recordedCount===0&&items.some(s=>s.promotional)?'A MINI WATT invitation':isLibrary?`${recordedCount-samples} templates · metrics appear only with supporting data${samples?` · ${samples} dot-design previews with fictional sample data`:''}`:`${recordedCount} ${dataset.exampleOnly?'fictional example stories':'verified recorded stories'}${items.some(s=>s.promotional)?' + a MINI WATT invitation':''}`;
  $('story-group').hidden=!isLibrary;$('chapter-grid').replaceChildren();$('more-stories').hidden=(page+1)*12>=items.length;
  for(const s of items.slice(0,(page+1)*12)){
   const button=document.createElement('button');button.type='button';button.className='chapter-tile';button.setAttribute('aria-label',s.title.join(' '));button.setAttribute('aria-current',String(s.id===stories[state.index].id));
   const img=document.createElement('img');img.alt='';const label=document.createElement('span');label.textContent=s.title.join(' ');button.append(img,label);
   if(s.libraryOnly){const detail=document.createElement('small');detail.textContent=s.group+' · '+s.family;button.append(detail);button.title=s.eligibility+' — '+s.claimGuard;}
   button.addEventListener('click',()=>activate(s));$('chapter-grid').append(button);
-  await loadAssets(s);if(version!==gridVersion)return;img.src=outputCanvas(s,(s.libraryOnly?library:recap).indexOf(s),270).toDataURL('image/png');
+  await new Promise(r=>setTimeout(r));if(version!==gridVersion)return;img.src=thumbnail(s).toDataURL('image/png');
  }
 }
 for(const id of ['library-mode','story-group','story-search'])$(id).addEventListener(id==='story-search'?'input':'change',()=>{page=0;renderGrid();});
 $('more-stories').addEventListener('click',()=>{page++;renderGrid();});
-function displayCard(s){return displayFields(s);}
 function resetShareImage(){if(shareURL)URL.revokeObjectURL(shareURL);shareURL=null;shareBlob=null;$('share-preview').removeAttribute('src');$('native-share').hidden=true;$('download').disabled=true;}
 function clearShare(){shareVersion++;sharePickerVersion++;if(shareStory)dataset?.shareConsents?.delete(shareStory.id);resetShareImage();shareStory=null;shareColorway='original';$('share-cards').replaceChildren();$('share-colors').replaceChildren();$('share-selection').textContent='';$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','false');}
-function shareCanvas(story,width=1080,colorway=shareColorway){
- const out=document.createElement('canvas');out.width=width;out.height=Math.round(width*16/9);const c=out.getContext('2d');c.scale(width/390,width/390);
- renderShareCard(c,390,390*16/9,{story:displayFields(story),colorway,assets,year:dataset.year,notice:story.libraryOnly?'Template · no personal data':dataset.exampleOnly?'Fictional data':dataset.notice});return out;
+// display: sanitized display fields (exports) or display fields (previews); source: the in-memory story
+function shareCanvas(display,source,width=1080,colorway=shareColorway){
+ const out=document.createElement('canvas');out.width=width;out.height=Math.round(width*16/9);
+ const notice=source.sample?'Fictional sample · design preview':source.libraryOnly?'Template · no personal data':dataset.exampleOnly?'Fictional data':dataset.notice;
+ renderShareCard(out.getContext('2d'),out.width,out.height,{spec:exportSpec(display,source,{notice,year:dataset.year}),colorway});return out;
 }
 function encodeShareCanvas(out,version){
  return new Promise((resolve,reject)=>{
@@ -126,8 +217,8 @@ async function renderSharePicker(){
   button.addEventListener('click',()=>chooseShareCard(story));$('share-cards').append(button);return {story,img};
  });
  syncShareChoices();
- await fonts;
- await Promise.all(previews.map(async({story,img})=>{await loadAssets(story);if(version!==sharePickerVersion||!$('share-dialog').open)return;img.src=shareCanvas(story,180,'original').toDataURL('image/png');}));
+ await ready;
+ for(const {story,img} of previews){await new Promise(r=>setTimeout(r));if(version!==sharePickerVersion||!$('share-dialog').open)return;img.src=shareCanvas(story.libraryOnly?story:displayFields(story),story,180,'original').toDataURL('image/png');}
 }
 function renderShareColors(){
  $('share-colors').replaceChildren();
@@ -145,70 +236,74 @@ async function chooseShareCard(story){
  if(shareStory)dataset.shareConsents?.delete(shareStory.id);shareStory=story;syncShareChoices();void renderSelectedShare();
 }
 async function openShare(){
-  const current=stories[state.index],story=current.promotional?recap.findLast(s=>canRequestShare(s,dataset)):current,version=viewVersion;
-  if(state.busy||!canRequestShare(story,dataset))return;
-  clearShare();
-  const allowed=await requestShareConsent(story);if(!allowed||version!==viewVersion)return;
-  shareStory=story;
-  $('share-dialog').showModal();$('share-error').textContent='';
-  renderShareColors();void renderSharePicker();void renderSelectedShare();
+ const current=stories[state.index],story=current.promotional?recap.findLast(s=>canRequestShare(s,dataset)):current,version=viewVersion;
+ if(state.busy||!canRequestShare(story,dataset))return;
+ clearShare();
+ const allowed=await requestShareConsent(story);if(!allowed||version!==viewVersion)return;
+ shareStory=story;
+ $('share-dialog').showModal();$('share-error').textContent='';
+ renderShareColors();void renderSharePicker();void renderSelectedShare();
 }
 async function renderSelectedShare(){
-  const story=shareStory,version=++shareVersion;
-  resetShareImage();$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','true');
-  document.querySelector('.share-note').textContent=story.libraryOnly?'1080 × 1920 · template · no personal data':dataset.exampleOnly?'1080 × 1920 · fictional data':'1080 × 1920 · only this card’s metric and caption';
-  try{
-    await Promise.all([ready,loadAssets(story)]);if(version!==shareVersion||!$('share-dialog').open)return;
-    const safe=sanitizedCard(story,dataset),out=shareCanvas(safe);
-    const blob=await encodeShareCanvas(out,version);if(!blob)throw Error('Image encoding failed');
-    if(version!==shareVersion||!$('share-dialog').open)return;
-    shareBlob=blob;shareURL=URL.createObjectURL(blob);$('share-preview').src=shareURL;$('share-preview').alt=`${story.title.join(' ')} — ${shareColorways.find(c=>c.id===shareColorway).label} share card`;$('download').disabled=false;
-    const file=new File([blob],filename(),{type:'image/png'});$('native-share').hidden=!(navigator.canShare&&navigator.canShare({files:[file]}));
-  }catch{if(version===shareVersion)$('share-error').textContent='The card could not be created. Choose a card or color to try again.';}
-  finally{if(version===shareVersion)$('share-preview-frame').setAttribute('aria-busy','false');}
+ const story=shareStory,version=++shareVersion;
+ resetShareImage();$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','true');
+ document.querySelector('.share-note').textContent=story.sample?'1080 × 1920 · fictional sample · design preview':story.libraryOnly?'1080 × 1920 · template · no personal data':dataset.exampleOnly?'1080 × 1920 · fictional data':'1080 × 1920 · only this card’s metric and caption';
+ try{
+  await ready;if(version!==shareVersion||!$('share-dialog').open)return;
+  const safe=sanitizedCard(story,dataset),out=shareCanvas(safe,story);
+  const blob=await encodeShareCanvas(out,version);if(!blob)throw Error('Image encoding failed');
+  if(version!==shareVersion||!$('share-dialog').open)return;
+  shareBlob=blob;shareURL=URL.createObjectURL(blob);$('share-preview').src=shareURL;$('share-preview').alt=`${story.title.join(' ')} — ${shareColorways.find(c=>c.id===shareColorway).label} share card`;$('download').disabled=false;
+  const file=new File([blob],filename(),{type:'image/png'});$('native-share').hidden=!(navigator.canShare&&navigator.canShare({files:[file]}));
+ }catch{if(version===shareVersion)$('share-error').textContent='The card could not be created. Choose a card or color to try again.';}
+ finally{if(version===shareVersion)$('share-preview-frame').setAttribute('aria-busy','false');}
 }
 function filename(){return `garmin-wraped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.png`;}
 $('download').addEventListener('click',()=>{if(!shareURL||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=shareURL;a.download=filename();document.body.append(a);a.click();a.remove();toast('Your card is ready to save.');});
 $('native-share').addEventListener('click',async()=>{if(!shareBlob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([shareBlob],filename(),{type:'image/png'})],title:'My Garmin Wraped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent='Sharing is unavailable here. You can download the PNG instead.';}});
 $('advance').addEventListener('click',()=>state.index===stories.length-1?openShare():go(state.index+1));
-$('back').addEventListener('click',()=>go(state.index-1));$('share').addEventListener('click',openShare);
-$('motion').addEventListener('click',()=>{state.paused=!state.paused;if(state.paused&&state.busy)finish();sync();draw();start();});
+$('back').addEventListener('click',()=>go(state.index-1));$('share').addEventListener('click',openShare);$('finale-share').addEventListener('click',openShare);
+$('motion').addEventListener('click',()=>{state.paused=!state.paused;if(state.paused&&state.busy)finish();sync();draw(true);start();});
 $('chapters-button').addEventListener('click',openChapters);$('close-chapters').addEventListener('click',()=>closeDialog('chapters-dialog'));$('close-share').addEventListener('click',()=>closeDialog('share-dialog'));
-stage.querySelector('.brand-name').addEventListener('click',async e=>{e.preventDefault();if(libraryMode){await loadAssets(recap[0]);activate(recap[0]);$('library-mode').value='recap';}else go(0);});
+stage.querySelector('.brand-name').addEventListener('click',async e=>{e.preventDefault();if(libraryMode){activate(recap[0]);$('library-mode').value='recap';}else go(0);});
 for(const id of ['chapters-dialog','share-dialog','privacy-dialog','health-share-dialog']){$(id).addEventListener('close',()=>{$('chapters-button').setAttribute('aria-expanded','false');start();});$(id).addEventListener('click',e=>{if(e.target===$(id)){const r=$(id).getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog(id);}});}
 document.addEventListener('keydown',e=>{if(stage.hidden||$('chapters-dialog').open||$('share-dialog').open||$('privacy-dialog').open||$('health-share-dialog').open||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();go(state.index+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(state.index-1);}});
 let touchStart=null;
 stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||e.target.closest('button,a'))return;touchStart={x:e.clientX,y:e.clientY};});
 stage.addEventListener('pointerup',e=>{if(!touchStart)return;const dx=e.clientX-touchStart.x,dy=e.clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)go(state.index+(dx<0?1:-1));});
 stage.addEventListener('pointercancel',()=>touchStart=null);
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(state.raf);state.raf=0;}else start();});
-reduced.addEventListener('change',()=>{state.paused=reduced.matches;if(state.busy)finish();sync();draw();start();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
+reduced.addEventListener('change',()=>{state.paused=reduced.matches;if(state.busy)finish();sync();draw(true);start();});
 window.addEventListener('hashchange',()=>{const i=stories.findIndex(s=>s.id===location.hash.slice(1));if(i>=0)go(i);});
 const layoutObserver=new ResizeObserver(resize);for(const element of [stage,stage.querySelector('footer'),stage.querySelector('.chapter-label')])layoutObserver.observe(element);
 
 export async function prepareRecap({demo=false,deepLink=false,data=null}={}) {
-  viewVersion++;gridVersion++;clearShare();
-  if((demo&&data)||(!demo&&!data))throw Error('Connect to Garmin to build your recap, or explicitly choose the fictional demo.');
-  if(demo)demoDataset ||= (await import('./sample-data.mjs')).dataset;
-  dataset=demo?{...demoDataset,shareConsents:new Set()}:datasetFromPlan(data);recap=recapSequence(dataset);
-  if(!recap.length)throw Error('No supported activities were recorded for this year. Choose another year.');
-  stories=recap;libraryMode=false;state.index=state.from=state.to=0;state.progress=1;state.busy=false;loadingStory=false;
-  if(demo&&deepLink&&location.hash.startsWith('#template-')){await ensureLibrary();stories=library;libraryMode=true;}
-  if(deepLink){const initial=stories.findIndex(s=>s.id===location.hash.slice(1));if(initial>=0)state.index=state.from=state.to=initial;}
-  stage.classList.remove('transitioning');$('library-mode').value=libraryMode?'library':'recap';
-  $('library-mode').options[0].textContent=dataset.exampleOnly?'The example recap':'My recorded year';progressBars();
-  await Promise.all([ready,loadAssets(stories[state.index])]);
+ viewVersion++;gridVersion++;clearShare();
+ if((demo&&data)||(!demo&&!data))throw Error('Connect to Garmin to build your recap, or explicitly choose the fictional demo.');
+ if(demo)demoDataset ||= (await import('./sample-data.mjs')).dataset;
+ dataset=demo?{...demoDataset,shareConsents:new Set()}:datasetFromPlan(data);recap=recapSequence(dataset);
+ if(!recap.length)throw Error('No supported activities were recorded for this year. Choose another year.');
+ specCache.clear();frameCache.clear();context=recapContext(recap);
+ stories=recap;libraryMode=false;state.index=state.from=state.to=0;state.progress=1;state.busy=false;state.morph=null;loadingStory=false;
+ if(demo&&deepLink&&location.hash.startsWith('#template-')||demo&&deepLink&&location.hash.startsWith('#sample-')){await ensureLibrary();stories=library;libraryMode=true;}
+ if(deepLink){const initial=stories.findIndex(s=>s.id===location.hash.slice(1));if(initial>=0)state.index=state.from=state.to=initial;}
+ stage.classList.remove('transitioning');$('library-mode').value=libraryMode?'library':'recap';
+ $('library-mode').options[0].textContent=dataset.exampleOnly?'The example recap':'My recorded year';progressBars();
+ await ready;if(!dotCanvas)mountDotLayer();
 }
-export function revealRecap(){history.replaceState(null,'','#'+stories[state.index].id);sync();resize();start();preloadNeighbors();}
-export function clearRecap(){viewVersion++;gridVersion++;cancelAnimationFrame(state.raf);state.raf=0;loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;$('mini-watt-offer').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;ctx.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
+export function revealRecap(){history.replaceState(null,'','#'+stories[state.index].id);document.querySelector('meta[name="theme-color"]').content='#0B1222';state.enter=state.clock;sync();resize();start();}
+export function clearRecap(){viewVersion++;gridVersion++;stop();loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;context={};specCache.clear();frameCache.clear();$('mini-watt-offer').hidden=true;$('finale-share').hidden=true;$('card-actions').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;state.morph=null;ctx.clearRect(0,0,state.w,state.h);bctx.clearRect(0,0,state.w,state.h);if(dotGL){dotBuf.n=0;dotGL.draw(dotBuf);}else dot2d?.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
 $('health-share-cancel').addEventListener('click',()=>$('health-share-dialog').close());
 function showCoverage(){
-  if(!dataset)return;
-  const root=$('coverage-details');root.replaceChildren();const p=document.createElement('p');p.textContent=dataset.exampleOnly?'This is a fictional demo. No Garmin account is connected.':`${dataset.notice}. Activities use ${dataset.period.timeZone}. ${recap.length} supported stories. Data was fetched only for this recap.`;root.append(p);
-  if(dataset.warnings?.length){const heading=document.createElement('h3');heading.textContent='Data coverage';root.append(heading);const list=document.createElement('ul');for(const warning of dataset.warnings){const li=document.createElement('li');li.textContent=warning;list.append(li);}root.append(list);}
-  if(!dataset.exampleOnly)appendActivityAudit(root,dataset.activityAudit);
-  $('privacy-dialog').showModal();
+ if(!dataset)return;
+ const root=$('coverage-details');root.replaceChildren();const p=document.createElement('p');p.textContent=dataset.exampleOnly?'This is a fictional demo. No Garmin account is connected.':`${dataset.notice}. Activities use ${dataset.period.timeZone}. ${recap.length} supported stories. Data was fetched only for this recap.`;root.append(p);
+ if(dataset.warnings?.length){const heading=document.createElement('h3');heading.textContent='Data coverage';root.append(heading);const list=document.createElement('ul');for(const warning of dataset.warnings){const li=document.createElement('li');li.textContent=warning;list.append(li);}root.append(list);}
+ if(!dataset.exampleOnly)appendActivityAudit(root,dataset.activityAudit);
+ $('privacy-dialog').showModal();
 }
 $('recap-details').addEventListener('click',showCoverage);
 $('share-dialog').addEventListener('close',clearShare);
 $('health-share-dialog').addEventListener('close',()=>{$('health-share-description').textContent='';});
+// Release GPU resources when the page goes away.
+window.addEventListener('pagehide',()=>{stop();dotGL?.dispose();});
+void SAMPLE_GROUPS;
