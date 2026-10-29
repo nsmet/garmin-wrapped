@@ -34,7 +34,8 @@ export function normalizeActivity(a) {
 export function normalizeDaily(d) {
   if(!d||!dateValid(d.calendarDate))throw Error('A daily summary has no valid date.');
   const value=(v,max=Infinity)=>num(v)&&v<=max?v:null;
-  return {date:d.calendarDate,steps:d.includesWellnessData===true?value(d.movement?.steps?.value):null,stress:d.includesWellnessData===true?value(d.stress?.avgLevel,100):null,restingHR:d.includesWellnessData===true?value(d.heartRate?.restingValue,250):null};
+  // Floors: Garmin's movement.floorsAscended.value (whole floors; fractions are floored by Garmin).
+  return {date:d.calendarDate,steps:d.includesWellnessData===true?value(d.movement?.steps?.value):null,floors:d.includesWellnessData===true?value(d.movement?.floorsAscended?.value,5000):null,stress:d.includesWellnessData===true?value(d.stress?.avgLevel,100):null,restingHR:d.includesWellnessData===true?value(d.heartRate?.restingValue,250):null};
 }
 export function normalizeSleep(d) {
   if(!d||!dateValid(d.calendarDate))throw Error('A sleep summary has no valid date.');
@@ -121,11 +122,13 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],in
     const map=new Map();for(const d of data){if(!d||typeof d.date!=='string'||!dateValid(d.date))throw Error('Invalid daily record.');if(!d.date.startsWith(year+'-')||d.date>`${localNow.year}-${localNow.month}-${localNow.day}`)continue;const old=map.get(d.date);if(old&&JSON.stringify(old)!==JSON.stringify(d))throw Error('Conflicting daily records. Please import again.');map.set(d.date,d);}
     return [...map.values()].filter(d=>num(d[field]));
   }
-  const steps=dailyRecords(daily,'steps');
-  if(steps.length){const ch=chapter('everyday_movement','Everyday movement');
+  const steps=dailyRecords(daily,'steps'),floors=dailyRecords(daily,'floors'),floorTotal=sum(floors.map(d=>d.floors));
+  let movement;const movementChapter=()=>movement??=chapter('everyday_movement','Everyday movement');
+  if(steps.length){const ch=movementChapter();
     story(ch,'steps-total','walking',['SMALL STEPS.','BIG PICTURE.'],fmt(sum(steps.map(d=>d.steps))),'STEPS · '+steps.length+' RECORDED DAYS', 'Steps from recorded days only.\nMissing days are never zero.',steps.map(d=>'daily:'+d.date));
     story(ch,'steps-peak','active',['YOUR BIGGEST','RECORDED STEP DAY.'],fmt(Math.max(...steps.map(d=>d.steps))),'STEPS IN ONE RECORDED DAY',`${steps.length} days with step records.\nDaily dates follow Garmin.`,steps.map(d=>'daily:'+d.date),{phase:'peak'});
   }
+  if(floorTotal>0)story(movementChapter(),'floors-total','active',['ONE FLOOR','AT A TIME.'],fmt(floorTotal),'FLOORS CLIMBED · '+floors.length+' RECORDED DAYS',`${floors.length} days with floor records.\nMissing days are never zero.`,floors.map(d=>'daily:'+d.date));
   if(includeHealth){
     const nights=dailyRecords(sleep,'seconds').filter(d=>d.seconds>0&&d.seconds<=86400);
     if(nights.length>=30){const ch=chapter('sleep','Your recorded sleep'),seconds=median(nights.map(d=>d.seconds)),mins=Math.round(seconds/60);story(ch,'sleep-median','sleep',['OFF THE','CLOCK.'],`${Math.floor(mins/60)}h ${String(mins%60).padStart(2,'0')}m`,'MEDIAN RECORDED SLEEP',`${nights.length} nights with sleep records.\nNo sleep is inferred for missing nights.`,nights.map(d=>'sleep:'+d.date),{health:true});}

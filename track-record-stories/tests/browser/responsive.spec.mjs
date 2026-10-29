@@ -42,7 +42,7 @@ test('Every recap slide fits desktop, tablet and compact mobile layouts after re
    return canvas.width===Math.round(box.width*ratio)&&canvas.height===Math.round(box.height*ratio);
   })).toBe(true);
   for(const id of ids){
-   await navigate(page,id,browserName);await expect(page.locator('#chapter-name')).toHaveText(id==='mini-watt'?'ONE MORE RIDE?':id.replaceAll('-',' ').toUpperCase());
+   await navigate(page,id,browserName);await expect(page.locator('#story')).toHaveAttribute('data-story',id);
    await fits(page,`${width}×${height} ${id}`);
   }
  }

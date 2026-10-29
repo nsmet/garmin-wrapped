@@ -15,7 +15,7 @@ async function mockHeartImport(page,{unavailableHrv=false}={}){
 }
 async function navigate(page,id){
  await page.evaluate(id=>{history.replaceState(null,'','#'+id);window.dispatchEvent(new HashChangeEvent('hashchange'));},id);
- await expect(page.locator('#chapter-name')).toHaveText(id.replaceAll('-',' ').toUpperCase());
+ await expect(page.locator('#story')).toHaveAttribute('data-story',id);
 }
 
 test('Imported heart slides expose recorded metrics and monthly coverage and require consent for each exported card',async({page})=>{
@@ -50,7 +50,7 @@ test('The live chart and portrait export visibly identify the same highest and l
   };
  });
  await mockHeartImport(page);await navigate(page,'activity-hr-monthly');
- const expected=['HIGHEST AVERAGE','APR  126.5 BPM','LOWEST AVERAGE','JAN  121 BPM'];
+ const expected=['HIGH 126.5','LOW 121'];
  await expect.poll(()=>page.evaluate(expected=>expected.every(value=>window.heartDrawn.live.includes(value)),expected)).toBe(true);
  await page.locator('#share').click();await page.locator('#health-share-confirm').click();await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);
  await expect.poll(()=>page.evaluate(expected=>expected.every(value=>window.heartDrawn.export.includes(value)),expected)).toBe(true);

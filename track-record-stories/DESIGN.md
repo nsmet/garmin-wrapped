@@ -1,6 +1,17 @@
+# Current direction: one dot per activity (October 2026)
+
+The recap now follows the *Garmin Wraped — One dot per activity* design canvas (89 cards). Navy ground, Sora type, and light that comes only from the dots: bright data dots, exactly as many as the card's legend says, and faint guide dots that draw the sport (track, wheel, court, dial). Each card enters with rising titles, counting heroes and dots that fly in (from the previous card's dots when navigating); ambient loops continue while reading. Reduced motion shows the settled card; pause freezes everything; hidden tabs and open dialogs stop rendering.
+
+- Portrait screens show the card as designed, fitted between the header and the caption/controls. Wide screens (tablet landscape, desktop) put the type in a left column and the dot artwork, scaled up, in a right column.
+- Exports are the full 360 × 640 card at 3× (1080 × 1920) with branding, year, caption and data notice. Original keeps the navy and sport colours; Paper, Cobalt, Orange and Mint recolour type and dots by role so highlights stay distinct.
+- The design library shows all 89 cards with two fictional sample years, next to the 184 concept templates (guide dots only, no data).
+- [DOT-DESIGN.md](DOT-DESIGN.md) maps every card to its story and admission rule.
+
+The sections below describe the previous poster direction; the onboarding and loading screens still use it.
+
 # Approved direction
 
-The 18 sport poster concepts are saved as visual references in `output/sport-design-drafts/` (open `index.html` for the gallery). They are static examples with fictional statistics. The live recap uses separate transparent photo layers, animated vector shapes and live typography based on these examples. See `LAYERED-ART.md` for the composition and motion of every card.
+The 18 sport poster concepts are saved as visual references in `output/sport-design-drafts/` (open `index.html` for the gallery). They are static examples with fictional statistics; the live recap uses the restored design.
 
 Heart-rate and HRV monthly charts show the recorded values and source counts, with high and low callouts where available. The live recap and portrait exports use the same chart renderer.
 
@@ -34,6 +45,6 @@ The 24 October visual refinement constrains every chapter palette to the eight b
 
 Landscape compositions use independent transparent mountain and road subjects: rear geometry → mountain fragment → intervening ribbon → floating road → foreground path. The opaque alpine-road scene is retained only as historical source material and is no longer rendered. Cycling distance uses diagonal road geometry; cycling introductions retain gear geometry. Track photography remains a single masked photo fragment.
 
-Motion profiles are deterministic per chapter, with chapter-specific phase, pace, direction and transition duration. Ambient cycles use smooth periodic motion; open-path markers fade at their endpoints. Lane counts and marker positions interpolate during transitions. Incoming art settles after outgoing art clears, over diagonal color sweeps or slower circular reveals for quiet chapters. Charts and values stay still; the duration dial alone has ambient motion. Adjacent slides preload. Pause, reduced-motion changes during transitions, hidden tabs and open dialogs stop animation without losing the selected story. Live cards, thumbnails and exported cards use this same layered renderer.
+Motion profiles are deterministic per story, with individual phase, pace, direction and transition duration. Ambient cycles use smooth periodic motion; open-path markers fade at their endpoints. Lane counts and marker positions interpolate during transitions. Incoming art settles after outgoing art clears, over diagonal color sweeps or slower circular reveals for quiet chapters. Charts and values stay still; the duration dial alone has ambient motion. Adjacent slides preload. Pause, reduced-motion changes during transitions, hidden tabs and open dialogs stop animation without losing the selected story. Live cards, thumbnails and exported cards use this same layered renderer.
 
 The start line uses a warm-paper sports poster, oversized condensed headline, original shoe cutout and orange/pink/blue track geometry. The loading interlude shifts to cobalt with yellow type, floating photography, moving lane markers and rotating editorial captions. Motion can be paused, respects reduced motion and pauses in background tabs. Entry, loading and recap remain clearly labeled as a design preview until the Garmin Personal API adapter is implemented. The help panel links directly to Garmin’s key settings and explains key creation and replacement.

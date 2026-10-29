@@ -38,7 +38,7 @@ export async function collectRecap({key,year,timeZone,includeSteps=true,includeH
       }
     }
     onProgress('Checking coverage and building your story…');
-    return buildRecap({year,timeZone,activities,daily:includeSteps?daily:daily.map(({steps,...d})=>d),sleep,hrv,indexComplete:complete,includeHealth,warnings});
+    return buildRecap({year,timeZone,activities,daily:includeSteps?daily:daily.map(({steps,floors,...d})=>d),sleep,hrv,indexComplete:complete,includeHealth,warnings});
   }finally{
     key='';activities.length=0;daily.length=0;sleep.length=0;hrv.length=0;
     // No recurring connection is needed: clear the token cookie after each import.
