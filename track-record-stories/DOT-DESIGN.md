@@ -4,6 +4,8 @@ Source: Design canvas *Garmin Wraped — One dot per activity* (23 boards, 89 ca
 
 Feedback round 1 (29 Oct 2026): hours cards use a sport-specific outline (track, chainring, interval timer, kettlebell, footprint, boot, pool, oar, mat, ring, elliptical, skis, golf ball, racket, three rings, pitch, carabiner, heart, star) filled with one dot per stated unit; cycling and strength sessions fill a bike's wheels and a dumbbell outline; running distance traces a shoe and cycling distance traces a bike. Grey dots show the unfilled part of each outline. The dot key sits under the caption instead of under the number.
 
+Feedback round 2 (30 Oct 2026): the hiking outline is an ankle-high hiking boot (laces to hooks, toe cap, lugged sole) instead of a tall ski-boot shaft; climbing hours fill the holds of a route up a wall from the ground up (rope and quickdraws as guides) instead of a carabiner; both elliptical cards use one side-view trainer rig (flywheel, upright, console, swinging handles, foot plates). Sessions animate it, with each session riding the pedal orbit, and hours fill that orbit. Multisport sessions use two counter-rotating rings, with every dot inside their overlap. The HRV strands share one column grid and a column-driven wave, so a shorter last strand stays parallel. Weekday captions no longer add an "Activity dates use …" line.
+
 How the cards reach people:
 
 - **Recap**: a card appears only when the existing pipeline admits its story (column *Live when*). Values, captions and chart items come from the story; the mapping reads displayed numbers back and never calculates metrics.

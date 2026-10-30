@@ -7,6 +7,7 @@ const frames=page=>page.evaluate(()=>new Promise(resolve=>{let n=0;const next=()
 
 test('Ambient layers move, pause holds the exact frame, and paused navigation stays still',async({page})=>{
  await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ test.skip(!(await page.locator('#motion').isVisible()),'Phones have no pause control: the story chrome stays minimal there.');
  const moving=await frame(page);await expect.poll(()=>frame(page)).not.toBe(moving);
  await page.locator('#motion').click();await expect(page.locator('#motion')).toHaveText('Play');
  const paused=await frame(page);await frames(page);expect(await frame(page)).toBe(paused);

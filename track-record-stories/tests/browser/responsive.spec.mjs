@@ -50,7 +50,7 @@ test('Every recap slide fits desktop, tablet and compact mobile layouts after re
 
 test('All 184 design templates keep their typography clear at desktop and mobile sizes',async({page,browserName})=>{
  test.setTimeout(180000);await captureText(page);await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
- await page.locator('#chapters-button').click();await page.locator('#library-mode').selectOption('library');await expect(page.locator('#library-count')).toContainText('184 templates');await page.locator('.chapter-tile').first().click();
+ await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#library-mode').selectOption('library');await expect(page.locator('#library-count')).toContainText('184 templates');await page.locator('.chapter-tile').first().click();
  const templates=await page.evaluate(async()=>{const {makeLibrary,extensions}=await import('/story-library.mjs');const catalog=await fetch('/story-catalog.json').then(r=>r.json());return [...makeLibrary(catalog),...extensions].map(s=>({id:s.id,title:s.title.join(' ')}));});
  for(const [width,height] of [[1440,900],[768,1024],[320,568]]){
   await page.setViewportSize({width,height});
@@ -69,8 +69,19 @@ test('Onboarding, loading, dialogs and export controls remain usable at each scr
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.locator('#key-help').click();await expect(page.locator('#close-key-help')).toBeInViewport();await page.locator('#close-key-help').click();
   await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
-  await page.locator('#chapters-button').click();await expect(page.locator('#close-chapters')).toBeInViewport();await expect(page.locator('#story-search')).toBeVisible();await page.locator('#close-chapters').click();
-  await page.locator('#share').click();await expect(page.locator('#download')).toBeEnabled();await page.locator('#download').scrollIntoViewIfNeeded();await expect(page.locator('#download')).toBeInViewport();
+  await page.locator('#chapters-button').dispatchEvent('click');await expect(page.locator('#close-chapters')).toBeInViewport();await expect(page.locator('#story-search')).toBeVisible();await page.locator('#close-chapters').click();
+  await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();await page.locator('#download').scrollIntoViewIfNeeded();await expect(page.locator('#download')).toBeInViewport();
   await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);
  }
+});
+
+test('Phones get slim recap chrome: share icon in the header, tap zones and a one-line footer',async({page})=>{
+ await page.setViewportSize({width:390,height:664});await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ for(const selector of ['#chapters-button','#share','#motion','#caption','.demo-label','.story header .brand-product'])await expect(page.locator(selector),selector).toBeHidden();
+ await expect(page.locator('#share-icon')).toBeVisible();await expect(page.locator('.footer-credit')).toBeVisible();await expect(page.locator('#chapter-key')).toHaveText(/^1 dot/);
+ const progress=await page.locator('#progress').boundingBox(),header=await page.locator('.story header').boundingBox(),footer=await page.locator('#story footer').boundingBox();
+ expect(progress.y).toBeGreaterThan(header.y);expect(footer.height).toBeLessThanOrEqual(44);
+ await page.locator('#advance').click({position:{x:120,y:200}});await expect(page.locator('#story')).toHaveAttribute('data-story','year-summary');
+ await page.locator('#back').click({position:{x:40,y:200}});await expect(page.locator('#story')).toHaveAttribute('data-story','cover');
+ await page.locator('#share-icon').click();await expect(page.locator('#download')).toBeEnabled();
 });

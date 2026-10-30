@@ -114,7 +114,7 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],in
     }
     if(rows.length>=8){
       const days=Object.entries(Object.groupBy(rows,r=>r.weekday)).map(([k,v])=>[k,v.length]).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
-      if(days[0][1]>days[1]?.[1]||days.length===1)story(ch,`${sport}-weekday`,template,content('weekday').title,days[0][0].toUpperCase(),'MOST RECORDED '+labels[sport].toUpperCase()+' DAY'+qualified,`${days[0][1]} of ${rows.length} ${content('sessions').noun} fell on ${days[0][0]}.\nActivity dates use ${timeZone}.`,evidence,{phase:'pattern',presentation:'weekday',chart:{kind:'weekdays',items:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(label=>({label,value:days.find(d=>d[0]===label)?.[1]||0}))}});
+      if(days[0][1]>days[1]?.[1]||days.length===1)story(ch,`${sport}-weekday`,template,content('weekday').title,days[0][0].toUpperCase(),'MOST RECORDED '+labels[sport].toUpperCase()+' DAY'+qualified,`${days[0][1]} of ${rows.length} ${content('sessions').noun} fell on ${days[0][0]}.`,evidence,{phase:'pattern',presentation:'weekday',chart:{kind:'weekdays',items:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(label=>({label,value:days.find(d=>d[0]===label)?.[1]||0}))}});
     }
     ch.stories.sort((a,b)=>['position','scale','pattern','peak'].indexOf(a.phase)-['position','scale','pattern','peak'].indexOf(b.phase));
   }
@@ -170,6 +170,10 @@ export function buildRecap({year,timeZone,activities,daily=[],sleep=[],hrv=[],in
       monthlyStory(variability,'hrv','hrv','hrv-monthly','hrv',['HRV THROUGH','THE YEAR.'],'MS · OVERNIGHT HRV','hrv:');
     }else quality.push(variability.length?'HRV: at least 30 recorded nights are required.':'HRV: no usable overnight measurements were returned. HRV stories were omitted.');
   }
-  const finale=chapter('finale','Your track record');story(finale,'finale','finale',['THAT’S YOUR','TRACK RECORD.'],year,'YOUR RECORDED YEAR'+qualified,`${records.length} activities. ${groups.size} sport families.\nA year with a shape all your own.`,allEvidence,{phase:'payoff',presentation:'receipt',chart:{kind:'summary',items:stats}});
+  // Finale adds total distance across distance sports, shown only when every such activity has a distance and the total is above 0.
+  const distanceRows=records.filter(r=>distanceSports.has(r.sport)),totalDistance=distanceRows.length?metric('year.distance_sum',distanceRows,'distance',sum,'m'):null;
+  const km=totalDistance?.status==='verified'&&totalDistance.value>0?totalDistance.value/1000:0;
+  const finaleStats=km>0?[stats[0],{label:'KILOMETRES',value:km>=10?fmt(Math.round(km)):formatDecimal(km),unit:'recorded distance'},...stats.slice(1)]:stats;
+  const finale=chapter('finale','Your track record');story(finale,'finale','finale',['THAT’S YOUR','TRACK RECORD.'],year,'YOUR RECORDED YEAR'+qualified,'',allEvidence,{phase:'payoff',presentation:'receipt',chart:{kind:'summary',items:finaleStats}});
   return {schemaVersion:'3.0.0',calculationVersion:'1.0.0',year,period,indexComplete:!!indexComplete,exampleOnly:false,includeHealth,activityAudit,notice:`Recorded ${year}${!period.complete?' · year to date':''}${!indexComplete?' · partial import':''}`,chapters,stories:chapters.flatMap(c=>c.stories.map(s=>({...s,chapterId:c.chapterId}))),metrics:ledger,warnings:[...warnings,...quality]};
 }

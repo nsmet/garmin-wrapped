@@ -1,11 +1,11 @@
 import {renderStill} from './dot-render.mjs';
 
+// Colourways in the dot design: bg, ink, accent, second accent (see dot-card.mjs colorRoles).
 export const shareColorways=[
  {id:'original',label:'Original',color:'#0B1222'},
- {id:'paper',label:'Paper',color:'#f3f0e8',palette:['#f3f0e8','#101519','#1743ed','#ff7038']},
- {id:'cobalt',label:'Cobalt',color:'#1743ed',palette:['#1743ed','#fffaf0','#f2e630','#f23897']},
- {id:'orange',label:'Orange',color:'#ff7038',palette:['#ff7038','#101519','#1743ed','#f2e630']},
- {id:'mint',label:'Mint',color:'#8de4c4',palette:['#8de4c4','#101519','#1743ed','#f23897']}
+ {id:'paper',label:'Paper',color:'#F3EFE6',palette:['#F3EFE6','#0B1222','#F2780D','#1F5FE0']},
+ {id:'cobalt',label:'Cobalt',color:'#1C34D9',palette:['#1C34D9','#FFFFFF','#FFE14D','#FF9BC8']},
+ {id:'ember',label:'Ember',color:'#FF5A1F',palette:['#FF5A1F','#0B1222','#FFFFFF','#FFE14D']}
 ];
 
 // A portrait card (1080 × 1920 for exports) from a card spec built from sanitized display fields.

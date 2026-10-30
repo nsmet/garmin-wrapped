@@ -15,6 +15,9 @@ const sampleCtx={full:sampleContext('full'),light:sampleContext('light')};
 async function ensureLibrary(){if(!libraryLoad)libraryLoad=fetch('./story-catalog.json').then(r=>{if(!r.ok)throw Error('Library unavailable');return r.json();}).then(c=>{library=[...sampleStories('full'),...sampleStories('light'),...makeLibrary(c),...extensions];for(const group of [...new Set(library.map(s=>s.group))]){const o=document.createElement('option');o.value=group;o.textContent=group;$('story-group').append(o);}return library;}).catch(e=>{libraryLoad=null;throw e;});return libraryLoad;}
 let stories=recap,libraryMode=false,page=0,gridVersion=0;
 const $=id=>document.getElementById(id),canvas=$('poster'),ctx=canvas.getContext('2d'),stage=$('story'),backdrop=$('backdrop'),bctx=backdrop.getContext('2d');
+// The chapter menu is a development tool: it shows on local hosts (or with ?dev) and never in production.
+const devTools=/^(localhost|127\.0\.0\.1|\[::1\]|.+\.local)$/.test(location.hostname)||new URLSearchParams(location.search).has('dev');
+$('chapters-button').hidden=!devTools;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 // clock: seconds of animation time (stops while paused); enter: clock time the current card appeared
 const state={index:0,from:0,to:0,progress:1,elapsed:0,duration:900,clock:0,enter:0,fromEnter:0,last:0,raf:0,paused:reduced.matches,busy:false,w:0,h:0,dpr:1,lastDots:0,textDirty:true,bgDirty:true,morph:null};
@@ -85,27 +88,38 @@ function draw(force=false){
  }
  placeActions(to,toFrame);
 }
+// Finale: a small popup offers the share card once the numbers have counted up. Dismissed or used, it stays away for this recap.
+let promptTimer=0,promptFor=null,promptDismissed=false;
+function sharePrompt(s,show){
+ const el=$('share-prompt');
+ if(!show||promptDismissed){if(promptFor||!el.hidden){clearTimeout(promptTimer);promptFor=null;el.classList.remove('show');el.hidden=true;}return;}
+ if(promptFor===s)return;
+ promptFor=s;clearTimeout(promptTimer);
+ promptTimer=setTimeout(()=>{if(promptFor!==s)return;el.hidden=false;requestAnimationFrame(()=>el.classList.add('show'));},reduced.matches?0:2400);
+}
+function dismissSharePrompt(){promptDismissed=true;sharePrompt(null,false);}
 function placeActions(s,frame){
  const sp=specFor(s),lay=frame.textLayout,T=frame.text,actions=$('card-actions');
  const showShare=!!sp.share&&!s.libraryOnly,showCta=!!sp.cta&&!!s.promotional;
- $('finale-share').hidden=!showShare;$('mini-watt-offer').hidden=!showCta;actions.hidden=!showShare&&!showCta;
+ sharePrompt(s,showShare&&!state.busy);
+ $('mini-watt-offer').hidden=!showCta;actions.hidden=!showCta;
  if(actions.hidden)return;
- const y=showCta?(frame.wide?lay.bottom+18:196):(frame.wide?lay.bottom+22:556);
- actions.style.setProperty('--x',T.x+18*T.s+'px');actions.style.setProperty('--y',T.y+y*T.s+'px');actions.style.setProperty('--s',String(Math.max(1,Math.min(T.s,1.6))));
+ const y=frame.wide?lay.bottom+18:196;
+ actions.style.setProperty('--x',T.x+18*T.s+'px');actions.style.setProperty('--y',T.y+y*T.s+'px');actions.style.setProperty('--s',String(Math.max(1,Math.min(T.s,frame.phone?1:1.6))));
 }
 function sync(){
  const s=stories[state.index];if(!s)return;const sp=specFor(s);
  $('chapter-name').textContent=s.promotional?'ONE MORE RIDE?':s.libraryOnly?String(s.group).toUpperCase():sp.grp;$('position').textContent=`${String(state.index+1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`;
  document.querySelector('.demo-label').textContent=s.sample?'FICTIONAL SAMPLE · DESIGN PREVIEW':s.libraryOnly?'TEMPLATE · NO PERSONAL DATA':dataset.exampleOnly?'FICTIONAL DATA · DESIGN PREVIEW':dataset.notice.toUpperCase();
  $('edition-year').textContent=s.libraryOnly?'DESIGN LIBRARY':`${dataset.year}${dataset.exampleOnly?' / DEMO':''}`;
- {const [c1,...rest]=s.caption.split('\n'),r=document.createElement('span');r.className='caption-rest';r.textContent=rest.join('\n');$('caption').replaceChildren(c1,...(rest.length?['\n',r]:[]));}$('dot-key').textContent=sp.legend;$('dot-key').hidden=!sp.legend;$('story-title').textContent=s.title.join(' ');
+ {const [c1,...rest]=s.caption.split('\n'),r=document.createElement('span');r.className='caption-rest';r.textContent=rest.join('\n');$('caption').replaceChildren(c1,...(rest.length?['\n',r]:[]));}$('dot-key').textContent=sp.legend;$('dot-key').hidden=!sp.legend;$('chapter-key').textContent=sp.legend;$('chapter-key').hidden=!sp.legend;$('story-title').textContent=s.title.join(' ');
  $('story-description').textContent=`${s.value.replace('\n',' ')} ${s.unit}. ${s.caption.replace('\n',' ')} ${chartDescription(s.chart)} ${sp.legend?sp.legend.charAt(0).toUpperCase()+sp.legend.slice(1)+'.':''} ${s.sample?'Fictional sample from the dot design. Not a recap result.':s.libraryOnly?'Template. No personal data. '+s.eligibility:dataset.notice}.`;
  stage.classList.toggle('is-promotion',!!s.promotional);
  $('back').disabled=state.index===0;$('advance').setAttribute('aria-label',state.index===stories.length-1?'Choose a share card':'Next story');
  $('share').textContent=state.index===stories.length-1?'Choose a card ↗':'Share card ↗';
  $('motion').textContent=reduced.matches?'Still':state.paused?'Play':'Pause';$('motion').disabled=reduced.matches;$('motion').setAttribute('aria-pressed',String(state.paused));
  const shareable=s.promotional?recap.some(card=>canRequestShare(card,dataset)):canRequestShare(s,dataset);
- $('share').disabled=!shareable;$('advance').disabled=state.index===stories.length-1&&!shareable;
+ $('share').disabled=!shareable;$('share-icon').disabled=!shareable;$('advance').disabled=state.index===stories.length-1&&!shareable;
  [...$('progress').children].forEach((el,i)=>el.className=i===Math.floor(state.index/stories.length*$('progress').children.length)?'current':i<state.index/stories.length*$('progress').children.length?'passed':'');
  document.querySelectorAll('.chapter-tile').forEach((el,i)=>el.setAttribute('aria-current',String(i===state.index)));
  stage.dataset.story=s.id;stage.style.setProperty('--accent',sp.acc);measureBounds();state.textDirty=true;state.bgDirty=true;
@@ -137,7 +151,11 @@ function start(){if(!blocked()&&!state.raf){state.last=0;state.raf=requestAnimat
 function stop(){cancelAnimationFrame(state.raf);state.raf=0;}
 function measureBounds(){
  if(stage.hidden)return;const r=stage.getBoundingClientRect(),label=stage.querySelector('.chapter-label').getBoundingClientRect(),footer=stage.querySelector('footer').getBoundingClientRect(),pad=parseFloat(getComputedStyle(stage.querySelector('.story-chrome')).paddingLeft);
- const b={top:label.bottom-r.top+8,bottom:footer.top-r.top-8,left:pad*(r.width>=900?1:.4),right:r.width-pad*(r.width>=900?1:.4)};
+ // Phones: the card runs edge to edge (it carries its own inner margin).
+ const side=r.width<600?0:pad*(r.width>=900?1:.4);
+ const b={top:label.bottom-r.top+8,bottom:footer.top-r.top-8,left:side,right:r.width-side};
+ const fb=stage.querySelector('.footer-bottom').getBoundingClientRect();
+ stage.style.setProperty('--prompt-bottom',Math.max(4,r.width<600?r.bottom-fb.bottom+4:r.bottom-fb.top+10)+'px');
  if(JSON.stringify(b)!==JSON.stringify(state.bounds)){state.bounds=b;state.textDirty=state.bgDirty=true;}
 }
 function resize(){measureBounds();const r=stage.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);state.w=r.width;state.h=r.height;state.dpr=d;
@@ -149,7 +167,7 @@ function thumbnail(story,width=270){
  renderStill(out.getContext('2d'),out.width,out.height,exportSpec(story.libraryOnly?story:displayFields(story),story,{notice,year:dataset.year}));return out;
 }
 async function openChapters(){
- if(state.busy||loadingStory)return;$('chapters-dialog').showModal();$('chapters-button').setAttribute('aria-expanded','true');
+ if(!devTools||state.busy||loadingStory)return;$('chapters-dialog').showModal();$('chapters-button').setAttribute('aria-expanded','true');
  await ready;page=0;renderGrid();
 }
 function progressBars(){$('progress').replaceChildren();for(let i=0;i<Math.min(stories.length,24);i++)$('progress').append(document.createElement('span'));}
@@ -171,7 +189,7 @@ async function renderGrid(){
 }
 for(const id of ['library-mode','story-group','story-search'])$(id).addEventListener(id==='story-search'?'input':'change',()=>{page=0;renderGrid();});
 $('more-stories').addEventListener('click',()=>{page++;renderGrid();});
-function resetShareImage(){if(shareURL)URL.revokeObjectURL(shareURL);shareURL=null;shareBlob=null;$('share-preview').removeAttribute('src');$('native-share').hidden=true;$('download').disabled=true;}
+function resetShareImage(){$('share-saved').textContent='';if(shareURL)URL.revokeObjectURL(shareURL);shareURL=null;shareBlob=null;$('share-preview').removeAttribute('src');$('native-share').hidden=true;$('download').disabled=true;}
 function clearShare(){shareVersion++;sharePickerVersion++;if(shareStory)dataset?.shareConsents?.delete(shareStory.id);resetShareImage();shareStory=null;shareColorway='original';$('share-cards').replaceChildren();$('share-colors').replaceChildren();$('share-selection').textContent='';$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','false');}
 // display: sanitized display fields (exports) or display fields (previews); source: the in-memory story
 function shareCanvas(display,source,width=1080,colorway=shareColorway){
@@ -192,7 +210,8 @@ function encodeShareCanvas(out,version){
 function requestShareConsent(story){
  if(canShare(story,dataset))return Promise.resolve(true);
  const currentDataset=dataset;
- $('health-share-description').textContent=`${story.title.join(' ')}: ${story.value} ${story.unit}. ${story.caption}`;
+ $('health-share-description').textContent=`${story.title.join(' ').replace(/[.!?]$/,'')}: ${story.value} ${story.unit}. ${story.caption}`;
+ try{$('health-share-preview').src=thumbnail(story,432).toDataURL('image/png');$('health-share-preview').alt=`Preview of ${story.title.join(' ')}`;}catch{$('health-share-preview').removeAttribute('src');}
  $('health-share-dialog').showModal();
  return new Promise(resolve=>{
   const cleanup=()=>{$('health-share-confirm').removeEventListener('click',confirm);$('health-share-dialog').removeEventListener('close',cancel);};
@@ -213,7 +232,7 @@ async function renderSharePicker(){
  const previews=items.map(story=>{
   const button=document.createElement('button');button.type='button';button.className='share-card-option';button.dataset.storyId=story.id;button.setAttribute('aria-label',`Choose ${story.title.join(' ')}`);
   const img=document.createElement('img');img.alt='';img.width=90;img.height=160;const label=document.createElement('span');label.textContent=story.title.join(' ');button.append(img,label);
-  if(story.health&&!dataset.exampleOnly){const note=document.createElement('small');note.textContent='Permission required';button.append(note);}
+  if(story.health&&!dataset.exampleOnly){const note=document.createElement('small');note.textContent='Asks first';button.append(note);}
   button.addEventListener('click',()=>chooseShareCard(story));$('share-cards').append(button);return {story,img};
  });
  syncShareChoices();
@@ -259,18 +278,22 @@ async function renderSelectedShare(){
  finally{if(version===shareVersion)$('share-preview-frame').setAttribute('aria-busy','false');}
 }
 function filename(){return `garmin-wraped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.png`;}
-$('download').addEventListener('click',()=>{if(!shareURL||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=shareURL;a.download=filename();document.body.append(a);a.click();a.remove();toast('Your card is ready to save.');});
+$('download').addEventListener('click',()=>{if(!shareURL||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=shareURL;a.download=filename();document.body.append(a);a.click();a.remove();$('share-saved').textContent=`Saved to your device · ${a.download}`;});
 $('native-share').addEventListener('click',async()=>{if(!shareBlob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([shareBlob],filename(),{type:'image/png'})],title:'My Garmin Wraped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent='Sharing is unavailable here. You can download the PNG instead.';}});
-$('advance').addEventListener('click',()=>state.index===stories.length-1?openShare():go(state.index+1));
-$('back').addEventListener('click',()=>go(state.index-1));$('share').addEventListener('click',openShare);$('finale-share').addEventListener('click',openShare);
+// On phones Back and Next are invisible tap zones over the card; a swipe that starts on them must not also tap.
+let swipedAt=0;const swiped=()=>performance.now()-swipedAt<450;
+$('advance').addEventListener('click',()=>{if(swiped())return;state.index===stories.length-1?openShare():go(state.index+1);});
+$('back').addEventListener('click',()=>{if(!swiped())go(state.index-1);});$('share').addEventListener('click',openShare);$('share-icon').addEventListener('click',openShare);$('finale-share').addEventListener('click',()=>{dismissSharePrompt();openShare();});$('share-prompt-close').addEventListener('click',dismissSharePrompt);
 $('motion').addEventListener('click',()=>{state.paused=!state.paused;if(state.paused&&state.busy)finish();sync();draw(true);start();});
+// Tap a progress segment to jump to its story. With more stories than segments, a segment opens the first story it covers.
+$('progress').addEventListener('click',e=>{const bar=$('progress'),seg=e.target.closest('#progress>span');if(!seg)return;const n=bar.children.length,i=[...bar.children].indexOf(seg);go(Math.ceil(i*stories.length/n));});
 $('chapters-button').addEventListener('click',openChapters);$('close-chapters').addEventListener('click',()=>closeDialog('chapters-dialog'));$('close-share').addEventListener('click',()=>closeDialog('share-dialog'));
 stage.querySelector('.brand-name').addEventListener('click',async e=>{e.preventDefault();if(libraryMode){activate(recap[0]);$('library-mode').value='recap';}else go(0);});
 for(const id of ['chapters-dialog','share-dialog','privacy-dialog','health-share-dialog']){$(id).addEventListener('close',()=>{$('chapters-button').setAttribute('aria-expanded','false');start();});$(id).addEventListener('click',e=>{if(e.target===$(id)){const r=$(id).getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog(id);}});}
 document.addEventListener('keydown',e=>{if(stage.hidden||$('chapters-dialog').open||$('share-dialog').open||$('privacy-dialog').open||$('health-share-dialog').open||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();go(state.index+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(state.index-1);}});
 let touchStart=null;
-stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||e.target.closest('button,a'))return;touchStart={x:e.clientX,y:e.clientY};});
-stage.addEventListener('pointerup',e=>{if(!touchStart)return;const dx=e.clientX-touchStart.x,dy=e.clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)go(state.index+(dx<0?1:-1));});
+stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||e.target.closest('a,button:not(#back):not(#advance)'))return;touchStart={x:e.clientX,y:e.clientY};});
+stage.addEventListener('pointerup',e=>{if(!touchStart)return;const dx=e.clientX-touchStart.x,dy=e.clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4){swipedAt=performance.now();go(state.index+(dx<0?1:-1));}});
 stage.addEventListener('pointercancel',()=>touchStart=null);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
 reduced.addEventListener('change',()=>{state.paused=reduced.matches;if(state.busy)finish();sync();draw(true);start();});
@@ -292,7 +315,7 @@ export async function prepareRecap({demo=false,deepLink=false,data=null}={}) {
  await ready;if(!dotCanvas)mountDotLayer();
 }
 export function revealRecap(){history.replaceState(null,'','#'+stories[state.index].id);document.querySelector('meta[name="theme-color"]').content='#0B1222';state.enter=state.clock;sync();resize();start();}
-export function clearRecap(){viewVersion++;gridVersion++;stop();loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;context={};specCache.clear();frameCache.clear();$('mini-watt-offer').hidden=true;$('finale-share').hidden=true;$('card-actions').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;state.morph=null;ctx.clearRect(0,0,state.w,state.h);bctx.clearRect(0,0,state.w,state.h);if(dotGL){dotBuf.n=0;dotGL.draw(dotBuf);}else dot2d?.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
+export function clearRecap(){viewVersion++;gridVersion++;stop();loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;context={};specCache.clear();frameCache.clear();$('mini-watt-offer').hidden=true;sharePrompt(null,false);promptDismissed=false;$('card-actions').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;state.morph=null;ctx.clearRect(0,0,state.w,state.h);bctx.clearRect(0,0,state.w,state.h);if(dotGL){dotBuf.n=0;dotGL.draw(dotBuf);}else dot2d?.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
 $('health-share-cancel').addEventListener('click',()=>$('health-share-dialog').close());
 function showCoverage(){
  if(!dataset)return;
@@ -303,7 +326,9 @@ function showCoverage(){
 }
 $('recap-details').addEventListener('click',showCoverage);
 $('share-dialog').addEventListener('close',clearShare);
-$('health-share-dialog').addEventListener('close',()=>{$('health-share-description').textContent='';});
+$('health-share-dialog').addEventListener('close',()=>{$('health-share-description').textContent='';$('health-share-preview').removeAttribute('src');$('health-share-preview').alt='';});
+$('share-back').addEventListener('click',()=>closeDialog('share-dialog'));
+$('chapters-share').addEventListener('click',()=>{closeDialog('chapters-dialog');openShare();});
 // Release GPU resources when the page goes away.
 window.addEventListener('pagehide',()=>{stop();dotGL?.dispose();});
 void SAMPLE_GROUPS;

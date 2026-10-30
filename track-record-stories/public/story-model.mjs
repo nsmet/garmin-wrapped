@@ -6,7 +6,7 @@ const safeValue=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0;
 export function validChart(chart){
  if(!chart||!Array.isArray(chart.items)||!chart.items.length||chart.items.length>19||!chart.items.every(i=>i&&safeText(i.label)))return false;
  switch(chart.kind){
-  case 'summary':return chart.items.length<=4&&chart.items.every(i=>safeText(i.value)&&safeText(i.unit));
+  case 'summary':return chart.items.length<=5&&chart.items.every(i=>safeText(i.value)&&safeText(i.unit));
   case 'duration':return chart.items.length===2&&chart.items.every(i=>safeText(i.value));
   case 'sport-mix':return safeValue(chart.total)&&chart.total>0&&chart.items.every(i=>safeText(i.key)&&safeValue(i.value)&&i.value>0)&&chart.items.reduce((n,i)=>n+i.value,0)===chart.total;
   case 'months':return ['minutes','sessions'].includes(chart.measure)&&typeof chart.compare==='boolean'&&chart.items.length===12&&chart.items.every(i=>['complete','partial','current','future'].includes(i.state)&&(i.value===null||safeValue(i.value))&&(i.sessions===null||safeValue(i.sessions)));

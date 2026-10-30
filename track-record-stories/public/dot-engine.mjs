@@ -3,7 +3,7 @@
 // 360 × 640 card coordinate space. It never reads records or calculates metrics.
 //  - data dots: bright, one per activity / hour / km unit, as stated on the card.
 //  - guide dots: small and faint; they draw the shape so few data dots still read.
-import {HOURS,SESSIONS,ROUTES,FLOORS} from './dot-shapes.mjs';
+import {HOURS,SESSIONS,ROUTES,FLOORS,rr} from './dot-shapes.mjs';
 const TAU=Math.PI*2;
 export const COLORS={DIM:'#3E4D74',MID:'#6C7BA0',SOFT:'#CFDDF5',GUIDE:'#5B6C98',NAVY:'#0B1222'};
 const {DIM,MID,SOFT,GUIDE}=COLORS;
@@ -97,6 +97,13 @@ function fillCaps(n,caps){
  caps.forEach((c,i)=>{out[i]=Math.min(left,c);left-=out[i];});return out;
 }
 
+/* a pool from above: wall + gutter, lane ropes whose floats brighten near the walls, starting blocks on the left */
+function pool(pts,[x0,y0,x1,y1],ropes=[],blocks=[]){
+ guides(pts,byPitch(rr(x0,y0,x1-x0,y1-y0,12),7,true),MID,1.35,0.7);
+ guides(pts,byPitch(rr(x0+7,y0+7,x1-x0-14,y1-y0-14,7),8,true),GUIDE,1.15,0.4);
+ for(const y of ropes)for(let x=x0+12;x<=x1-12;x+=6){const near=x<x0+40||x>x1-40;pts.push(guide(x,y,near?SOFT:GUIDE,near?1.35:1.2,near?0.6:0.45));}
+ for(const y of blocks)guides(pts,byPitch(rr(x0-13,y-7,15,14,3),5,true),MID,1.25,0.6);
+}
 export const MOTIF={
  running(n,acc){
   // one snake of runs, nose to tail around the track; a long year continues into the next lane
@@ -183,11 +190,14 @@ export const MOTIF={
   return {pts};
  },
  swimming(n,acc){
-  const pts=[],wave=(x,k,t)=>330+k*52+9*Math.sin(x/80*TAU-t*1.6+k*1.1);
-  for(let k=0;k<5;k++)for(let j=0;j<56;j++){const p=guide(16+j*(328/55),0,GUIDE,1.2,0.5);p.k=k;p.m=(p,t,o)=>{o.x=p.x;o.y=wave(p.x,p.k,t);};pts.push(p);}
+  /* a pool from above: every session is a swimmer doing lengths in a lane, keeping right so swimmers pass cleanly */
+  const pts=[],L=5,top=292,lw=52,x0=26,x1=334,wa=x0+20,wb=x1-20,span=wb-wa,laneY=k=>top+lw/2+k*lw;
+  pool(pts,[x0,top,x1,top+L*lw],Array.from({length:L-1},(_,k)=>top+(k+1)*lw),Array.from({length:L},(_,k)=>laneY(k)));
+  for(let k=0;k<L;k++){const y=laneY(k);guides(pts,lineP([wa+14,y],[wb-14,y],8),GUIDE,1.15,0.4);for(const x of [wa+14,wb-14])guides(pts,lineP([x,y-9],[x,y+9],6),GUIDE,1.15,0.45);}
   const order=[2,1,3,0,4],cnt=[0,0,0,0,0];for(let i=0;i<n;i++)cnt[order[i%5]]++;
-  const maxL=Math.max(...cnt),s=sz(n,Math.min(328/maxL,40));
-  cnt.forEach((c,k)=>{for(let j=0;j<c;j++){const p=data(0,0,acc,s);p.k=k;p.x0=j/c*328+k*37;p.v=20+k*2.5;p.m=(p,t,o)=>{const x=mod(p.x0+t*p.v,328);o.x=16+x;o.y=wave(o.x,p.k,t)-1;o.ka=clamp(Math.min(x,328-x)/18,0,1);};pts.push(p);}});
+  const maxL=Math.max(...cnt),s=sz(n,Math.min(2*span/maxL,40));
+  cnt.forEach((c,k)=>{for(let j=0;j<c;j++){const p=data(0,0,acc,s);p.k=k;p.u0=j/c+k*0.13;p.v=0.045+k*0.004;
+   p.m=(p,t,o)=>{const u=mod(p.u0+t*p.v,1),out=u<0.5,f=out?u*2:2-u*2,e=f*f*(3-2*f)*0.12+f*0.88;o.x=wa+e*span;o.y=laneY(p.k)+(out?-7:7)+Math.sin(t*3+p.k+j)*0.8;};pts.push(p);}});
   return {pts};
  },
  rowing(n,acc){
@@ -220,13 +230,13 @@ export const MOTIF={
   return {pts,move:(p,t,o)=>{const sx=1-0.07*(0.5+0.5*Math.sin(t*1.3));o.x=CX+(p.x-CX)*sx;o.y=p.y;}};
  },
  elliptical(n,acc){
-  const pts=[],R1=0.38,R2=-0.38,E=(rot,a,o)=>{const x=140*Math.sin(a),y=-58*Math.cos(a),c=Math.cos(rot),s=Math.sin(rot);o.x=CX+x*c-y*s;o.y=CY+x*s+y*c;};
-  guides(pts,byPitch(ellipse(CX,CY,140,58,200,R1),7,true),MID,1.3,0.7);
-  guides(pts,byPitch(ellipse(CX,CY,140,58,200,R2),7,true),GUIDE,1.3,0.6);
-  guides(pts,circle(CX,CY,10,10),MID,1.4,0.7);guides(pts,circle(CX,CY,24,20),GUIDE,1.3,0.6);
-  const perim=sampler(ellipse(0,0,140,58,200),true).len,cap=Math.floor(perim/14),c1=Math.min(n,cap),c2=n-c1,s=sz(n,Math.min(perim/Math.max(c1,1),40));
-  for(let i=0;i<n;i++){const two=i>=c1,p=data(CX,CY,acc,s);p.u0=two?(i-c1)/c2:i/c1;p.rt=two?R2:R1;p.dir=two?-1:1;p.m=(p,t,o)=>E(p.rt,(p.u0+p.dir*t*0.07)*TAU,o);pts.push(p);}
-  return {pts};
+  /* another turn: every session is a bright dot circling one ring; a big year adds rings outside it */
+  const pts=[],R=[112,122,132,142],cnt=fillCaps(n,R.map(r=>Math.floor(TAU*r/9)));let minP=99;
+  guides(pts,circle(CX,CY,100,Math.round(TAU*100/7)),GUIDE,1.25,0.55);
+  R.forEach((r,k)=>{if(cnt[k])minP=Math.min(minP,TAU*r/cnt[k],k?9:99);});
+  const s=sz(n,Math.min(minP,40));
+  R.forEach((r,k)=>{if(!cnt[k])return;guides(pts,circle(CX,CY,r,Math.round(TAU*r/7)),GUIDE,1.2,0.45);datas(pts,circle(CX,CY,r,cnt[k],k*0.05),acc,s);});
+  return {pts,move:rot(CX,CY,0.18),rotOnlyData:true};
  },
  skiing(n,acc,rnd){
   const pts=[],spin=rot(CX,CY,0.08);
@@ -271,11 +281,12 @@ export const MOTIF={
   return {pts};
  },
  triathlon(n,acc){
-  const pts=[],C=[[112,452],[180,382],[248,452]];
-  C.forEach((c,k)=>{[58,66].forEach(r=>{circle(c[0],c[1],r,Math.round(TAU*r/7)).forEach(q=>{const p=guide(q[0],q[1],k===1?MID:GUIDE,1.3,0.65);p.cx=c[0];p.cy=c[1];p.w=0.12*(k%2?-1:1);p.m=(p,t,o)=>{const aa=t*p.w,cc=Math.cos(aa),ss=Math.sin(aa),dx=p.x-p.cx,dy=p.y-p.cy;o.x=p.cx+dx*cc-dy*ss;o.y=p.cy+dx*ss+dy*cc;};pts.push(p);});});});
-  if(n===1){pts.push(data(180,429,acc,sz(1,30)));return {pts};}
-  const M=[[146,417],[214,417],[180,462]],cnt=[0,0,0];for(let i=0;i<n;i++)cnt[i%3]++;
-  M.forEach((m,k)=>{if(cnt[k])datas(pts,sunN(m[0],m[1],cnt[k],9),acc,sz(n,9));});
+  /* two disciplines, two rings turning against each other; every multisport activity sits where they overlap */
+  const pts=[],cy=430,R=92,C=[[132,cy],[228,cy]];
+  C.forEach((c,k)=>{[R,R+9].forEach(r=>{circle(c[0],c[1],r,Math.round(TAU*r/7)).forEach(q=>{const p=guide(q[0],q[1],k?MID:GUIDE,1.3,0.65);p.cx=c[0];p.cy=c[1];p.w=0.12*(k?-1:1);p.m=(p,t,o)=>{const aa=t*p.w,cc=Math.cos(aa),ss=Math.sin(aa),dx=p.x-p.cx,dy=p.y-p.cy;o.x=p.cx+dx*cc-dy*ss;o.y=p.cy+dx*ss+dy*cc;};pts.push(p);});});});
+  const inset=R-12,inLens=(x,y)=>Math.hypot(x-C[0][0],y-cy)<=inset&&Math.hypot(x-C[1][0],y-cy)<=inset;
+  const P=n===1?{P:[[CX,cy]],pitch:30}:hexFill(inLens,[CX-inset,cy-inset,CX+inset,cy+inset],n,q=>Math.hypot(q[0]-CX,q[1]-cy)),s=Math.min(sz(n,P.pitch),P.pitch*0.36);
+  P.P.forEach((q,i)=>{const p=data(q[0],q[1],acc,s);p.i=i;p.m=(p,t,o)=>{const k=1+0.04*Math.sin(t*1.2);o.x=CX+(p.x-CX)*k;o.y=cy+(p.y-cy)*k;};pts.push(p);});
   return {pts};
  },
  team_sports(n,acc){
@@ -373,7 +384,7 @@ const WATER={swimming:1,rowing:1};
 export function distUnit(k,km){return autoUnit(km,WATER[k]?[0.1,0.5,1,2,5,10,25,50]:[1,2,5,10,20,50,100,250,500,1000],220);}
 export function topUnit(km){return autoUnit(km,[0.1,0.5,1,2,5,10,25,50,100,250],40);}
 const WEEKV={cycling:'radial',swimming:'lanes',rowing:'lanes',hiking:'piles',skiing:'piles',golf:'piles',triathlon:'piles'};
-const TOPV={cycling:'arcs',hiking:'climbs',skiing:'climbs'};
+const TOPV={cycling:'arcs',hiking:'climbs',skiing:'climbs',swimming:'pool'};
 const DSHORT=['MON','TUE','WED','THU','FRI','SAT','SUN'];
 
 /* ---------- layouts: each reads only the numbers in spec.p ---------- */
@@ -535,6 +546,7 @@ L.week=c=>{
   });
  }else if(v==='lanes'){
   const k3=M<=14?1:2,per=Math.ceil(M/k3),sp3=Math.min(24,230/per),z3=sz(total,Math.min(sp3,k3>1?9:99));
+  if(k==='swimming')pool(pts,[70,282,350,534],[1,2,3,4,5,6].map(i=>282+i*36));
   W.forEach((n,d)=>{const y=300+d*36;if(!n)pts.push(guide(84,y,GUIDE,1.5,0.6));for(let j=0;j<n;j++)pts.push(pt(84+Math.floor(j/k3)*sp3,y+(k3>1?(j%2?4.5:-4.5):0),col(d),z3,1,0.3+d*0.06+j*0.02));labels.push({x:18,y:y-7,t:DSHORT[d],anc:'l',ts:9.5,c:lab(d)});labels.push({x:84+Math.max(1,Math.ceil(n/k3))*sp3+4,y:y-8,t:String(counts[d]),anc:'l',ts:11,c:lab(d)});});
  }else{
   const sp4=clamp(36/Math.sqrt(M),9,16),z4=sz(total,sp4);
@@ -547,7 +559,12 @@ L.top3=c=>{
  const {k,values:V}=c.p,unit=topUnit(V[0]),F=V.map(v=>fracDots(v,unit)),cnt=F.map(f=>f.total),max=cnt[0],tv=TOPV[k]||'bars',pts=[],labels=[],tot=sum(cnt);
  const cols=[c.acc,'#FFFFFF',SOFT],lbl=b=>(V.length>1?(b+1)+' · ':'')+fmt(V[b],1)+' km';
  const dot=(x,y,b,j,z)=>{const p=data(x,y,cols[b],z,F[b].partial&&j===cnt[b]-1?0.35:1);p.d=0.3+b*0.15+j*(0.9/max);pts.push(p);};
- if(tv==='bars'){
+ if(tv==='pool'){
+  /* each of your longest swims gets a lane: the dots run its length, lane ropes and walls draw the pool */
+  const rows=Math.max(1,Math.ceil(max/30)),perRow=Math.ceil(max/rows),sp=Math.min(20,276/Math.max(1,perRow-1)),z=sz(tot,Math.min(sp,rows>1?sp:99)),lh=78,top=300,bot=top+cnt.length*lh;
+  pool(pts,[14,top,346,bot],cnt.slice(1).map((_,b)=>top+(b+1)*lh),cnt.map((_,b)=>top+b*lh+lh/2));
+  cnt.forEach((n,b)=>{const y0=top+b*lh+44-(rows-1)*sp/2;for(let j=0;j<n;j++)dot(42+Math.floor(j/rows)*sp,y0+(j%rows)*sp,b,j,z);labels.push({x:42,y:top+b*lh+12,t:lbl(b),anc:'l',ts:10.5,c:cols[b]});});
+ }else if(tv==='bars'){
   const rows=Math.max(1,Math.ceil(max/30)),perRow=Math.ceil(max/rows),sp=Math.min(20,296/Math.max(1,perRow-1)),z=sz(tot,Math.min(sp,rows>1?sp:99));
   cnt.forEach((n,b)=>{const y0=330+b*84;for(let j=0;j<n;j++)dot(26+Math.floor(j/rows)*sp,y0+(j%rows)*sp,b,j,z);labels.push({x:26,y:y0-26,t:lbl(b),anc:'l',ts:10.5,c:cols[b]});});
  }else if(tv==='arcs'){
@@ -613,11 +630,13 @@ L.breath=c=>{
 };
 /* HRV: one dot per night, laid in strands of up to 50 so they never fuse into a line */
 L.wave=c=>{
+ /* every strand sits on the same column grid and the wave is driven by the column, so strands stay parallel;
+    a shorter last strand is centred on whole columns instead of drifting half a column out of phase */
  const n=c.p.nights,strands=Math.ceil(n/50),per=Math.ceil(n/strands),pitchX=312/Math.max(1,per-1),gapY=Math.min(26,120/strands),pts=[],s=sz(n,Math.min(pitchX,gapY));
  for(let i=0;i<n;i++){
-  const st=Math.floor(i/per),j=i%per,inS=st===strands-1?n-st*per:per,x=24+(inS===1?156:j*(312/Math.max(1,inS-1))*((inS-1)/Math.max(1,per-1))+(per-inS)*pitchX/2);
-  const p=data(x,420+(st-(strands-1)/2)*gapY,'#B9A7FF',s,1);p.d=0.2+i*0.004;p.j=j;p.y0=p.y;
-  p.m=(p,t,o)=>{o.x=p.x;o.y=p.y0+34*Math.sin(p.j*0.2+t*0.9)*(0.35+0.65*Math.abs(Math.sin(p.j*0.04+t*0.15)));};
+  const st=Math.floor(i/per),j=i%per,inS=st===strands-1?n-st*per:per,col=inS===1&&per===1?0:j+Math.floor((per-inS)/2),x=per===1?180:24+col*pitchX;
+  const p=data(x,420+(st-(strands-1)/2)*gapY,'#B9A7FF',s,1);p.d=0.2+i*0.004;p.col=col;p.y0=p.y;
+  p.m=(p,t,o)=>{o.x=p.x;o.y=p.y0+34*Math.sin(p.col*0.2+t*0.9)*(0.35+0.65*Math.abs(Math.sin(p.col*0.04+t*0.15)));};
   pts.push(p);
  }
  return {pts};

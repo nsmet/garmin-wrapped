@@ -3,7 +3,10 @@ import { env } from 'cloudflare:workers';
 
 export const dynamic = 'force-dynamic';
 export function GET() {
-  let html = page;
+  // Demo-only markup is wrapped in <!--dev-only--> markers: kept in dev, stripped from production builds.
+  let html = import.meta.env.DEV
+    ? page.replace(/<!--\/?dev-only-->/g, '')
+    : page.replace(/<!--dev-only-->[\s\S]*?<!--\/dev-only-->/g, '');
   if (import.meta.env.DEV && env.DEV_GARMIN_API_KEY) {
     const value = env.DEV_GARMIN_API_KEY.replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]!));
     html = html.replace('id="api-key"', `id="api-key" value="${value}"`);

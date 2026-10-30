@@ -10,37 +10,37 @@ async function mockImport(page,activities){
     return route.fulfill({json:{connected:true,disconnected:true}});
   });
 }
-async function connect(page){await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my Garmin recap'}).click();await expect(page.locator('#story')).toBeVisible();}
+async function connect(page){await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();}
 
 test('Reloading a recorded story requires reconnecting and never silently substitutes the 52-run demo',async({page})=>{
   await mockImport(page,[activity(1,'indoor_cycling')]);await page.goto('/');await connect(page);
-  await page.locator('#chapters-button').click();await page.locator('#story-search').fill('BACK IN THE SADDLE');await page.locator('.chapter-tile').click();
+  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('BACK IN THE SADDLE');await page.locator('.chapter-tile').click();
   await expect(page).toHaveURL(/#cycling-sessions$/);await page.reload();
   await expect(page.locator('#connect-screen')).toBeVisible();await expect(page.locator('#reconnect-notice')).toContainText('Reconnect to see your Garmin data');
   await expect(page.locator('#story')).not.toBeVisible();await expect(page.locator('#story-description')).toBeEmpty();
   // Real data with no running activity must never pick up the demo's runs.
-  await connect(page);await page.locator('#chapters-button').click();await page.locator('#story-search').fill('running');await expect(page.locator('.chapter-tile')).toHaveCount(0);
+  await connect(page);await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('running');await expect(page.locator('.chapter-tile')).toHaveCount(0);
 });
 
 test('The activity breakdown explains sport counts, omissions, dates and source types without leaking into exports',async({page})=>{
   const bike=activity(1,'indoor_cycling',{activityName:'Morning Run'});
   const rows=[bike,...Array.from({length:51},(_,i)=>activity(i+2,'indoor_cycling')),activity(53,'running'),activity(54,'trail_running'),activity(55,'walking'),activity(56,'unmapped_sport'),bike,activity(57,'running',{parentId:58}),activity(58,'running',{startTimeGMT:'2025-03-10 06:00:00'})];
   await mockImport(page,rows);await page.goto('/');await connect(page);
-  await page.locator('#chapters-button').click();await page.locator('#story-search').fill('RUNS, ON REPEAT');await page.locator('.chapter-tile').click();
+  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('RUNS, ON REPEAT');await page.locator('.chapter-tile').click();
   await expect(page.locator('#story-description')).toContainText('2 RECORDED RUNS');
   await expect(page.locator('.demo-label')).toContainText('RECORDED 2026');
   await expect(page.locator('#story footer')).not.toContainText('Some stories were omitted');
-  await page.locator('#chapters-button').click();await page.locator('#recap-details').click();
+  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#recap-details').click();
   const audit=page.locator('.activity-audit');await expect(audit).toContainText('56 activities counted from 59 returned records');
   await expect(audit).toContainText('1 duplicate records, 1 multisport child records, 1 records outside this year');
   await audit.getByText('Cycling · 52 activities',{exact:true}).click();await expect(audit.locator('li')).toHaveCount(52);
   await expect(audit).toContainText('Garmin types: indoor_cycling (52)');await expect(audit.locator('li').first()).toContainText('2026-03-10 · indoor_cycling · 30m 00s · 5.0 km');
   await expect(audit.locator('li a').first()).toHaveAttribute('href','https://connect.garmin.com/modern/activity/1');
   await expect(page.locator('#coverage-details')).toContainText('unrecognized Garmin types');
-  await page.locator('#close-privacy').click();await page.locator('#close-chapters').click();await page.locator('#share').click();
+  await page.locator('#close-privacy').click();await page.locator('#close-chapters').click();await page.locator('#share:visible, #share-icon:visible').click();
   await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);
   await expect(page.locator('#share-dialog .activity-audit')).toHaveCount(0);
-  await page.locator('#close-share').click();await page.locator('#chapters-button').click();await page.locator('#restart-onboarding').click();await expect(audit).toHaveCount(0);
+  await page.locator('#close-share').click();await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#restart-onboarding').click();await expect(audit).toHaveCount(0);
 });
 
 test('A story URL opens the fictional demo only after the demo button is chosen',async({page})=>{

@@ -53,23 +53,36 @@ export const HOURS={
   slots:[S(smooth([[180,586],[214,580],[232,548],[236,500],[248,446],[254,396],[236,350],[196,336],[156,348],[134,396],[138,446],[146,500],[146,548],[156,580]],22,true),true),
    ...[[152,316,13],[180,304,11],[204,306,10],[224,316,9],[240,332,8]].map(([x,y,r])=>S(circ(x,y,r,22),true))],
   decor:[],label:{x:190,y:438}}),
- hiking:()=>({ // a hiking boot
-  slots:[S(smooth([[70,566],[318,566],[336,548],[330,520],[300,506],[252,490],[238,446],[236,350],[214,322],[148,322],[132,350],[128,410],[96,448],[70,500],[62,540]],14,true),true)],
-  decor:[S([[70,548],[332,548]]),...[0,1,2,3].map(i=>S([[214,348+i*30],[236,348+i*30]])),S([[150,322],[150,300],[214,300],[214,322]])],label:null}),
- swimming:()=>{ // a pool from above: each lane fills like a length
-  const lanes=[];for(let i=0;i<5;i++){const y=330+i*46,l=[[56,y],[304,y]];lanes.push(S(i%2?l.reverse():l));}
-  return {slots:lanes,decor:[S(rr(36,306,288,232,14),true),S([[56,307],[56,537]]),S([[304,307],[304,537]])],label:null};
+ hiking:()=>{ // a hiking boot, toe right: ankle-high shaft, laces to hooks, thick lugged sole with a welt
+  const lugs=[];for(let x=80;x<=316;x+=26)lugs.push(S([[x,567],[x,580],[x+14,580],[x+14,567]]));
+  const eyelets=[[246,458],[238,436],[232,414],[228,392]],hooks=[[226,372],[226,354]],laces=[],lace=[...eyelets,...hooks];
+  for(let i=0;i<lace.length-1;i++){const [a,b]=[lace[i],lace[i+1]];laces.push(S([[a[0]-14,a[1]+2],[b[0]+6,b[1]-3]]),S([[a[0]+6,a[1]-3],[b[0]-14,b[1]+2]]));}
+  const ankle=st=>({...st,P:st.P.map(([x,y])=>[x,y<440?440-(440-y)*0.72:y])}); // ankle height, not a ski-boot shaft
+  return bootCut(ankle,{slots:[S(smooth([[70,566],[316,566],[336,560],[344,546],[342,536],[334,532],[338,518],[326,504],[300,494],[270,484],[250,468],[238,444],[231,414],[227,384],[225,356],[229,343],[214,339],[198,346],[172,354],[146,350],[124,340],[112,338],[108,352],[110,390],[104,440],[95,486],[87,512],[83,532],[76,532],[71,542]],8,true),true)],
+   decor:[S([[84,532],[332,532]]),...lugs,S(smooth([[262,532],[272,508],[298,496],[334,512]],14,false)),
+    ...eyelets.map(([x,y])=>S(circ(x,y,3.5,8),true)),...hooks.map(([x,y])=>S(circ(x+5,y,4,10,Math.PI*1.1,Math.PI*2.4))),...laces,
+    S(smooth([[116,358],[146,366],[174,370],[202,360],[222,354]],14,false)),
+    S(smooth([[104,470],[132,486],[146,510],[148,532]],16,false)),S([[113,340],[110,320],[124,318],[126,340]])],label:null});
+ },
+ swimming:()=>{ // a pool from above: each lane's floor line fills like a length; lane ropes, T-marks and blocks draw the pool
+  const lanes=[],ropes=[],marks=[],blocks=[];
+  for(let i=0;i<5;i++){const y=330+i*46,l=[[60,y],[300,y]];lanes.push(S(i%2?l.reverse():l));marks.push(S([[60,y-9],[60,y+9]]),S([[300,y-9],[300,y+9]]));blocks.push(S(rr(26,y-7,15,14,3),true));}
+  for(let i=1;i<5;i++)ropes.push(S([[46,307+i*46],[314,307+i*46]]));
+  return {slots:lanes,decor:[S(rr(36,306,288,232,14),true),S(rr(43,313,274,218,8),true),...ropes,...marks,...blocks],label:null};
  },
  rowing:()=>{ // an oar: shaft, then blade
   const shaft=[[64,566],[228,348]],blade=smooth([[228,348],[246,300],[270,286],[290,296],[288,326],[260,360],[228,348]],14,false);
   return {slots:[S(shaft),S(blade)],decor:[S([[52,582],[76,550]]),S([[86,536],[100,518]]),S(ell(200,560,120,14,60),true)],label:{x:330,y:430,anc:'r'}};
  },
- yoga:()=>({ // a mat, rolled at the top
-  slots:[S(rr(84,332,192,252,10),true)],decor:[S(ell(180,322,100,16,60),true),S(ell(180,322,88,10,50),true),S([[100,560],[260,560]])],label:{x:180,y:430}}),
+ yoga:()=>{ // a mat lying flat in perspective, its far end rolled up; the stats sit on the mat
+  const roll=[];for(let i=0;i<=80;i++){const a=i/80*TAU*1.75,r=23-i/80*16;roll.push([280+r*Math.sin(a),381-r*Math.cos(a)]);} // the rolled end, seen as a spiral
+  return {slots:[S(smooth([[40,566],[320,566],[280,404],[80,404]],10,true),true)],
+   decor:[S([[80,358],[280,358]]),S(ell(80,381,7,23,24),true),S(roll),S([[44,575],[316,575]]),S([[40,566],[44,575]]),S([[320,566],[316,575]])],label:{x:180,y:470}};
+ },
  pilates:()=>({ // a Pilates ring with pads
   slots:[S(circ(180,436,110,140),true)],decor:[S(rr(48,402,30,68,10),true),S(rr(282,402,30,68,10),true),S(circ(180,436,98,120),true)],label:{x:180,y:404}}),
- elliptical:()=>({ // an elliptical trainer: the pedal orbit fills
-  slots:[S(ell(196,506,112,40,120,-.18),true)],decor:[S([[196,506],[150,330]]),S([[150,330],[96,350]]),S([[150,330],[214,318]]),S([[40,586],[320,586]]),S([[120,586],[150,540]]),S([[272,586],[262,530]]),S(rr(100,520,40,10,4),true),S(rr(250,486,40,10,4),true)],label:{x:330,y:330,anc:'r'}}),
+ elliptical:()=>({ // one turn: a clean ring fills with your hours, the stats sit inside it
+  slots:[S(circ(180,436,112,140),true)],decor:[S(circ(180,436,98,110),true)],label:{x:180,y:404}}),
  skiing:()=>({ // crossed skis and poles
   slots:[S(rotPts(rr(36,410,288,18,9),180,419,-.42),true),S(rotPts(rr(36,410,288,18,9),180,419,.42),true)],
   decor:[S([[110,560],[150,300]]),S([[250,560],[210,300]]),S(circ(114,532,10,16),true),S(circ(246,532,10,16),true)],label:null}),
@@ -85,17 +98,25 @@ export const HOURS={
   slots:[S(circ(108,446,62,80),true),S(circ(180,376,62,80),true),S(circ(252,446,62,80),true)],decor:[S(circ(108,446,52,60),true),S(circ(180,376,52,60),true),S(circ(252,446,52,60),true)],label:null}),
  team_sports:()=>({ // a pitch
   slots:[S(rr(36,316,288,224,4),true)],decor:[S([[180,316],[180,540]]),S(circ(180,428,34,40),true),S(rr(36,384,40,88,0),true),S(rr(284,384,40,88,0),true),S(circ(180,428,3,6),true)],label:null}),
- climbing:()=>({ // a carabiner
-  slots:[S(smooth([[146,310],[222,302],[262,330],[270,420],[258,540],[222,578],[164,580],[128,546],[118,420],[122,340]],40,true),true)],
-  decor:[S([[132,452],[146,328]]),S(circ(150,320,6,10),true),S(smooth([[160,330],[206,326],[234,348],[240,420],[230,530],[204,556],[172,556],[148,528],[142,452]],30,false))],label:null}),
+ climbing:()=>{ // a route up a wall: holds fill from the ground up, rope and quickdraws draw the climb
+  const route=[[118,548,22,1],[206,516,18,2],[136,474,20,3],[232,438,17,4],[156,400,19,5],[240,362,16,6],[170,326,18,7],[214,298,15,8]];
+  const spare=[[62,500,9,11],[290,520,10,12],[78,420,8,13],[300,420,9,14],[70,330,9,15],[296,316,8,16],[260,560,8,17]];
+  const draws=[[176,520],[188,440],[200,360]],rope=smooth([[118,572],[118,548],[176,526],[136,474],[188,446],[156,400],[200,366],[170,326],[212,304]],18,false);
+  return {slots:route.map(([x,y,r,k])=>S(hold(x,y,r,k),true)),
+   decor:[S(rr(34,282,292,304,10),true),S(rope),...draws.flatMap(([x,y])=>[S(circ(x,y-6,3,8),true),S(rr(x-3,y-2,6,14,3),true)]),S(circ(212,290,4,8),true),...spare.map(([x,y,r,k])=>S(hold(x,y,r,k),true))],label:null};
+ },
  cardio:()=>({ // a heart
   slots:[S(heart(180,420,118),true)],decor:[S(heart(180,420,104),true)],label:{x:180,y:400}}),
  other:()=>({ // a star
   slots:[S(star(180,430,130,56),true)],decor:[S(star(180,430,116,48),true)],label:null})
 };
 function stadium(r){const o=[],L=120;for(let i=0;i<=16;i++)o.push([180-L/2+L*i/16,436+r]);for(let i=1;i<32;i++){const a=Math.PI/2-i/32*Math.PI;o.push([180+L/2+r*Math.cos(a),436+r*Math.sin(a)]);}for(let i=0;i<=16;i++)o.push([180+L/2-L*i/16,436-r]);for(let i=1;i<32;i++){const a=-Math.PI/2-i/32*Math.PI;o.push([180-L/2+r*Math.cos(a),436+r*Math.sin(a)]);}return o;}
+const bootCut=(f,sh)=>({...sh,slots:sh.slots.map(f),decor:sh.decor.map(f)});
+// an irregular climbing hold: a lumpy, slightly flattened blob (deterministic per k)
+function hold(cx,cy,r,k){const o=[];for(let i=0;i<9;i++){const a=i/9*TAU+k*0.7,q=r*(0.78+0.22*Math.sin(k*1.9+i*2.3)+0.12*Math.cos(k+i*1.1));o.push([cx+q*Math.sin(a)*1.18,cy-q*Math.cos(a)*0.86]);}return smooth(o,r*0.45,true);}
 function heart(cx,cy,s){const o=[];for(let i=0;i<160;i++){const t=i/160*TAU,x=16*Math.pow(Math.sin(t),3),y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);o.push([cx+x/16.5*s,cy-(y+2)/16.5*s]);}return o;}
 function star(cx,cy,R,r){const o=[];for(let i=0;i<10;i++){const a=i/10*TAU,q=i%2?r:R;o.push([cx+q*Math.sin(a),cy-q*Math.cos(a)]);}return smooth(o,6,true);}
+
 
 /* ---------- sessions shapes where the design called for an object ---------- */
 export const SESSIONS={
@@ -123,7 +144,7 @@ export const ROUTES={
  cycling:()=>({strokes:[S(circ(...BIKE.rear,BIKE.r,120),true),S(circ(...BIKE.front,BIKE.r,120),true),S([BIKE.rear,BIKE.bb,BIKE.headLow,BIKE.head,BIKE.seat,BIKE.rear],false)],decor:[...bikeFrame(),...spokes(BIKE.rear,BIKE.r-14),...spokes(BIKE.front,BIKE.r-14),S([[20,556],[340,556]])]}),
  running:()=>({strokes:[S(SHOE,true)],decor:SHOE_DECOR}),
  hiking:()=>({strokes:null,decor:[S([[10,566],[70,470],[100,500],[150,380],[190,288],[230,360],[262,330],[300,420],[350,566]]),S([[10,568],[350,568]])]}),
- swimming:()=>({strokes:null,decor:[S(rr(28,294,304,272,14),true)]}),
+ swimming:()=>({strokes:null,decor:[S(rr(22,272,316,296,14),true),...[1,2,3,4,5,6,7,8].map(i=>S([[58,564-i*32],[302,564-i*32]])),...[0,1,2,3,4,5,6,7,8].filter(i=>i%2===0).map(i=>S(rr(8,541-i*32,15,14,3),true))]}),
  rowing:()=>({strokes:null,decor:[S(smooth([[134,258],[160,240],[186,258],[186,292],[160,306],[134,292]],10,true),true),S([[120,274],[200,274]]),...[[120,520],[240,470],[150,380]].map(([x,y])=>S(ell(x,y,30,6,24),true))]}),
  skiing:()=>({strokes:null,decor:[0.12,0.33,0.55,0.76,0.95].map((u,i)=>{const x=180+112*Math.sin(u*3.5*Math.PI)*(0.35+0.65*u),y=272+u*296,d=i%2?1:-1;return S([[x+d*26,y+18],[x+d*26,y-14],[x+d*44,y-8],[x+d*26,y-2]]);})}),
  walking:()=>({strokes:null,decor:[]}),

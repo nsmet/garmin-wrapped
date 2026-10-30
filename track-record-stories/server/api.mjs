@@ -1,9 +1,11 @@
 import {ApiError,exchangeKey,activityPage,wellness,sleepMonth,hrvMonth} from './garmin.mjs';
+// The fictional demo only exists in dev builds, so only point to it there.
+const NOT_CONFIGURED_MESSAGE=import.meta.env?.DEV?'Connection is being configured. You can still try the demo.':'Connection is being configured. Please try again shortly.';
 const COOKIE='__Host-mini-session',MAX_AGE=1200;
 const budget=new Map();
 const encode=bytes=>btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
 const decode=s=>Uint8Array.from(atob(s.replaceAll('-','+').replaceAll('_','/')),c=>c.charCodeAt(0));
-async function keyFor(secret){if(typeof secret!=='string'||secret.length<43)throw new ApiError('NOT_CONFIGURED','Connection is being configured. You can still try the demo.',503);return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret)),{name:'AES-GCM'},false,['encrypt','decrypt']);}
+async function keyFor(secret){if(typeof secret!=='string'||secret.length<43)throw new ApiError('NOT_CONFIGURED',NOT_CONFIGURED_MESSAGE,503);return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret)),{name:'AES-GCM'},false,['encrypt','decrypt']);}
 export async function seal(session,secret){const iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(secret);return encode(iv)+'.'+encode(new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(session)))));}
 export async function unseal(value,secret,user,now=Date.now()){
   try{const [iv,data,...extra]=value.split('.');if(extra.length)throw Error();const key=await keyFor(secret),s=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:decode(iv)},key,decode(data))));if(typeof s.user!=='string'||!s.user||(user!==undefined&&s.user!==user)||!Number.isFinite(s.exp)||s.exp<=now||typeof s.token!=='string')throw Error();return s;}
@@ -18,7 +20,7 @@ function checkRate(user,path,now){
 }
 async function checkVisitorRate(request,env,path){
   const limiter=path==='/api/connect'?env.CONNECT_RATE_LIMITER:env.DATA_RATE_LIMITER;
-  if(!limiter?.limit)throw new ApiError('NOT_CONFIGURED','Connection is being configured. You can still try the demo.',503);
+  if(!limiter?.limit)throw new ApiError('NOT_CONFIGURED',NOT_CONFIGURED_MESSAGE,503);
   // Cloudflare sets this header at its edge. Never use a client-supplied identity
   // header, API key or token as a rate-limit key in the public deployment.
   const ip=request.headers.get('CF-Connecting-IP')||'unknown';

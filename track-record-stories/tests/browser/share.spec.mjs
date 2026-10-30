@@ -15,25 +15,25 @@ test('The final card opens a recap picker, changes colors, and downloads the sel
  const options=page.locator('#share-cards button');expect(await options.count()).toBeGreaterThan(5);await expect(page.locator('#download')).toBeEnabled();
  const chosen=options.nth(1),id=await chosen.getAttribute('data-story-id');await chosen.click();await expect(chosen).toHaveAttribute('aria-pressed','true');
  await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();
- await expect.poll(()=>previewPixel(page,5,5)).toEqual([23,67,237,255]);
+ await expect.poll(()=>previewPixel(page,5,5)).toEqual([28,52,217,255]);
  await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);
  const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toBe(`garmin-wraped-2025-${id}-cobalt-fictional-demo.png`);await file.saveAs(testInfo.outputPath('selected-card.png'));
  // Exports carry no navigation: the right margin beside the title stays clear.
- expect(await previewPixel(page,1070,330)).toEqual([23,67,237,255]);
+ expect(await previewPixel(page,1070,330)).toEqual([28,52,217,255]);
  await page.locator('#close-share').click();await expect(page.locator('#share-cards button')).toHaveCount(0);await expect(page.locator('#share-preview')).not.toHaveAttribute('src',/.+/);expect(errors).toEqual([]);
 });
 
 test('Fast card/color changes cannot replace the latest preview with an older export',async({page})=>{
  await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.toBlob;HTMLCanvasElement.prototype.toBlob=function(callback,...args){return original.call(this,blob=>setTimeout(()=>callback(blob),window.delayCardEncoding?250:0),...args);};});
- await demo(page);await page.locator('#share').click();await expect(page.locator('#download')).toBeEnabled();await page.evaluate(()=>window.delayCardEncoding=true);
- await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await page.getByRole('button',{name:'Mint colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();
- await expect.poll(()=>previewPixel(page,5,5)).toEqual([141,228,196,255]);await page.waitForTimeout(350);expect(await previewPixel(page,5,5)).toEqual([141,228,196,255]);
+ await demo(page);await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();await page.evaluate(()=>window.delayCardEncoding=true);
+ await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await page.getByRole('button',{name:'Ember colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();
+ await expect.poll(()=>previewPixel(page,5,5)).toEqual([255,90,31,255]);await page.waitForTimeout(350);expect(await previewPixel(page,5,5)).toEqual([255,90,31,255]);
 });
 
 test('A deferred PNG encoder still produces the selected card promptly',async({page})=>{
  await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.toBlob;HTMLCanvasElement.prototype.toBlob=function(...args){if(window.stallCardEncoding)return;return original.apply(this,args);};});
- await demo(page);await page.locator('#share').click();await expect(page.locator('#download')).toBeEnabled();await page.evaluate(()=>window.stallCardEncoding=true);
- await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();await expect.poll(()=>previewPixel(page,5,5)).toEqual([23,67,237,255]);
+ await demo(page);await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();await page.evaluate(()=>window.stallCardEncoding=true);
+ await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();await expect.poll(()=>previewPixel(page,5,5)).toEqual([28,52,217,255]);
 });
 
 test('Choosing a health card asks consent and switching away revokes that choice',async({page})=>{
@@ -45,7 +45,7 @@ test('Choosing a health card asks consent and switching away revokes that choice
   if(action==='sleep')return route.fulfill({json:{sleep:input.month===1?Array.from({length:30},(_,i)=>({date:`2025-01-${String(i+1).padStart(2,'0')}`,seconds:25200})):[]}});
   if(action==='wellness')return route.fulfill({json:{daily:[]}});return route.fulfill({json:{connected:true,disconnected:true}});
  });
- await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my Garmin recap'}).click();await expect(page.locator('#story')).toBeVisible();await page.locator('#share').click();await expect(page.locator('#download')).toBeEnabled();
+ await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();
  const previous=await page.locator('#share-preview').getAttribute('src'),health=page.getByRole('button',{name:'Choose OFF THE CLOCK.',exact:true});
  await health.click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-cancel').click();await expect(page.locator('#share-preview')).toHaveAttribute('src',previous);await expect(health).toHaveAttribute('aria-pressed','false');
  await health.click();await page.locator('#health-share-confirm').click();await expect(health).toHaveAttribute('aria-pressed','true');

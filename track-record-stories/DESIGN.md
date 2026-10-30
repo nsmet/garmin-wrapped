@@ -3,11 +3,22 @@
 The recap now follows the *Garmin Wraped — One dot per activity* design canvas (89 cards). Navy ground, Sora type, and light that comes only from the dots: bright data dots, exactly as many as the card's legend says, and faint guide dots that draw the sport (track, wheel, court, dial). Each card enters with rising titles, counting heroes and dots that fly in (from the previous card's dots when navigating); ambient loops continue while reading. Reduced motion shows the settled card; pause freezes everything; hidden tabs and open dialogs stop rendering.
 
 - Portrait screens show the card as designed, fitted between the header and the caption/controls. Wide screens (tablet landscape, desktop) put the type in a left column and the dot artwork, scaled up, in a right column.
-- Exports are the full 360 × 640 card at 3× (1080 × 1920) with branding, year, caption and data notice. Original keeps the navy and sport colours; Paper, Cobalt, Orange and Mint recolour type and dots by role so highlights stay distinct.
+- Exports are the full 360 × 640 card at 3× (1080 × 1920) with branding, year, caption and data notice. Original keeps the navy and sport colours; Paper, Cobalt and Ember recolour type and dots by role so highlights stay distinct.
 - The design library shows all 89 cards with two fictional sample years, next to the 184 concept templates (guide dots only, no data).
 - [DOT-DESIGN.md](DOT-DESIGN.md) maps every card to its story and admission rule.
 
-The sections below describe the previous poster direction; the onboarding and loading screens still use it.
+## App screens (canvas page "App screens")
+
+The intro, connect form, key help, loading, share, health consent, chapters and data & privacy screens follow the same language (`public/screens.css`):
+
+- One shared dot globe (`public/entry-field.js`, `#entry-field`): 572 dots coloured by the fictional sample year's sports, plus faint guide dots. Screens place an empty `.gw-orb` anchor where the globe belongs and the field glides between anchors, so the intro globe travels into the connect page and on to loading without a cut.
+- Intro (`entry-intro.js`): scattered dots under "Your Garmin, wrapped.", the dots gather into the globe under "One dot per activity.", then the globe moves beside the form. Skip, Escape and reduced motion end it at once; a watchdog ends it after 10 s.
+- Connect: beside the form the real card visuals play in turn (`public/entry-reel.mjs`: running track → bike wheel → swim → climbing wall → mountain → moon → heart → HRV wave), the same dots flowing from one shape into the next, with a label and step dots under them. The reel forms out of the intro globe's dots. Reduced motion shows the running visual, still.
+- Loading: the importer's own progress messages drive the step list; each received activity lights one dot on the globe (up to 572). Failures mark the step that stopped and offer a retry.
+- Share is a full-screen sheet: the actual 1080 × 1920 export as the preview, the card strip, colourway chips and a saved confirmation. Health cards show their own preview in the consent dialog.
+- Dialogs are navy panels; on phones the key help, privacy and consent dialogs open as bottom sheets.
+
+The sections below describe the previous poster direction and no longer apply to any screen.
 
 # Approved direction
 
@@ -21,6 +32,7 @@ The homepage leads with “Your Garmin year, wrapped” and explicitly introduce
 
 - Mobile-first immersive web stories, not a dashboard or native app.
 - Each story adapts to its viewport: wide screens place type beside artwork or charts; portrait screens stack the composition. Live content reserves the measured header and footer space. Charts, labels and dialogs scale with the available space, and very short screens can scroll without cropping the controls. Keep exports portrait at 1080×1920. The shared grid lives in `public/poster-layout.mjs` and viewport rules in `public/responsive.css`.
+- Phones (under 600 px wide) keep the recap chrome slim so the card gets the height: wordmark with a small borderless share icon on the right, the progress bar under it, a chapter row with the dot key, and a one-line footer holding only “a MINI WATT product”. The caption block, Back, Pause, the Share card text button and the menu are hidden there; Back and Next become invisible tap zones over the card (left third back, the rest forward) next to swiping. On phones the card is stacked in three blocks, each scaled on its own (`cardFrame` in `public/dot-card.mjs`): the headline block (title, hero number, unit) fills the width at the 16 px gutter; the artwork keeps its place around the centre line and takes the remaining width and height (12 px from the screen edge); a grid or row designed under the artwork follows at the text scale. Hero numbers are no longer capped by the artwork's position, captions read at 10.5 px or more, and chart labels are 15% larger (checked collision-free on every card design and both sample years; 20% collides on the duration cards). Share cards keep 20 px clear for the floating share prompt. Rules live at the end of `public/recap.css`; the reference frames are “Phone · recap story” on the design canvas.
 - Sport stories focus on one supported measurement; annual overview and closing cards bring the overall totals together. Huge condensed type, decisive empty areas, saturated orange/coral/magenta/blue/yellow/mint, black and warm white.
 - Original photographic layers, large circles, angled bands and flowing routes. Color changes by chapter; typography and navigation remain consistent.
 - Continuous, restrained ambient loops on the shapes and travelling markers. Fluid motif transformations between chapters. Numbers and captions stay still while reading.

@@ -70,7 +70,17 @@ Use case: photorealistic-natural. Asset type: original sports photography for a 
 
 ## Homepage social preview
 
-`public/social-preview.jpg` is a 1200 × 630 JPEG composed from the existing blue shoe, track motif and homepage palette. The layout source is `source-assets/social-preview.html`; render it at 1200 × 630 after its image loads, then export as JPEG at quality 85. It contains no personal recap data. It is used by the Open Graph and Twitter metadata and application structured data.
+`public/social-preview.jpg` is a 1200 × 630 JPEG: the "Your Garmin year, wrapped." headline on navy, with three real story cards fanned on the right (hiking in front, running and cycling behind). The cards are renders of the busy fictional sample year (`renderShareCard` on `sample-full-hiking-sessions`, `sample-full-running-sessions` and `sample-full-cycling-sessions`), saved as 540 × 960 JPEGs in `source-assets/social-cards/`. The layout source is `source-assets/social-preview.html` (Sora from `public/assets/fonts/`); render it at 1200 × 630 after fonts and images load, then export as JPEG at quality 85. It contains no personal recap data. It is used by the Open Graph and Twitter metadata and application structured data.
+
+## App icon and favicon
+
+The icon is the MINI WATT bolt (the miniwatt.app logo) sampled into glowing dots on the navy ground, yellow (#FFD98A) at the centre to amber (#FE9A0C) at the tips. Larger sizes use a finer dot grid so the hollow outline bolt reads; small sizes use a coarser grid so it survives at 16–32 px.
+
+- `public/favicon.svg`: the 8-column dot grid as SVG, used for browser tabs.
+- `public/favicon-32.png`: PNG fallback for browsers without SVG favicons.
+- `public/apple-touch-icon.png`: 180 × 180, square (iOS applies its own mask).
+
+The source is `source-assets/brand-icons.html`: open it with `?size=N` (and `&round=0` for a square tile) and screenshot the N × N icon to export a PNG.
 
 
 ## Layered poster assets (28 October)

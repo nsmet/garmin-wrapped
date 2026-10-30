@@ -14,7 +14,11 @@
 .story .edition{font-size:9px;letter-spacing:.14em;opacity:.85}
 .story .icon-button{border-color:rgba(255,255,255,.55)}
 .story .progress{margin-top:14px;gap:3px}
-.story .progress span{height:2px;background:#fff;opacity:.2}
+.story .progress{position:relative;z-index:1;pointer-events:auto}
+.story .progress span{height:2px;background:#fff;opacity:.2;position:relative;cursor:pointer;transition:opacity .15s}
+/* the bars are 2px tall; give each a finger-sized hit area */
+.story .progress span::before{content:'';position:absolute;left:-2px;right:-2px;top:-9px;bottom:-10px}
+@media(hover:hover){.story .progress span:not(.current):hover{opacity:.8}}
 .story .progress .passed{opacity:.55}.story .progress .current{opacity:1;background:var(--accent)}
 .story .chapter-label{margin-top:12px;font-size:10px;font-weight:600;letter-spacing:.14em;opacity:.9}
 .story .footer-top{padding-bottom:14px;align-items:center}
@@ -32,6 +36,19 @@
 .card-actions[hidden],.card-actions [hidden]{display:none!important}
 .card-actions>*{pointer-events:auto}
 .story.transitioning .card-actions{visibility:hidden}
+/* finale share popup */
+.share-prompt{position:absolute;z-index:6;left:50%;bottom:var(--prompt-bottom,16px);width:min(calc(100% - 24px),420px);display:flex;align-items:center;gap:10px;padding:8px 6px 8px 18px;border-radius:18px;background:#FFB35C;color:#141B2E;box-shadow:0 0 0 1px rgba(255,179,92,.35),0 14px 40px rgba(255,140,40,.28),0 18px 44px rgba(0,0,0,.5);font-family:'Sora','Space Grotesk',Arial,sans-serif;opacity:0;transform:translate(-50%,14px);transition:opacity .35s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.share-prompt.show{opacity:1;transform:translate(-50%,0)}
+.share-prompt[hidden]{display:none}
+.share-prompt-copy{display:grid;gap:3px;flex:1;min-width:0}
+.share-prompt-copy strong{font-size:15px;font-weight:800;line-height:1.2;letter-spacing:-.02em}
+.share-prompt-button{flex-shrink:0;border:0;border-radius:999px;background:#141B2E;color:#fff;padding:12px 20px;font:800 11px/1 'Sora',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.share-prompt-button:hover{background:#000}
+.share-prompt-button:focus-visible,.share-prompt-close:focus-visible{outline:2px solid #141B2E;outline-offset:2px}
+.share-prompt-close{flex-shrink:0;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:#141B2E;opacity:.75}
+.share-prompt-close:hover{opacity:1;background:rgba(20,27,46,.1)}
+.share-prompt-close svg{width:16px;height:16px}
+@media(prefers-reduced-motion:reduce){.share-prompt{transition:none}}
 .pill-button{position:relative;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.75);border-radius:22px;padding:6px 14px;font:800 9.5px/1.2 'Sora',sans-serif;letter-spacing:.1em}
 .pill-button::before,.mini-watt-cta::before{content:'';position:absolute;inset:-10px -4px}
 .pill-button:hover{background:rgba(255,255,255,.1)}
@@ -76,3 +93,39 @@ dialog.dark-dialog::backdrop{background:#03060ccc}
 .story .footer-top p.dot-key{margin-top:6px;font-size:10px;font-weight:600;letter-spacing:.06em;opacity:.75;display:flex;align-items:center;gap:7px}
 .story .footer-top p.dot-key::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent)}
 .story .footer-top p.dot-key[hidden]{display:none}
+
+/* Phones: slim chrome so the card gets the height. Wordmark + borderless share icon, then the
+   progress bar, a chapter row with the dot key, and a one-line MINI WATT footer. Back and Next become
+   invisible tap zones over the card (left third back, the rest forward). */
+.share-icon,.footer-credit,.chapter-key{display:none}
+@media(max-width:599px){
+ .story .story-chrome{padding:calc(10px + env(safe-area-inset-top)) 16px env(safe-area-inset-bottom)}
+ .story .progress{margin-top:10px}
+ .story header{align-items:center;gap:12px;min-height:28px}
+ .story .brand .brand-product,.story .menu-button{display:none}
+ .story .brand .brand-name{font-size:20px}
+ /* 44px tap target, but negative margins keep it from adding height to the header */
+ .story .share-icon{display:grid;margin:-8px -12px -8px auto;flex-shrink:0;border:0}
+ .story .share-icon svg{width:19px;height:19px;stroke-width:1.8}
+ .story .share-icon:hover{transform:none;background:rgba(255,255,255,.08)}
+ .story .chapter-label{margin-top:8px;font-size:9px;gap:12px;align-items:center}
+ .story #chapter-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow-wrap:normal}
+ .story .chapter-key:not([hidden]){display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0;letter-spacing:.04em;opacity:.85;white-space:nowrap}
+ .story .chapter-key::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+ .story .footer-copy,.story .demo-label,.story #motion,.story #share{display:none}
+ .story .footer-top{padding:0}
+ .story .footer-bottom{min-height:40px;padding-top:0;border-top-color:rgba(255,255,255,.14)}
+ .story .footer-credit{display:inline-flex;align-items:center;gap:4px;min-height:40px;font-size:10px;font-weight:600;letter-spacing:.04em;text-decoration:none;opacity:.8}
+ .story .footer-top #advance,.story .footer-actions #back{position:absolute;top:calc(48px + env(safe-area-inset-top));bottom:calc(44px + env(safe-area-inset-bottom));width:auto;height:auto;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:transparent;font-size:0;transform:none;transition:none}
+ .story .footer-actions #back{left:0;right:65%}
+ .story .footer-top #advance{left:35%;right:0}
+ .story .footer-top #advance svg{display:none}
+ .story .footer-actions #back:disabled{opacity:0;pointer-events:none}
+ .story .footer-top #advance:focus-visible,.story .footer-actions #back:focus-visible{outline:2px solid var(--accent);outline-offset:-6px}
+}
+@media(max-height:650px) and (max-width:599px){
+ .story .story-chrome{padding-top:calc(8px + env(safe-area-inset-top))}
+ .story .progress{margin-top:8px}
+ .story .footer-bottom{min-height:36px}
+ .story .footer-credit{min-height:36px}
+}

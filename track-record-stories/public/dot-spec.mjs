@@ -175,9 +175,10 @@ function mapStory(story,context={}){
   }
   case 'finale':{
    const total=ctx.total??leadingCount(story.caption),grid=chart?.kind==='summary'?chart.items.map(i=>({...heroFrom(i.value),l:i.label})):[];
-   if(!total)return base(story,{grp:'FINALE',hero:{text:story.value},L:'concept',p:{k:'other'},grid,gridTop:466,gridSmall:true,share:true});
+   const bare={bare:true,lift:24,brand:'GARMIN WRAPED · A MINI WATT PRODUCT'};
+   if(!total)return base(story,{grp:'FINALE',hero:{text:story.value},L:'concept',p:{k:'other'},grid,gridTop:466,gridSmall:true,share:true,...bare});
    const d=activityDots(total,ctx.mix);
-   return base(story,{grp:'FINALE',hero:{text:story.value},heroMax:96,L:'sphere',p:{n:d.n,cols:d.cols,keys:d.keys,cy:350,R:100},note:perActivityNote(d.n,d.unit),grid,gridTop:466,gridSmall:true,share:true});
+   return base(story,{grp:'FINALE',hero:{text:story.value},heroMax:96,L:'sphere',p:{n:d.n,cols:d.cols,keys:d.keys,cy:350,R:100},note:perActivityNote(d.n,d.unit),grid,gridTop:466,gridSmall:true,share:true,...bare});
   }
   case 'mini-watt':
    return base(story,{grp:'MINI WATT',right:'PROMOTION · NOT A DATA CARD',heroColor:'#FFB35C',heroSmall:true,L:'road',p:{},cta:true});

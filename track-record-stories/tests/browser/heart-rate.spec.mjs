@@ -11,7 +11,7 @@ async function mockHeartImport(page,{unavailableHrv=false}={}){
   if(path==='hrv')return unavailableHrv?route.fulfill({status:403,json:{error:{code:'GARMIN_PERMISSION',message:'Unavailable'}}}):route.fulfill({json:{hrv:[1,2,4].includes(body.month)?days(body.month,body.month===1?50:body.month===2?70:60,'hrv'):[]}});
   return route.fulfill({json:{connected:true,disconnected:true}});
  });
- await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my Garmin recap'}).click();await expect(page.locator('#story')).toBeVisible();
+ await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();
 }
 async function navigate(page,id){
  await page.evaluate(id=>{history.replaceState(null,'','#'+id);window.dispatchEvent(new HashChangeEvent('hashchange'));},id);
@@ -25,18 +25,18 @@ test('Imported heart slides expose recorded metrics and monthly coverage and req
   if(id.endsWith('-monthly')){await expect(page.locator('#story-description')).toContainText('MAR: insufficient measurements (0 recorded');await expect(page.locator('#story-description')).toContainText('NOV: upcoming');}
   if(id==='activity-hr-monthly'){await expect(page.locator('#story-description')).toContainText('Highest monthly average: APR, 126.5 bpm');await expect(page.locator('#story-description')).toContainText('Lowest monthly average: JAN, 121 bpm');}
   if(id==='resting-hr-monthly'){await expect(page.locator('#story-description')).toContainText('Highest monthly average: JAN, 60 bpm');await expect(page.locator('#story-description')).toContainText('Lowest monthly average: FEB, 50 bpm');}
-  await page.locator('#share').click();await expect(page.locator('#health-share-dialog')).toBeVisible();
+  await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#health-share-dialog')).toBeVisible();
   if(id.endsWith('-monthly'))await expect(page.locator('#health-share-description')).toContainText(id==='hrv-monthly'?'MONTHLY MEDIANS':'MONTHLY AVERAGES');
   await page.locator('#health-share-confirm').click();
   await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);await expect(page.locator('#download')).toBeEnabled();await page.locator('#close-share').click();
  }
- await page.locator('#share').click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-cancel').click();await expect(page.locator('#health-share-description')).toBeEmpty();
+ await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-cancel').click();await expect(page.locator('#health-share-description')).toBeEmpty();
 });
 
 test('Unavailable HRV omits its slides and leaves peak and monthly resting HR available',async({page})=>{
  await mockHeartImport(page,{unavailableHrv:true});await navigate(page,'max-hr');await expect(page.locator('#story-description')).toContainText('187 BPM');
  await navigate(page,'resting-hr-monthly');await expect(page.locator('#story-description')).toContainText('JAN: 60 bpm');
- await page.locator('#chapters-button').click();await page.locator('#story-search').fill('YOUR OVERNIGHT');await expect(page.locator('.chapter-tile')).toHaveCount(0);
+ await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('YOUR OVERNIGHT');await expect(page.locator('.chapter-tile')).toHaveCount(0);
  await page.locator('#recap-details').click();await expect(page.locator('#coverage-details')).toContainText('HRV stories were omitted');
 });
 
@@ -52,6 +52,6 @@ test('The live chart and portrait export visibly identify the same highest and l
  await mockHeartImport(page);await navigate(page,'activity-hr-monthly');
  const expected=['HIGH 126.5','LOW 121'];
  await expect.poll(()=>page.evaluate(expected=>expected.every(value=>window.heartDrawn.live.includes(value)),expected)).toBe(true);
- await page.locator('#share').click();await page.locator('#health-share-confirm').click();await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);
+ await page.locator('#share:visible, #share-icon:visible').click();await page.locator('#health-share-confirm').click();await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);
  await expect.poll(()=>page.evaluate(expected=>expected.every(value=>window.heartDrawn.export.includes(value)),expected)).toBe(true);
 });
