@@ -34,7 +34,7 @@ test('Garmin Wraped branding carries through to the recap and cycling ends with 
  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP RIDING');await page.locator('.chapter-tile').click();
  await expect(page.locator('#story-title')).toHaveText('KEEP RIDING INDOORS.');
  await expect(page.locator('#mini-watt-offer')).toBeVisible();
- await expect(page.locator('.mini-watt-cta')).toHaveAttribute('href','https://www.miniwatt.app/download');
+ await expect(page.locator('.mini-watt-cta')).toHaveAttribute('href','https://www.miniwatt.app/download?utm_source=garmin_wraped&utm_medium=referral&utm_campaign=cycling_promotion&utm_content=recap_cta');
  await expect(page.locator('.mini-watt-cta')).toHaveAttribute('rel','noopener noreferrer');
  const position=await page.locator('#position').innerText(),[index,total]=position.split(' / ').map(Number);expect(index).toBe(total);
  await page.locator('#back').click();await expect(page.locator('#chapter-name')).toHaveText('FINALE');await expect(page.locator('#mini-watt-offer')).toBeHidden();

@@ -91,3 +91,5 @@ Data-quality notes and optional-source failures are available under the story me
 `wrangler.cloudflare.jsonc` configures the standalone Worker and Custom Domain. `public/` contains static assets and `ui/index.html` is served by the root route. `dist/` is generated and ignored. `.openai/hosting.json` and the Sites Vite integration retain the original Site identity. Use [DEPLOY-CLOUDFLARE.md](DEPLOY-CLOUDFLARE.md) for this domain and `OPERATIONS.md` for the historical private Sites acceptance record.
 
 Cycling recaps end with a MINI WATT invitation after the year receipt. It is shown only when an admitted cycling chapter exists, is excluded from personal card exports, and links to miniwatt.app without passing recap data.
+
+Outbound MINI WATT links use `utm_source=garmin_wraped` and `utm_medium=referral`. Product credits use `utm_campaign=product_credit` with `utm_content=header` or `footer`; the cycling invitation uses `utm_campaign=cycling_promotion` and `utm_content=recap_cta`.
