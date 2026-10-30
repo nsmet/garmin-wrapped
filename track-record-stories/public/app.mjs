@@ -74,16 +74,16 @@ function draw(force=false){
  // dots
  dotBuf.n=0;
  const clip=toFrame.wide?toFrame.clip:null;
- if(transition)collectDots(dotBuf,fromSpec,{t:ambientOf(state.fromEnter),intro:null,fade:1-ease(state.progress/.45),frame:fromFrame});
- collectDots(dotBuf,toSpec,{t:ambientOf(state.enter),intro:introOf(state.enter),frame:toFrame,from:state.morph});
+ if(transition&&!fromSpec.promo)collectDots(dotBuf,fromSpec,{t:ambientOf(state.fromEnter),intro:null,fade:1-ease(state.progress/.45),frame:fromFrame});
+ if(!toSpec.promo)collectDots(dotBuf,toSpec,{t:ambientOf(state.enter),intro:introOf(state.enter),frame:toFrame,from:state.morph});
  if(dotGL)dotGL.draw(dotBuf,{additive:true,clip});
  else if(dot2d){dot2d.clearRect(0,0,state.w,state.h);dot2d.save();if(clip){dot2d.beginPath();dot2d.rect(clip.x,clip.y,clip.w,clip.h);dot2d.clip();}drawDots2D(dot2d,dotBuf);dot2d.restore();}
  // text: only while it animates or after a change
  const intro=introOf(state.enter);
  if(force||state.textDirty||transition||(intro!=null&&intro<TEXT_SETTLE+.2)){
   ctx.clearRect(0,0,state.w,state.h);
-  if(transition)drawText(ctx,fromFrame,fromSpec,{intro:null,alpha:1-ease(state.progress/.3)});
-  drawText(ctx,toFrame,toSpec,{intro:transition?Math.max(0,intro-.15):intro});
+  if(transition&&!fromSpec.promo)drawText(ctx,fromFrame,fromSpec,{intro:null,alpha:1-ease(state.progress/.3)});
+  if(!toSpec.promo)drawText(ctx,toFrame,toSpec,{intro:transition?Math.max(0,intro-.15):intro});
   state.textDirty=false;
  }
  placeActions(to,toFrame);
@@ -99,13 +99,16 @@ function sharePrompt(s,show){
 }
 function dismissSharePrompt(){promptDismissed=true;sharePrompt(null,false);}
 function placeActions(s,frame){
- const sp=specFor(s),lay=frame.textLayout,T=frame.text,actions=$('card-actions');
+ const sp=specFor(s),actions=$('card-actions');
  const showShare=!!sp.share&&!s.libraryOnly,showCta=!!sp.cta&&!!s.promotional;
  sharePrompt(s,showShare&&!state.busy);
  $('mini-watt-offer').hidden=!showCta;actions.hidden=!showCta;
  if(actions.hidden)return;
- const y=frame.wide?lay.bottom+18:196;
- actions.style.setProperty('--x',T.x+18*T.s+'px');actions.style.setProperty('--y',T.y+y*T.s+'px');actions.style.setProperty('--s',String(Math.max(1,Math.min(T.s,frame.phone?1:1.6))));
+ // The MINI WATT slide is an HTML panel that fills the card area between the chapter row and the footer.
+ const b=state.bounds||{top:0,bottom:state.h,left:0,right:state.w};
+ actions.style.setProperty('--top',b.top+'px');actions.style.setProperty('--bottom',Math.max(0,state.h-b.bottom)+'px');
+ actions.style.setProperty('--left',b.left+'px');actions.style.setProperty('--right',Math.max(0,state.w-b.right)+'px');
+ actions.classList.toggle('is-wide',!!frame.wide);
 }
 function sync(){
  const s=stories[state.index];if(!s)return;const sp=specFor(s);
@@ -129,7 +132,7 @@ async function go(index){
  const version=viewVersion;loadingStory=true;await ready;if(version!==viewVersion)return;loadingStory=false;
  const from=stories[state.index];
  // the incoming dots fly in from where the outgoing ones are now
- state.morph=reduced.matches||state.paused?null:snapshotDots(specFor(from),{t:ambientOf(state.enter),intro:introOf(state.enter),frame:frameFor(from)});
+ state.morph=reduced.matches||state.paused||specFor(from).promo?null:snapshotDots(specFor(from),{t:ambientOf(state.enter),intro:introOf(state.enter),frame:frameFor(from)});
  state.from=state.index;state.to=index;state.fromEnter=state.enter;state.enter=state.clock;state.elapsed=0;state.duration=900;state.progress=0;state.busy=true;stage.classList.add('transitioning');
  if(reduced.matches||state.paused)finish();
  history.replaceState(null,'','#'+stories[index].id);sync();start();

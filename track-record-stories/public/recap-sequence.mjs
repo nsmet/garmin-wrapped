@@ -6,8 +6,8 @@ export function recapSequence(dataset){
  if(!stories.some(s=>s.chapterId==='sport:cycling'&&s.template==='cycling'))return stories;
  return [...stories,{
   id:'mini-watt',template:'miniwatt',chapterId:'mini-watt',promotional:true,
-  title:['KEEP THE','WATTS','COMING.'],value:'MINI WATT',unit:'YOUR NEXT RIDE STARTS HERE',
-  caption:'Structured workouts. Real routes. Your own entertainment.\nMeet your next indoor cycling app.',
+  title:['KEEP RIDING','INDOORS.'],value:'MINI WATT',unit:'YOUR NEXT RIDE STARTS HERE',
+  caption:'Put your bike on a smart trainer.\nMINI WATT gives you structured workouts and real routes to ride.',
   sharePolicy:'private_only'
  }];
 }

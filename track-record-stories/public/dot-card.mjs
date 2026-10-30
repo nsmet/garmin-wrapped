@@ -213,7 +213,7 @@ export const TEXT_SETTLE=2.8;
 /* ---------- background ---------- */
 export function backgroundStops(spec,palette){
  if(palette)return {base:palette[0],glow:mixHex(palette[2],palette[0],.82),glowA:1,cta:false};
- return {base:COLORS.NAVY,glow:spec.cta?'#FFAA5A':spec.acc,glowA:spec.cta?.22:.16,cta:!!spec.cta};
+ return {base:COLORS.NAVY,glow:spec.cta?'#C7FF3F':spec.acc,glowA:spec.cta?.08:.16,cta:!!spec.cta};
 }
 export function drawBackground(c,w,h,spec,frame,palette){
  const st=backgroundStops(spec,palette),T=frame.mode==='live'&&(frame.wide||frame.phone)?frame.art:frame.text;

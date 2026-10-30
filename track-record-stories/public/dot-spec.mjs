@@ -181,7 +181,7 @@ function mapStory(story,context={}){
    return base(story,{grp:'FINALE',hero:{text:story.value},heroMax:96,L:'sphere',p:{n:d.n,cols:d.cols,keys:d.keys,cy:350,R:100},note:perActivityNote(d.n,d.unit),grid,gridTop:466,gridSmall:true,share:true,...bare});
   }
   case 'mini-watt':
-   return base(story,{grp:'MINI WATT',right:'PROMOTION · NOT A DATA CARD',heroColor:'#FFB35C',heroSmall:true,L:'road',p:{},cta:true});
+   return base(story,{grp:'MINI WATT',right:'PROMOTION · NOT A DATA CARD',heroColor:'#FFB35C',heroSmall:true,L:'road',p:{},cta:true,promo:true});
  }
  // A story this mapping does not know yet: its own words over a guide-only drawing.
  return base(story,{L:'concept',p:{k:'other'}});

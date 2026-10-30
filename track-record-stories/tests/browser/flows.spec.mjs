@@ -31,8 +31,8 @@ test('Garmin Wraped branding carries through to the recap and cycling ends with 
  // Phones carry the credit in the slim footer instead of under the wordmark.
  const footerCredit=await page.locator('.story-chrome .footer-credit').isVisible();
  await checkProductCredit(page,'.story-chrome .product-credit:visible',footerCredit?'footer':'header');
- await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP THE');await page.locator('.chapter-tile').click();
- await expect(page.locator('#story-title')).toHaveText('KEEP THE WATTS COMING.');
+ await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP RIDING');await page.locator('.chapter-tile').click();
+ await expect(page.locator('#story-title')).toHaveText('KEEP RIDING INDOORS.');
  await expect(page.locator('#mini-watt-offer')).toBeVisible();
  await expect(page.locator('.mini-watt-cta')).toHaveAttribute('href','https://www.miniwatt.app/download');
  await expect(page.locator('.mini-watt-cta')).toHaveAttribute('rel','noopener noreferrer');
@@ -46,7 +46,7 @@ test('Garmin Wraped branding carries through to the recap and cycling ends with 
 });
 test('A recap without cycling finishes at the year receipt without a MINI WATT invitation',async({page})=>{
  await mocked(page);await page.goto('/');await connect(page);await expect(page.locator('#story')).toBeVisible();
- await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP THE');await expect(page.locator('.chapter-tile')).toHaveCount(0);
+ await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP RIDING');await expect(page.locator('.chapter-tile')).toHaveCount(0);
  await page.locator('#story-search').fill('TRACK RECORD');await page.locator('.chapter-tile').click();
  await expect(page.locator('#chapter-name')).toHaveText('FINALE');await expect(page.locator('#advance')).toHaveAttribute('aria-label','Choose a share card');await expect(page.locator('#mini-watt-offer')).toBeHidden();
 });

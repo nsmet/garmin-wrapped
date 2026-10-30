@@ -74,7 +74,7 @@ export function sampleStories(profile){
  add({id:'hrv-monthly',template:'hrv',health:true,title:['HRV THROUGH','THE YEAR.'],value:'MONTHLY MEDIANS',unit:'MS · OVERNIGHT HRV',caption:'Monthly medians, with at least 10 recorded nights per point.\nGaps show months without enough measurements.',chart:hm(D.hrvMonthly,'hrv',28)});
  {const km=sports.reduce((a,s)=>a+(s.v[2]||0),0),items=km>0?[summary[0],{label:'KILOMETRES',value:km>=10?fmtN(Math.round(km)):fmtD(km),unit:'recorded distance'},...summary.slice(1)]:summary;
   add({id:'finale',template:'finale',title:['THAT’S YOUR','TRACK RECORD.'],value:'2026',unit:'YOUR RECORDED YEAR'+q,caption:'',chart:{kind:'summary',items}});}
- add({id:'mini-watt',template:'miniwatt',promotionPreview:true,title:['KEEP THE','WATTS','COMING.'],value:'MINI WATT',unit:'YOUR NEXT RIDE STARTS HERE',caption:'Structured workouts. Real routes. Your own entertainment.\nMeet your next indoor cycling app.'});
+ add({id:'mini-watt',template:'miniwatt',promotionPreview:true,title:['KEEP RIDING','INDOORS.'],value:'MINI WATT',unit:'YOUR NEXT RIDE STARTS HERE',caption:'Put your bike on a smart trainer.\nMINI WATT gives you structured workouts and real routes to ride.'});
  return stories;
 }
 // The recap context a sample year's cards read (same shape as recapContext()).
