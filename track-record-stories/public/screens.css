@@ -58,13 +58,18 @@ body:not(.onboarding-active) .gw-field{display:none}
 .gw-intro-scene .gw-lede{margin-top:30px}
 .gw-intro-one{right:var(--gw-gutter)}
 .gw-intro-one .gw-display{font-size:clamp(60px,9.4vw,150px)}
-.gw-intro-two{width:min(46vw,760px)}
-.gw-intro-two .gw-display{font-size:clamp(48px,6.4vw,104px)}
-.gw-intro[data-phase=one] .gw-intro-one,.gw-intro[data-phase=two] .gw-intro-two{opacity:1}
-.gw-intro[data-phase=one] .gw-intro-one .gw-line>span,.gw-intro[data-phase=two] .gw-intro-two .gw-line>span{animation:gw-rise .9s var(--gw-rise) both}
-.gw-intro[data-phase=one] .gw-intro-one .gw-line+.gw-line>span,.gw-intro[data-phase=two] .gw-intro-two .gw-line+.gw-line>span{animation-delay:.1s}
-.gw-intro[data-phase=one] .gw-intro-one .gw-kicker,.gw-intro[data-phase=two] .gw-intro-two .gw-kicker{animation:gw-fade .9s ease-out both}
-.gw-intro[data-phase=one] .gw-intro-one .gw-lede,.gw-intro[data-phase=two] .gw-intro-two .gw-lede{animation:gw-fade .9s .6s ease-out both}
+.gw-intro-two,.gw-intro-three{width:min(46vw,760px)}
+.gw-intro-two .gw-display,.gw-intro-three .gw-display{font-size:clamp(48px,6.4vw,104px)}
+.gw-intro-three .gw-lede{max-width:470px}
+.gw-intro-tags{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:34px 0 0;padding:0}
+.gw-intro-tags li{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.gw-intro-tags li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.gw-intro[data-phase=one] .gw-intro-one,.gw-intro[data-phase=two] .gw-intro-two,.gw-intro[data-phase=three] .gw-intro-three{opacity:1}
+.gw-intro[data-phase=one] .gw-intro-one .gw-line>span,.gw-intro[data-phase=two] .gw-intro-two .gw-line>span,.gw-intro[data-phase=three] .gw-intro-three .gw-line>span{animation:gw-rise .9s var(--gw-rise) both}
+.gw-intro[data-phase=one] .gw-intro-one .gw-line+.gw-line>span,.gw-intro[data-phase=two] .gw-intro-two .gw-line+.gw-line>span,.gw-intro[data-phase=three] .gw-intro-three .gw-line+.gw-line>span{animation-delay:.1s}
+.gw-intro[data-phase=one] .gw-intro-one .gw-kicker,.gw-intro[data-phase=two] .gw-intro-two .gw-kicker,.gw-intro[data-phase=three] .gw-intro-three .gw-kicker{animation:gw-fade .9s ease-out both}
+.gw-intro[data-phase=one] .gw-intro-one .gw-lede,.gw-intro[data-phase=two] .gw-intro-two .gw-lede,.gw-intro[data-phase=three] .gw-intro-three .gw-lede{animation:gw-fade .9s .6s ease-out both}
+.gw-intro[data-phase=three] .gw-intro-tags{animation:gw-fade .9s 1s ease-out both}
 .gw-intro-orb{position:absolute;left:71%;top:52%;width:min(60svh,42vw);aspect-ratio:1;transform:translate(-50%,-50%)}
 .gw-intro-bottom{position:absolute;left:var(--gw-gutter);right:var(--gw-gutter);bottom:calc(26px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;gap:40px;opacity:0;transition:opacity .6s ease}
 .gw-intro[data-phase] .gw-intro-bottom{opacity:1}
@@ -74,11 +79,11 @@ body:not(.onboarding-active) .gw-field{display:none}
 .gw-intro-progress li{flex:1;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;opacity:.5;transition:opacity .3s}
 .gw-intro-progress i{display:block;height:2px;background:rgba(255,255,255,.2);margin-bottom:10px}
 .gw-intro-progress b{display:block;height:2px;width:0;background:var(--gw-accent)}
-.gw-intro[data-phase^=one] li:nth-child(1),.gw-intro[data-phase=two] li:nth-child(2),.gw-intro[data-phase=two-out] li:nth-child(3){opacity:1}
+.gw-intro[data-phase^=one] li:nth-child(1),.gw-intro[data-phase^=two] li:nth-child(2),.gw-intro[data-phase^=three] li:nth-child(3){opacity:1}
 .gw-intro[data-phase^=one] li:nth-child(1) b{width:100%;transition:width 3s linear}
-.gw-intro[data-phase^=two] li:nth-child(1) b,.gw-intro[data-phase=two-out] li:nth-child(2) b{width:100%}
+.gw-intro[data-phase^=two] li:nth-child(1) b,.gw-intro[data-phase=two-out] li:nth-child(2) b,.gw-intro[data-phase^=three] li:nth-child(-n+2) b,.gw-intro[data-phase=three-out] li:nth-child(3) b{width:100%}
 .gw-intro[data-phase=two] li:nth-child(2) b{width:100%;transition:width 2.8s linear}
-.gw-intro[data-phase=two-out] li:nth-child(3) b{width:100%;transition:width .9s linear}
+.gw-intro[data-phase=three] li:nth-child(3) b{width:100%;transition:width 3.3s linear}
 .entry-intro-active .gw-entry>*{opacity:0}
 
 /* ---------- connect ---------- */
@@ -105,7 +110,26 @@ body:not(.onboarding-active) .gw-field{display:none}
 .key-field button:hover{background:rgba(255,255,255,.18)}
 .key-error{margin:10px 0 0 24px;min-height:18px;font-size:12px;font-weight:600;line-height:1.5;color:#FF8F9A}
 .key-field:has([aria-invalid=true]){animation:gw-shake .4s ease both}
-.key-help{margin:4px 0 22px}
+.key-help{margin:4px 0 14px}
+.key-saved{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 0;padding-left:24px}
+.key-saved span{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.8)}
+.key-saved span::before{content:'';width:7px;height:7px;border-radius:50%;background:#7FE0A8;box-shadow:0 0 8px #7FE0A8}
+.key-saved .gw-link{font-size:12px;min-height:32px}
+.gw-entry .key-forgotten{margin:10px 0 0}
+.key-saved:not([hidden])~.key-error:empty,.key-forgotten:not([hidden])~.key-error:empty{min-height:0;margin-top:0}
+.gw-remember{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.gw-remember label{display:block;font-size:13px;font-weight:700;line-height:22px;cursor:pointer}
+.gw-remember p{margin:2px 0 0;font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.62)}
+.gw-check{appearance:none;-webkit-appearance:none;margin:0;width:22px;height:22px;flex:none;border-radius:7px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.06);display:grid;place-items:center;cursor:pointer;transition:background-color .2s,border-color .2s}
+.gw-check:hover{border-color:var(--gw-accent)}
+.gw-check:checked{background:var(--gw-accent);border-color:var(--gw-accent)}
+.gw-check:checked::after{content:'';width:10px;height:5px;border-left:2.4px solid #141B2E;border-bottom:2.4px solid #141B2E;transform:translateY(-1px) rotate(-45deg)}
+.gw-consent{margin:14px 0 14px;font-size:11px;line-height:1.6;color:rgba(255,255,255,.62)}
+.gw-consent b{color:var(--gw-ink);font-weight:700}
+.gw-consent a,.gw-footer-link{color:var(--gw-ink);text-underline-offset:3px}
+.gw-footer-link{margin-left:10px;color:rgba(255,255,255,.78)}
+.gw-footer-link:hover,.gw-consent a:hover{color:var(--gw-accent)}
+.gw-panel.is-returning>.gw-kicker:first-child{color:var(--gw-accent)}
 .gw-entry .help-preview-note{font-size:12px;line-height:1.55;padding:12px 16px;border-radius:14px;background:rgba(255,179,92,.1);color:#FFD3A0;margin:22px 0 0}
 .gw-privacy{display:flex;gap:14px;align-items:flex-start;margin-top:34px;padding-top:22px;border-top:1px solid var(--gw-line)}
 .gw-privacy>svg{width:22px;height:22px;color:var(--gw-accent);flex:none;margin-top:2px}
@@ -319,7 +343,7 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
 @media (max-width:899px){
  .gw-connect{grid-template-columns:minmax(0,1fr);gap:8px;align-items:start;padding-top:8px}
  .gw-art{order:-1;min-height:0;gap:10px}
- .gw-orb{width:min(56vw,34svh,340px)}
+ .gw-orb{width:min(50vw,25svh,290px)}
  .gw-art-label{display:none}
  .gw-reel{gap:9px}
  .gw-reel-label{font-size:8.5px}
@@ -329,7 +353,10 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
  .gw-motion{top:0;bottom:auto}
  .gw-panel{max-width:560px;width:100%;justify-self:center}
  .gw-panel>.gw-kicker:first-child{display:none}
- .gw-connect .gw-display{font-size:clamp(48px,14.8vw,80px)}
+ .gw-connect .gw-display{font-size:clamp(46px,13.6vw,72px)}
+ .gw-form{margin-top:24px}
+ .gw-remember{padding:4px 0;background:none;border:0;border-radius:0;gap:12px}
+ .gw-consent{margin:10px 0 12px}
  .gw-loading{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;gap:0}
  .gw-loading-art{order:-1}
  .gw-loading .gw-orb{width:min(64vw,36svh,360px)}
@@ -345,10 +372,16 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
 @media (max-width:699px){
  .gw-intro-scene{left:20px;right:20px;width:auto;top:auto;bottom:calc(19svh + env(safe-area-inset-bottom));transform:none}
  .gw-intro-one .gw-display{font-size:12vw}
- .gw-intro-two .gw-display{font-size:11vw}
+ .gw-intro-two .gw-display,.gw-intro-three .gw-display{font-size:11vw}
+ .gw-intro-tags{margin-top:16px;gap:6px;flex-wrap:nowrap}
+ .gw-intro-tags li{height:28px;padding:0 10px;gap:6px;font-size:8.5px;letter-spacing:.1em;white-space:nowrap}
+ .gw-intro-three .gw-lede{font-size:13px}
  .gw-intro-scene .gw-kicker{margin-bottom:16px}
  .gw-intro-scene .gw-lede{margin-top:18px;font-size:14px}
  .gw-intro-orb{left:50%;top:34%;width:min(74vw,42svh)}
+ /* the key slide carries more copy: the globe steps up and back to make room */
+ .gw-intro-orb{transition:top .9s var(--gw-rise),width .9s var(--gw-rise)}
+ .gw-intro[data-phase^=three] .gw-intro-orb{top:25%;width:min(52vw,26svh)}
  .gw-intro-bottom{flex-direction:column-reverse;align-items:stretch;gap:16px}
  .gw-intro-progress{width:100%}
  .gw-intro-progress li{font-size:0}

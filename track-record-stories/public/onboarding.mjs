@@ -2,6 +2,10 @@ import {collectRecap,api} from './importer.mjs';
 import {validatePeriod} from './metrics.mjs';
 const $=id=>document.getElementById(id),shell=$('onboarding'),stage=$('story'),key=$('api-key'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const field=window.GWField?.get()||null;
+// Opt-in key memory (public/key-store.js). The only browser storage this app uses.
+const keyStore=window.GWKeyStore||{get:()=>'',has:()=>false,save(){},forget(){}};
+const remember=$('remember-key');
+const KEY_REJECTED=new Set(['GARMIN_AUTH','KEY_INVALID','GARMIN_PERMISSION']);
 // The fictional demo exists only in dev builds; production HTML ships without its controls.
 const DEMO=!!$('demo-start');
 let run=0,motionPaused=reduced.matches,app,controller,lastWasDemo=false,lastDeepLink=false;
@@ -71,6 +75,15 @@ function loadingCopy(failed){
   for(const line of $('loading-title').querySelectorAll('.gw-line>span')){line.style.animation='none';void line.offsetWidth;line.style.animation='';}
 }
 
+function syncSavedKey(){
+  const saved=keyStore.get();
+  remember.checked=!!saved;$('key-saved').hidden=!saved;
+  $('onboarding').querySelector('.gw-panel').classList.toggle('is-returning',!!saved);
+  $('connect-kicker').textContent=saved?'Welcome back':'A little perspective on a lot of effort.';
+  return saved;
+}
+function fillKey(){key.value=syncSavedKey()||key.defaultValue;$('key-forgotten').hidden=true;}
+function forgetKey(notice=''){keyStore.forget();syncSavedKey();$('key-forgotten').textContent=notice;$('key-forgotten').hidden=!notice;}
 function resetKey(){key.value='';key.type='password';key.removeAttribute('aria-invalid');$('toggle-key').textContent='Show';$('toggle-key').setAttribute('aria-label','Show API key');$('toggle-key').setAttribute('aria-pressed','false');$('key-error').textContent='';}
 function syncMotion(){
   const paused=motionPaused||reduced.matches;
@@ -85,13 +98,13 @@ function syncMotion(){
 }
 async function disconnect(){try{await api('disconnect');}catch{}}
 function showConnect(focus=true){
-  run++;controller?.abort();controller=null;clearInterval(countTimer);resetKey();key.value=key.defaultValue;app?.clearRecap();
+  run++;controller?.abort();controller=null;clearInterval(countTimer);resetKey();fillKey();app?.clearRecap();
   for(const id of ['key-help-dialog','chapters-dialog','share-dialog','privacy-dialog','health-share-dialog'])$(id).close();
   stage.inert=true;stage.hidden=true;shell.hidden=false;shell.classList.remove('is-loading','loading-failed');$('connect-screen').hidden=false;$('loading-screen').hidden=true;$('entry-footer').hidden=false;document.body.classList.add('onboarding-active');
   field?.show(true);field?.fill(1);field?.to({anchor:$('connect-orb'),gather:1,alpha:1,spin:.16,mode:'reel'},900);
   history.replaceState(null,'','#connect');window.scrollTo(0,0);if(focus)key.focus({preventScroll:true});disconnect();
 }
-async function start({demo=false,deepLink=false,credential=''}={}){
+async function start({demo=false,deepLink=false,credential='',rememberKey=false}={}){
   controller?.abort();controller=new AbortController();const signal=controller.signal,currentRun=++run;
   lastWasDemo=demo;lastDeepLink=deepLink;resetKey();$('key-help-dialog').close();clearInterval(countTimer);
   stage.inert=true;stage.hidden=true;shell.hidden=false;shell.classList.add('is-loading');shell.classList.remove('loading-failed');$('connect-screen').hidden=true;$('loading-screen').hidden=false;$('loading-retry').hidden=true;$('entry-footer').hidden=true;
@@ -101,15 +114,19 @@ async function start({demo=false,deepLink=false,credential=''}={}){
   window.scrollTo(0,0);$('loading-title').focus({preventScroll:true});syncMotion();
   if(demo)startDemoCount();
   const activeController=controller;const deadline=setTimeout(()=>activeController.abort(),300000);
+  const usedSavedKey=!demo&&!!credential&&credential===keyStore.get();let connected=false;
   try{
     const period=demo?null:validatePeriod(new Date().getFullYear(),Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC');
-    const data=demo?null:await collectRecap({key:credential,year:period.year,timeZone:period.timeZone,signal,onProgress:message=>{if(currentRun===run)onProgress(message);}});
+    const toRemember=rememberKey?credential:'';
+    const data=demo?null:await collectRecap({key:credential,year:period.year,timeZone:period.timeZone,signal,onProgress:message=>{if(currentRun===run)onProgress(message);},onConnected:()=>{connected=true;if(toRemember)keyStore.save(toRemember);}});
     credential='';signal.throwIfAborted();app ||= await import('./app.mjs');
     await app.prepareRecap({demo,deepLink:demo&&deepLink,data});signal.throwIfAborted();if(currentRun!==run)return;
     clearInterval(countTimer);shell.hidden=true;stage.hidden=false;stage.inert=false;document.body.classList.remove('onboarding-active');field?.show(false);app.revealRecap();$('story-title').tabIndex=-1;$('story-title').focus({preventScroll:true});
   }catch(e){
     credential='';if(currentRun!==run)return;app?.clearRecap();clearInterval(countTimer);
-    $('loading-status').textContent=e.name==='AbortError'?'The import timed out. No recap was saved. Return and reconnect.':e.message||'The recap could not load. Please try again.';
+    // A remembered key that Garmin rejects is useless: drop it instead of offering it again.
+    const dropped=usedSavedKey&&!connected&&KEY_REJECTED.has(e.code);if(dropped)keyStore.forget();
+    $('loading-status').textContent=(e.name==='AbortError'?'The import timed out. No recap was saved. Return and reconnect.':e.message||'The recap could not load. Please try again.')+(dropped?' Your saved key was removed from this browser.':'');
     shell.classList.add('loading-failed');loadingCopy(true);renderSteps(true);field?.to({alpha:.4,spin:.04},700);
     $('loading-count-label').textContent=`${demo?'fictional ':''}${found===1?'activity':'activities'} before it stopped`;
     $('loading-retry').hidden=false;$('loading-retry').textContent=demo?'Try the demo again ↗':'Return & reconnect ↗';
@@ -117,21 +134,24 @@ async function start({demo=false,deepLink=false,credential=''}={}){
 }
 $('api-form').addEventListener('submit',event=>{
   event.preventDefault();
-  try{if(!key.value.trim())throw Error(DEMO?'Paste your Garmin Personal API key, or try the demo without one.':'Paste your Garmin Personal API key.');const credential=key.value.trim();start({credential});}
+  try{if(!key.value.trim())throw Error(DEMO?'Paste your Garmin Personal API key, or try the demo without one.':'Paste your Garmin Personal API key.');const credential=key.value.trim();const rememberKey=remember.checked;if(!rememberKey||credential!==keyStore.get())keyStore.forget();start({credential,rememberKey});}
   catch(e){key.removeAttribute('aria-invalid');void key.parentElement.offsetWidth;key.setAttribute('aria-invalid','true');$('key-error').textContent=e.message;key.focus();}
 });
-key.addEventListener('input',()=>{key.removeAttribute('aria-invalid');$('key-error').textContent='';});
+key.addEventListener('input',()=>{key.removeAttribute('aria-invalid');$('key-error').textContent='';$('key-forgotten').hidden=true;});
+// Unticking is an immediate "forget": consent is withdrawn as soon as the box is cleared.
+remember.addEventListener('change',()=>{$('key-forgotten').hidden=true;if(!remember.checked&&keyStore.has())forgetKey('Key removed from this browser. It stays in the field for this visit only.');});
+$('forget-key').addEventListener('click',()=>{forgetKey('Key removed from this browser. Paste it again to continue.');key.value='';key.focus();});
 $('toggle-key').addEventListener('click',()=>{const show=key.type==='password';key.type=show?'text':'password';$('toggle-key').textContent=show?'Hide':'Show';$('toggle-key').setAttribute('aria-label',show?'Hide API key':'Show API key');$('toggle-key').setAttribute('aria-pressed',String(show));});
 $('key-help').addEventListener('click',()=>$('key-help-dialog').showModal());$('close-key-help').addEventListener('click',()=>$('key-help-dialog').close());
 $('help-done').addEventListener('click',()=>{$('key-help-dialog').close();key.focus();});
 if(DEMO){$('demo-start').addEventListener('click',()=>start({demo:true,deepLink:true}));$('help-demo').addEventListener('click',()=>start({demo:true,deepLink:true}));}
 $('loading-cancel').addEventListener('click',()=>showConnect());$('loading-retry').addEventListener('click',()=>lastWasDemo?start({demo:true,deepLink:lastDeepLink}):showConnect());
-for(const id of ['loading-pause','entry-motion'])$(id).addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>showConnect());
+for(const id of ['loading-pause','entry-motion'])$(id).addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>{keyStore.forget();showConnect();});
 $('privacy-open').addEventListener('click',()=>{$('coverage-details').replaceChildren();$('privacy-dialog').showModal();});
-for(const id of ['close-privacy','privacy-done'])$(id).addEventListener('click',()=>$('privacy-dialog').close());$('privacy-clear').addEventListener('click',()=>showConnect());
+for(const id of ['close-privacy','privacy-done'])$(id).addEventListener('click',()=>$('privacy-dialog').close());$('privacy-clear').addEventListener('click',()=>{keyStore.forget();showConnect();});
 document.querySelector('.gw-header .brand-name').addEventListener('click',e=>{e.preventDefault();showConnect();});
 document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',()=>{motionPaused=reduced.matches;syncMotion();});
 window.addEventListener('pagehide',()=>{run++;controller?.abort();resetKey();app?.clearRecap();fetch('/api/disconnect',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',credentials:'same-origin',keepalive:true}).catch(()=>{});});
-syncMotion();if(DEMO&&location.hash&&location.hash!=='#connect'){
+syncMotion();fillKey();if(DEMO&&location.hash&&location.hash!=='#connect'){
   const notice=document.createElement('p');notice.id='reconnect-notice';notice.className='help-preview-note';notice.setAttribute('role','status');notice.textContent='Your private recap is cleared when you leave or reload. Reconnect to see your Garmin data, or choose the fictional demo below.';$('api-form').before(notice);
 }

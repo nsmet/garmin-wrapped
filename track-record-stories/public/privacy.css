@@ -1,0 +1,38 @@
+/* Privacy & cookies page. Same navy, Sora and amber as the app screens (screens.css). */
+:root{--gw-navy:#0B1222;--gw-accent:#FFB35C;--gw-ink:#FFFFFF;--gw-dim:rgba(255,255,255,.78);--gw-line:rgba(255,255,255,.12);--gw-gutter:clamp(20px,6vw,86px)}
+html,body{margin:0;background:var(--gw-navy);color:var(--gw-ink);font-family:'Sora',Arial,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--gw-accent);text-underline-offset:3px}
+a:hover{color:#FFC47E}
+:focus-visible{outline:2px solid var(--gw-accent);outline-offset:3px}
+.pp-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:calc(24px + env(safe-area-inset-top)) var(--gw-gutter) 0}
+.pp-brand{font-weight:800;font-size:22px;letter-spacing:-.04em;color:var(--gw-ink);text-decoration:none}
+.pp-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--gw-ink);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+.pp-back svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2.6}
+.pp-brand:hover,.pp-back:hover{color:var(--gw-accent)}
+.pp-main{max-width:880px;margin:0 auto;padding:56px 20px 96px}
+.pp-kicker,.pp-label{margin:0 0 18px;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gw-accent)}
+.pp-label{margin-top:56px;color:rgba(255,255,255,.75)}
+h1{margin:0;font-weight:800;letter-spacing:-.045em;line-height:.92;font-size:clamp(48px,8vw,88px)}
+h1 i{font-style:normal;color:var(--gw-accent)}
+.pp-lede{margin:24px 0 0;font-size:16px;line-height:1.6;color:rgba(255,255,255,.72);max-width:640px}
+.pp-updated{margin:14px 0 0;font-size:12px;color:rgba(255,255,255,.55)}
+.pp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.pp-cards section{padding:20px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.pp-cards h3{display:flex;align-items:center;gap:12px;margin:0 0 8px;font-size:15px;font-weight:700}
+.pp-cards h3::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.pp-cards p{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.72)}
+.pp-main h2:not(.pp-label){margin:56px 0 14px;font-size:26px;font-weight:800;letter-spacing:-.03em}
+.pp-main>p:not([class]){margin:0 0 14px;font-size:15px;line-height:1.7;color:var(--gw-dim)}
+.pp-main>p b{color:var(--gw-ink)}
+.pp-table{overflow-x:auto;border-radius:18px;border:1px solid var(--gw-line);margin-bottom:14px}
+table{width:100%;min-width:720px;border-collapse:collapse;font-size:13px;line-height:1.55;text-align:left}
+thead tr{background:rgba(255,255,255,.05)}
+thead th{padding:14px 16px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+tbody tr{border-top:1px solid rgba(255,255,255,.1)}
+tbody th,tbody td{padding:14px 16px;vertical-align:top}
+tbody th{font-weight:700}
+tbody td{color:var(--gw-dim)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.pp-note{margin:0;font-size:13px;line-height:1.6;color:rgba(255,255,255,.6)}
+.pp-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:0 var(--gw-gutter) calc(24px + env(safe-area-inset-bottom));font-size:11px;color:rgba(255,255,255,.6)}
+.pp-footer b{color:var(--gw-ink);font-weight:800}
