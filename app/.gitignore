@@ -42,3 +42,10 @@ yarn-error.*
 
 .build/
 .scaffold/
+
+# Never commit credentials, personal exports or validation output
+.env*
+.dev.vars*
+*.hbc
+*.heapprofile
+*.heapsnapshot

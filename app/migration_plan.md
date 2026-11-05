@@ -2,6 +2,10 @@
 
 Prepared 5 November 2026. Planning document only: no Expo application, dependency installation, deployment, commit or push is performed by creating this document.
 
+## Implementation update — 5 November 2026
+
+The plan below is the original design record. Implementation now lives in this app folder on `expo-app`, retaining the pinned website snapshot. Per the current user instruction, connection uses direct Garmin Personal API requests through Expo Fetch; no separate backend or website changes were introduced. Current completed work, test evidence and external release gates are recorded in `TODO.md` and `docs/validation.md`. A production-ready claim requires the pending real-device, live-account and signed-release checks.
+
 ## 1. Source of truth and fixed boundary
 
 GitHub repository: [nsmet/garmin-wrapped](https://github.com/nsmet/garmin-wrapped).

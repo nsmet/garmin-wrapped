@@ -1,0 +1,22 @@
+# Run against a development/preview install using APP_ID; synthetic data only.
+appId: ${APP_ID}
+---
+- launchApp
+- tapOn: "Explore a fictional example"
+- assertVisible: "Chapters"
+- tapOn: "Next story"
+- tapOn: "Read card"
+- assertVisible: "THE WHOLE YEAR, IN VIEW."
+- tapOn: "Done"
+- tapOn: "Share card ↗"
+- tapOn: "Prepare share preview"
+- extendedWaitUntil:
+    visible: "Open share sheet / save"
+    timeout: 20000
+- tapOn: "Close & remove preview"
+- tapOn: "Privacy"
+- scrollUntilVisible:
+    element: "Clear all app data"
+    direction: DOWN
+- tapOn: "Clear all app data"
+- assertVisible: "Build my recap ↗"

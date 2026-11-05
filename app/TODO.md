@@ -1,58 +1,71 @@
-# MiniWatt Wrapped — remaining work
+# MiniWatt Wrapped — implementation and release gates
 
-Status: development prototype, **not production ready**. Keep all work inside `app/`; the existing web app and its deployment remain unchanged. The source snapshot is pinned to web commit `e3102e526e6804ff9546248d86c9f5db8f0f6412`. See `migration_plan.md` for detailed acceptance criteria.
+Updated 5 November 2026. The prototype at `8bb1152` is preserved and completed with app-owned implementation, configuration and tests. **Not a verified production release.** All repository changes remain inside `app/`; the website and its workflow are unchanged. Domain/rendering baseline: `e3102e526e6804ff9546248d86c9f5db8f0f6412` (136 immutable files, SHA-256 verified).
 
-The current implementation uses the Garmin Personal API directly from React Native. The earlier plan proposed a separate mobile backend; that decision needs to be revisited based on the user's preference for the personal-key flow and actual device testing. Do not change the website API to make mobile work.
+The original migration plan remains a design record. The implemented connection uses Garmin Personal API directly through Expo Fetch, matching the user's personal-key flow. There is no separate mobile backend and no website API change. Details: `docs/transport.md`, `docs/validation.md`, `docs/release.md`.
 
-## 1. Prove the core import on devices — release blocker
+## Current scope
 
-- [ ] Build development binaries and test on a physical iPhone and Android phone using an authorized personal Garmin key. Verify key exchange, TLS, redirects, bearer requests, cancellation and errors on both platforms.
-- [ ] Compare the full resulting recap against the web app for the same account, year and time zone: activity counts, sport classification, story order, values, daily steps/floors, sleep, HRV and warnings. Record any differences without saving personal data in test fixtures.
-- [ ] Restore and test a per-request timeout in the app's adapted Garmin client; its original 15-second timeout was removed during the initial port. Preserve cancellation, bounded retries and redirect rejection on both native platforms.
-- [ ] Exercise long imports, rate limits, empty/short/repeated pages, invalid/expired keys, incomplete activity data and optional-source failures. Verify abort and cleanup even when an app is interrupted.
-- [ ] Verify Hermes compatibility for grouping, `Intl` time zones, abort APIs, `URLSearchParams`, streams and response handling; replace unsupported APIs with tested equivalents. Test changes of time zone and year boundaries.
-- [ ] Verify Garmin's current authorization and data-access terms for the intended audience and confirm sufficient current-year activity and wellness history. Production distribution depends on the permitted integration and available data.
+- [x] Focus release work on iOS per the latest user instruction; preserve and defer Android work. Android-only checks below are historical/deferred, not iOS blockers. Production config no longer requires an Android identifier.
+- [x] Evaluate native iOS options: prefer native Expo screens plus a Metal-backed Skia recap renderer for the balance of graphics performance and calculation parity; record the decision in `docs/ios-architecture.md`. The current Three.js viewer stays the validated reference.
+- [ ] Native-renderer implementation/benchmark on macOS and a physical iPhone, before replacing the reference renderer. The user has confirmed iPhone/build access, but no Apple graphics toolchain or phone is connected to this workspace yet.
 
-## 2. Make the recap viewer match the website
+## Import and data correctness
 
-- [ ] Verify Three.js and Canvas fallback on physical devices, including WebGL context loss, background/resume and low-memory recovery. Measure representative dense and low-count stories, transitions, battery and memory.
-- [ ] Bundle and load the original licensed fonts and required assets; compare live cards and text layout against the web app on small and large phones.
-- [ ] Implement the original story transitions and dot morphing, progress indicator, tap/swipe navigation, story controls, conditional promotional card and reduced-motion behavior. The current viewer provides basic previous/next buttons only.
-- [ ] Add resize, orientation and safe-area handling; respect Android Back. Ensure viewer cleanup cancels animation frames and releases canvases and GPU resources.
-- [ ] Limit data sent across the native/DOM boundary to the fields needed for presentation. Validate messages and reject stale or malformed requests; do not pass keys, session tokens, raw activity records, evidence identifiers or locations to the viewer.
-- [ ] Compare every reachable story family and the fictional sample against reference screenshots and the web app's output. Confirm that optimizations never alter the meaning or count of data dots.
+- [x] Restore a 15-second deadline covering both request and response-body reading; bounded three-attempt retries and Retry-After waits; immediate cancellation during requests, reads, backoff and secure-storage waits.
+- [x] Use `expo/fetch` with manual redirects and omitted cookies. Inspect both native implementations; add ephemeral iOS networking/no URLCache and Android no-disk-cache configuration. Global React Native fetch is not the release transport.
+- [x] Isolate tokens per import; local session expiry, key clearing, unconditional cleanup and stale-generation rejection. An older import cannot disconnect or replace a newer one.
+- [x] Keep the website's endpoint parameters, pagination through an empty terminal page, 20,000-record limit, normalizers, source completeness, duplicate/parent rules, recap calculations, precision, story selection/order and privacy allowlists.
+- [x] Match movement-only wellness health-field stripping and optional-source omission; test empty/short/repeated pages, invalid/auth/permission failures, malformed/oversized data, cancellation, hung responses, timeouts and retries using synthetic responses.
+- [x] Preserve Hermes grouping shims and add a preflight that refuses an import before requesting records when required Intl behavior is missing. Run portable normalization/privacy cases in the matching Hermes v1 runtime.
+- [ ] Run the shared recap/Intl suite in native iOS Hermes. The matching Linux CLI uses placeholder Intl implementations and fails the new guard; it is not a substitute for the OS implementations. Android runtime checks are deferred.
+- [x] Prepare a separate preview-only native iOS runtime probe using the shared synthetic domain suite, including year/DST boundaries. Its independent context/manifest removes the production EAS profile; it needs no account/key. Native execution remains the device gate above.
+- [ ] Physical iPhone: authorized live key exchange, TLS, redirects, bearer requests, streamed cancellation, errors, long imports, time-zone/year boundaries and interruption. No account/key or phones were available.
+- [ ] Compare a full real recap with the website for the same account/year/time zone: counts/exclusions, sport types, ordered stories, values, steps/floors, sleep, heart rate, HRV and warnings. Record only redacted differences.
+- [ ] Confirm applicable Garmin authorization/terms and historical coverage for the intended distribution. Current public Personal/Business overview was checked; account-bound authorization was unavailable.
 
-## 3. Sharing, consent and privacy
+## Recap viewer
 
-- [ ] Implement sanitized 1080 × 1920 PNG export with the web renderer and all four existing colourways; validate typography, dot blending and output on both platforms.
-- [ ] Add the native share sheet and optional save-to-device flow; handle cancellation, permissions and receiving-app compatibility. Remove temporary files after use and on a later cleanup sweep.
-- [ ] Preserve separate, explicit per-card consent before generating a health-card share preview or export. Keep promotional cards unshareable and verify the export allowlist excludes personal identifiers and raw data.
-- [ ] Provide privacy and data-coverage screens, warnings, activity breakdown and clear-data/disconnect actions. Clear in-memory records, viewer state and cached exports when the user clears data.
-- [ ] Decide whether to offer the web app's optional remembered-key feature. If offered, use platform secure storage with explicit opt-in, forget controls and tests; never store keys in WebView storage or logs.
-- [ ] Define and test app backgrounding, import cancellation, process termination and resume behavior. Prevent stale asynchronous results from restoring a cleared recap.
-- [ ] Write accurate mobile privacy copy and complete the platform data-safety and health-data disclosures for the actual implementation.
+- [x] Full admitted recap and website fictional fixture, conditional cycling promotion, progress, previous/next, tap/swipe, keyboard and chapter selection.
+- [x] Reuse dot generation, data-dot meanings, 900 ms morphs, introductions, ambient loops and typography; support manual pause and dynamic reduced motion.
+- [x] Load original licensed fonts and required rider asset offline. Native DOM export inspection exposed unresolved local CSS URLs; assets are now embedded in app-owned stylesheets and reproducibly generated.
+- [x] Three.js live/still rendering, Canvas fallback, WebGL-loss recovery, ResizeObserver/orientation handling and explicit animation/GPU disposal. Pause for native modals/background; re-create a terminated WebView at the selected story.
+- [x] Safe areas and Android Back handling, including dismissing a DOM chapter dialog before leaving the recap. Native retry control for an interrupted viewer.
+- [x] Versioned, bounded, validated display-only native/DOM contracts. No key, token, raw record, evidence ID or location reaches the viewer. Reject stale callbacks and export chunks; block remote WebView navigation and release debugging.
+- [x] Browser checks for reachable stories, deterministic web-renderer parity, four colourways, narrow/large/landscape controls, fonts, context loss, inactive animation and teardown.
+- [ ] Real-device offline asset loading, every family/sample, native WebView recreation, low-memory recovery, dense/low-count transitions, battery, frame times and 15-minute memory behavior. No physical-device measurements are claimed.
 
-## 4. Accessibility and product polish
+## Sharing, consent and privacy
 
-- [ ] Add screen-reader descriptions for canvas stories, accessible navigation and focus handling; test VoiceOver and TalkBack without duplicate announcements.
-- [ ] Test large text, contrast, touch targets, keyboard handling, reduced motion and system settings changes.
-- [ ] Replace starter icons and splash screen with approved MiniWatt Wrapped assets; finalize onboarding, personal-key help, error and retry states.
-- [ ] Choose minimum supported iOS/Android versions and device matrix. Document supported behavior when offline or when the app is killed.
+- [x] Display-only 1080 × 1920 Canvas PNGs using web rendering, all four colourways, bounded ordered transfer, dimension/metadata checks and native cache files.
+- [x] Native share sheet and save via available receiving apps/Files; no media-library permission or separate photo-library integration. Handle unavailable sharing/cancellation and prevent duplicate sheet launches.
+- [x] Native authority requires separate consent for each real health-card share interaction before preview/export. Revoke on close, change, clear and app departure; promotional cards cannot share.
+- [x] Delete unshared previews; retain handed-off files for receiving-app compatibility and sweep on first launch/resume after 24 hours. Clear data deletes owned exports immediately. Reject late writes/results after clear.
+- [x] Native privacy, warnings, coverage, source sport/count breakdown with paged activity details, forget and clear-data controls.
+- [x] Optional remembered key uses explicit opt-in SecureStore, accepted-key-only saving, serialized storage operations and forget controls. Never use WebView storage or logs for secrets.
+- [x] Cancel imports on interruption, pause viewing, retain recap in RAM only, discard on process death and protect iOS app-switcher previews where supported.
+- [x] Mobile privacy copy and disclosure inventory/support/rollback runbooks accurately describe direct native traffic, memory, secure storage and temporary files.
+- [ ] On physical iPhones, verify real health consent, file writing/deletion, share cancellation, receiving-app consumption, Files destinations, 20 export cycles, later cleanup, secure storage/reinstall and app-switcher privacy. Automated native tests mock OS I/O.
+- [ ] Owner-hosted mobile privacy/support URL, final Apple privacy/health declarations, and submission. The frozen website policy/deployment was not changed.
 
-## 5. Tests and release engineering
+## Accessibility and polish
 
-- [ ] Add integration tests for the native Personal API adapter with realistic synthetic Garmin responses, retries, timeouts, cancellation, malformed data and optional-source errors. Expand parity coverage beyond the current mocked happy path and copied pipeline tests.
-- [ ] Add tests for viewer contracts, navigation, lifecycle, export sanitization and consent; run relevant domain cases in Hermes as well as Node.
-- [ ] Create reproducible development, preview and production EAS build configurations; set approved bundle identifiers, signing and store ownership. Produce and test signed release candidates on real devices.
-- [ ] Build from an app-only context and inspect the EAS upload archive for secrets, personal data and unrelated repository files. Add app-owned verification commands and CI without changing root workflows.
-- [ ] Prepare TestFlight and Play internal testing, store metadata, screenshots, privacy details, permitted reviewer access and a rollback/support procedure. Address all release-blocking issues before submission.
-- [ ] Resolve the existing deployment trigger before merging into `main`: every push to `main` currently redeploys the web app, including app-only changes. Keep mobile work on `expo-app` while preserving the agreed web freeze.
+- [x] Readable story/chart descriptions, accessible controls/states, logical chapter dialog, native Read card for system text scaling, keyboard handling and reduced motion.
+- [x] Native 44+ point controls, safe-area layout, contrast-conscious copy/errors and screen-reader labels without a second native announcement of the canvas story.
+- [x] Replace starter icons/splash with the existing product's vector brand mark, reproducibly rasterized with an opaque 1024 × 1024 iOS icon; preserve font/asset provenance and licenses.
+- [x] Personal-key help/revoke links, explicit access/health switches, clear errors, cancellation/retry, empty recap and fictional reviewer mode.
+- [x] Configure iOS 16.4 and Android API 26 floors; document offline/process-death behavior and a target device matrix.
+- [ ] Physical VoiceOver, focus after sheets, large text, contrast, touch targets, orientation, safe areas and supported iOS/device matrix. Final support claims and asset/store approval require owner/device review.
 
-## Already established
+## Release engineering
 
-- [x] Independent Expo scaffold under `app/`; web source copied into the app with a SHA-256 manifest.
-- [x] Initial native key-entry/health-consent screen and direct Personal API adapter using the web app's normalizers and recap calculation.
-- [x] Initial DOM viewer with copied dot engine, Three.js renderer, Canvas fallback and fictional sample.
-- [x] TypeScript check, mocked Personal API happy-path test, copied pipeline test and Expo JavaScript bundle exports passed. These checks do not establish live Garmin connectivity, device performance or production readiness.
-
-All scaffold and implementation files, including this todo, are currently uncommitted on `expo-app`.
+- [x] App-local locked dependencies, TypeScript, meaningful domain/transport/bridge/native-state/browser tests, baseline and path-boundary checks. Add a fictional Maestro smoke flow and a precise iOS device/live-account validation record template; no real-data fixture or stored credential.
+- [x] Development, internal preview and production EAS profiles; development client; owner-supplied production identifiers with fail-closed validation. No invented store ownership or OTA deployment.
+- [x] Allowlisted standalone build context, its own lockfile/config and input hash manifest; exclude secrets, native output, sibling projects and old deployment archives.
+- [x] Release-like Hermes iOS/Android JavaScript and DOM bundle commands; native prebuild privacy configuration generated for both platforms. Separate these checks from signed native binaries.
+- [ ] Actual EAS upload-archive inspection and signed candidates: EAS CLI stops at the missing Expo login. Apple ownership, approved IDs and signing access are not configured.
+- [ ] iOS compilation/signing on macOS/Xcode or EAS, unavailable here. Android native binary work is deferred; its earlier dependency resolution returned HTTP 503 for a required AndroidX lifecycle POM.
+- [ ] Complete Expo Doctor's two online schema/directory checks after environment access to Expo/React Native Directory is available. Local compatibility checks are documented separately.
+- [x] Store copy, fictional reviewer-access instructions, device checklist, support/rollback procedures and app-only CI commands under `app/`.
+- [ ] TestFlight, required physical/live gates, store screenshots and final publisher submissions. Do not label the app production ready until these pass.
+- [x] Keep mobile work on `expo-app`; do not alter or trigger the existing web deployment workflow. The `main` deployment-trigger issue remains a separate owner decision before any merge.
