@@ -6,10 +6,12 @@ export async function api(path,data={},signal){
   if(!response.ok)throw new ImportError(value.error?.message||'The request failed. Please try again.',value.error?.code);
   return value;
 }
-export async function collectRecap({key,year,timeZone,includeSteps=true,includeHealth=true,signal,onProgress=()=>{}}){
+export async function collectRecap({key,year,timeZone,includeSteps=true,includeHealth=true,signal,onProgress=()=>{},onConnected=()=>{}}){
   const activities=[],daily=[],sleep=[],hrv=[],warnings=[];let complete=false,start=0;
   try{
     onProgress('Connecting securely to Garmin…');await api('connect',{key},signal);key='';
+    // Garmin accepted the key: only now may the page remember it (when the visitor asked).
+    onConnected();
     for(let page=0;page<204;page++){
       signal?.throwIfAborted();onProgress(`Reading activity records… ${activities.length} received`);
       const p=await api('activities',{year,timeZone,start},signal);

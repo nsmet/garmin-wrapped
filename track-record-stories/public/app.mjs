@@ -110,6 +110,21 @@ function placeActions(s,frame){
  actions.style.setProperty('--left',b.left+'px');actions.style.setProperty('--right',Math.max(0,state.w-b.right)+'px');
  actions.classList.toggle('is-wide',!!frame.wide);
 }
+// MINI WATT card: a believable live power readout. A short ERG workout loops (248 W, 280 W, 190 W); the trainer
+// pulls the rider to each target over a few seconds with a little overshoot, and the rider adds slow drift,
+// per-second noise and the odd dip. Ticks at 1 Hz like a head unit; still when paused, hidden or reduced motion.
+const mwPower=(()=>{
+ const B=[{t:248,d:42},{t:280,d:30},{t:190,d:24}];let timer=0,block=0,left=42,sm=248,v=0,drift=0;
+ const g=()=>{let u=0,w=0;while(!u)u=Math.random();while(!w)w=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*w);};
+ const show=p=>{$('mw-power').textContent=p;$('mw-next').textContent=B[(block+1)%B.length].t;$('mw-countdown').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');};
+ const tick=()=>{if(state.paused||document.hidden)return;left-=1;if(left<=0){block=(block+1)%B.length;left=B[block].d;}
+  const t=B[block].t;v=v*.35+(t-sm)*.5;sm+=v;drift=drift*.8+g()*2.2;
+  show(Math.max(0,Math.round(sm+drift+g()*3.5+(Math.random()<.05?-(7+Math.random()*12):0))));};
+ return on=>{
+  if(on&&!timer){block=0;left=42;sm=248;v=0;drift=0;show(248);if(!reduced.matches)timer=setInterval(tick,1000);}
+  else if(!on&&timer){clearInterval(timer);timer=0;}
+ };
+})();
 function sync(){
  const s=stories[state.index];if(!s)return;const sp=specFor(s);
  $('chapter-name').textContent=s.promotional?'ONE MORE RIDE?':s.libraryOnly?String(s.group).toUpperCase():sp.grp;$('position').textContent=`${String(state.index+1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`;
@@ -118,6 +133,7 @@ function sync(){
  {const [c1,...rest]=s.caption.split('\n'),r=document.createElement('span');r.className='caption-rest';r.textContent=rest.join('\n');$('caption').replaceChildren(c1,...(rest.length?['\n',r]:[]));}$('dot-key').textContent=sp.legend;$('dot-key').hidden=!sp.legend;$('chapter-key').textContent=sp.legend;$('chapter-key').hidden=!sp.legend;$('story-title').textContent=s.title.join(' ');
  $('story-description').textContent=`${s.value.replace('\n',' ')} ${s.unit}. ${s.caption.replace('\n',' ')} ${chartDescription(s.chart)} ${sp.legend?sp.legend.charAt(0).toUpperCase()+sp.legend.slice(1)+'.':''} ${s.sample?'Fictional sample from the dot design. Not a recap result.':s.libraryOnly?'Template. No personal data. '+s.eligibility:dataset.notice}.`;
  stage.classList.toggle('is-promotion',!!s.promotional);
+ mwPower(!!s.promotional);
  $('back').disabled=state.index===0;$('advance').setAttribute('aria-label',state.index===stories.length-1?'Choose a share card':'Next story');
  $('share').textContent=state.index===stories.length-1?'Choose a card ↗':'Share card ↗';
  $('motion').textContent=reduced.matches?'Still':state.paused?'Play':'Pause';$('motion').disabled=reduced.matches;$('motion').setAttribute('aria-pressed',String(state.paused));
@@ -318,7 +334,7 @@ export async function prepareRecap({demo=false,deepLink=false,data=null}={}) {
  await ready;if(!dotCanvas)mountDotLayer();
 }
 export function revealRecap(){history.replaceState(null,'','#'+stories[state.index].id);document.querySelector('meta[name="theme-color"]').content='#0B1222';state.enter=state.clock;sync();resize();start();}
-export function clearRecap(){viewVersion++;gridVersion++;stop();loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;context={};specCache.clear();frameCache.clear();$('mini-watt-offer').hidden=true;sharePrompt(null,false);promptDismissed=false;$('card-actions').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;state.morph=null;ctx.clearRect(0,0,state.w,state.h);bctx.clearRect(0,0,state.w,state.h);if(dotGL){dotBuf.n=0;dotGL.draw(dotBuf);}else dot2d?.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
+export function clearRecap(){viewVersion++;gridVersion++;stop();loadingStory=false;clearShare();dataset=null;recap=[];stories=recap;context={};specCache.clear();frameCache.clear();$('mini-watt-offer').hidden=true;mwPower(false);sharePrompt(null,false);promptDismissed=false;$('card-actions').hidden=true;stage.classList.remove('is-promotion');state.index=state.from=state.to=0;state.busy=false;state.progress=1;state.morph=null;ctx.clearRect(0,0,state.w,state.h);bctx.clearRect(0,0,state.w,state.h);if(dotGL){dotBuf.n=0;dotGL.draw(dotBuf);}else dot2d?.clearRect(0,0,state.w,state.h);$('chapter-grid').replaceChildren();$('story-title').textContent='Your year in motion';$('story-description').textContent='';$('caption').textContent='';$('coverage-details').replaceChildren();$('health-share-description').textContent='';}
 $('health-share-cancel').addEventListener('click',()=>$('health-share-dialog').close());
 function showCoverage(){
  if(!dataset)return;

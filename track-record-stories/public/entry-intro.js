@@ -1,10 +1,11 @@
 /* Opening sequence: scattered dots → "Your Garmin, wrapped." → the dots gather into a globe →
-   "One dot per activity." → the globe glides into place beside the connect form.
+   "One dot per activity." → "Your key. Your device." → the globe glides into place beside the connect form.
+   Visitors who chose to remember their key have seen it before: they go straight to the form.
    The form never depends on this script: any failure ends the intro and leaves the page usable. */
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
-  const skip = reduced.matches || (location.hash && location.hash !== '#connect');
+  const skip = reduced.matches || (location.hash && location.hash !== '#connect') || !!window.GWKeyStore?.has();
   if (!skip) root.classList.add('entry-intro-active');
   const timers = new Set();
   let intro, main, field, finished = skip;
@@ -32,7 +33,7 @@
   function phase(name) { if (!finished) intro.dataset.phase = name; }
 
   // Independent watchdog: the intro must never depend on the API or main module.
-  if (!skip) later(() => finish(), 10000);
+  if (!skip) later(() => finish(), 13500);
   document.addEventListener('DOMContentLoaded', () => {
     field = window.GWField?.get();
     if (skip) { field?.to({ anchor: connectOrb(), gather: 1, alpha: 1, mode: 'reel' }, 0); return; }
@@ -52,7 +53,9 @@
     later(() => phase('one'), 300);
     later(() => phase('one-out'), 3300);
     later(() => { phase('two'); field.to({ anchor: introOrb, gather: 1, alpha: 1 }, 2400); }, 3600);
-    later(() => { phase('two-out'); field.to({ anchor: connectOrb(), gather: 1, alpha: 1, mode: 'reel' }, 1300); }, 6400);
-    later(() => finish(), 7300);
+    later(() => phase('two-out'), 6400);
+    later(() => phase('three'), 6700);
+    later(() => { phase('three-out'); field.to({ anchor: connectOrb(), gather: 1, alpha: 1, mode: 'reel' }, 1300); }, 10000);
+    later(() => finish(), 10900);
   }, { once: true });
 })();

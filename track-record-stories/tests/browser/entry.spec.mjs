@@ -48,7 +48,7 @@ test.describe('Animated entry',()=>{
   test.use({reducedMotion:'no-preference'});
   const frames=page=>page.locator('#entry-field').evaluate(el=>Number(el.dataset.frames||0));
 
-  test('The dot intro plays both scenes, hands over to the form and the globe can be paused',async({page})=>{
+  test('The dot intro plays all three scenes, hands over to the form and the globe can be paused',async({page})=>{
     await page.goto('/');
     await expect(page.locator('#entry-intro')).toBeVisible();
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',true);
@@ -56,6 +56,10 @@ test.describe('Animated entry',()=>{
     await expect.poll(()=>page.locator('.gw-intro-one').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:3000}).toBeGreaterThan(.9);
     await expect(page.locator('#entry-intro')).toHaveAttribute('data-phase','two',{timeout:5000});
     await expect.poll(()=>page.locator('.gw-intro-two').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:3000}).toBeGreaterThan(.9);
+    await expect(page.locator('#entry-intro')).toHaveAttribute('data-phase','three',{timeout:5000});
+    await expect.poll(()=>page.locator('.gw-intro-three').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:3000}).toBeGreaterThan(.9);
+    await expect(page.locator('.gw-intro-three')).toContainText('Your key.Your device.');
+    await expect(page.locator('.gw-intro-three .gw-intro-tags')).toContainText('No analytics');
     await expect(page.locator('#entry-intro')).not.toBeVisible({timeout:8000});
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',false);
     await expect(page.locator('#api-key')).toBeInViewport();

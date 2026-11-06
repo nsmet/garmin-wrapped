@@ -71,6 +71,7 @@
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="recap.css">
   <link rel="stylesheet" href="screens.css">
+  <script src="key-store.js"></script>
   <script src="entry-field.js"></script>
   <script src="entry-intro.js"></script>
 </head>
@@ -88,10 +89,16 @@
       <p class="gw-display"><span class="gw-line"><span>One dot</span></span><span class="gw-line"><span>per activity<i>.</i></span></span></p>
       <p class="gw-lede">All that movement. One year. Yours.</p>
     </div>
+    <div class="gw-intro-scene gw-intro-three" aria-hidden="true">
+      <p class="gw-kicker gw-accent">Before you start</p>
+      <p class="gw-display"><span class="gw-line"><span>Your key.</span></span><span class="gw-line"><span>Your device<i>.</i></span></span></p>
+      <p class="gw-lede">Tick “Remember my key” and it stays in this browser, so next time you skip the search. It never lands on our servers.</p>
+      <ul class="gw-intro-tags"><li style="--c:#6FA8FF">No analytics</li><li style="--c:#FF79B0">No tracking</li><li style="--c:#7FE0A8">No ads</li></ul>
+    </div>
     <div id="intro-orb" class="gw-intro-orb" aria-hidden="true"></div>
     <div class="gw-intro-bottom" aria-hidden="true">
       <span class="gw-credit">a <b>MINI WATT</b> product <svg class="gw-bolt" viewBox="0 0 10 12"><path d="M6 0 0 7h4l-1 5 6-7H5z"/></svg></span>
-      <ol class="gw-intro-progress"><li><i><b></b></i>01 · The effort</li><li><i><b></b></i>02 · The year</li><li><i><b></b></i>03 · Your story</li></ol>
+      <ol class="gw-intro-progress"><li><i><b></b></i>01 · The effort</li><li><i><b></b></i>02 · The year</li><li><i><b></b></i>03 · Your key</li></ol>
     </div>
   </div>
   <main class="onboarding gw-entry" id="onboarding" aria-label="Your Garmin year, wrapped">
@@ -101,24 +108,31 @@
     </header>
     <div id="connect-screen" class="gw-connect">
       <section class="gw-panel connect-panel" aria-labelledby="connect-title">
-        <p class="gw-kicker gw-reveal">A little perspective on a lot of effort.</p>
+        <p class="gw-kicker gw-reveal" id="connect-kicker">A little perspective on a lot of effort.</p>
         <h1 id="connect-title" class="gw-display" tabindex="-1"><span class="gw-line"><span>Make it</span></span><span class="gw-line"><span>yours<i>.</i></span></span></h1>
         <p class="gw-lede gw-reveal">Your sports. Your highlights. Your year, one dot per activity.</p>
         <form id="api-form" class="gw-form gw-reveal" novalidate>
           <label for="api-key" class="gw-kicker">Garmin personal API key</label>
           <div class="key-field"><input id="api-key" type="password" placeholder="Paste your key here" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="key-note key-error"><button type="button" id="toggle-key" aria-label="Show API key" aria-pressed="false">Show</button></div>
+          <p id="key-saved" class="key-saved" hidden><span>Key saved on this device</span><button type="button" id="forget-key" class="gw-link">Forget key</button></p>
+          <p id="key-forgotten" class="help-preview-note key-forgotten" role="status" hidden></p>
           <p id="key-error" class="key-error" role="alert"></p>
           <button type="button" class="gw-link key-help" id="key-help" aria-haspopup="dialog">Where do I find my key? <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7 5h12v12"/></svg></button>
+          <div class="gw-remember">
+            <input id="remember-key" class="gw-check" type="checkbox" aria-describedby="remember-hint">
+            <div><label for="remember-key">Remember my key on this device</label><p id="remember-hint">Only in this browser, never on our servers.</p></div>
+          </div>
+          <p class="gw-consent" id="health-consent">By selecting <b>Build my recap</b>, you agree that we fetch your Garmin activities and health data (steps, sleep, heart rate, HRV) to build it. Nothing is kept on our servers. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy<span class="sr-only"> (opens in a new tab)</span></a></p>
           <div class="gw-actions">
-            <button class="gw-btn gw-btn-primary connect-submit" type="submit">Build my recap <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
+            <button class="gw-btn gw-btn-primary connect-submit" type="submit" aria-describedby="health-consent">Build my recap <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
             <!--dev-only--><button class="gw-btn gw-btn-ghost demo-link" id="demo-start" type="button">Try the demo</button><!--/dev-only-->
           </div>
           <!--dev-only--><p class="gw-note demo-caption">No key needed for the demo. Fictional data, real good stories.</p><!--/dev-only-->
-          <p id="key-note" class="sr-only">Your key passes securely through this site’s server to Garmin and is never saved. Your recap stays in this tab’s memory.</p>
+          <p id="key-note" class="sr-only">Your key passes securely through this site’s server to Garmin and is never saved there. It is kept in this browser only if you choose to remember it. Your recap stays in this tab’s memory.</p>
         </form>
         <div class="gw-privacy entry-privacy gw-reveal">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg>
-          <div><p class="gw-kicker">Private. Local to this tab.</p><span>Your key goes securely to Garmin and is never saved. Your recap stays on your device.</span> <button type="button" id="privacy-open" class="gw-link">Data &amp; privacy</button></div>
+          <div><p class="gw-kicker">Private by design</p><span>Your key goes to Garmin through our server and is never stored there. Your recap stays on your device. No analytics, no tracking, no ads.</span> <button type="button" id="privacy-open" class="gw-link">Data &amp; privacy</button></div>
         </div>
         <noscript><p class="noscript">Enable JavaScript to build your recap<!--dev-only--> or try the demo. No account is needed for the demo<!--/dev-only-->.</p></noscript>
       </section>
@@ -145,14 +159,14 @@
       </div>
     </section>
     <footer class="gw-footer entry-footer" id="entry-footer">
-      <span>Independent. Not affiliated with Garmin.</span>
+      <span>Independent. Not affiliated with Garmin. <a class="gw-footer-link" href="/privacy.html" target="_blank" rel="noopener">Privacy &amp; cookies<span class="sr-only"> (opens in a new tab)</span></a></span>
       <details class="entry-about">
         <summary>A little more info <svg class="gw-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
         <div class="recap-faq">
           <h2 class="sr-only">About your Garmin recap</h2>
           <details><summary>What is Garmin Wrapped?</summary><p>A colourful year in review made from your Garmin Connect activities. An independent MINI WATT project. Save your favourite stories as 1080 × 1920 PNG cards.</p></details>
           <details><summary>Can I see my Garmin year in review before December?</summary><p>Yes. Your recap covers the current year so far, in your device’s time zone. Only highlights supported by your recorded data appear.</p></details>
-          <details><summary>Is everything processed locally?</summary><p>Your recap is built and kept in this tab’s memory. The Garmin import passes securely through this site’s server; your key and activity data are not saved on our servers. Refreshing or closing the tab clears your recap. Downloaded cards stay on your device.</p></details>
+          <details><summary>Is everything processed locally?</summary><p>Your recap is built and kept in this tab’s memory. The Garmin import passes securely through this site’s server; your key and activity data are not saved on our servers. If you tick “Remember my key”, the key is kept in this browser only. Refreshing or closing the tab clears your recap. Downloaded cards stay on your device. No analytics, tracking or ads.</p></details>
         </div>
       </details>
     </footer>
@@ -176,7 +190,7 @@
   <main class="story" hidden inert id="story" aria-label="Your year in motion">
     <canvas id="backdrop" aria-hidden="true"></canvas>
     <canvas id="poster" aria-hidden="true"></canvas>
-    <div id="card-actions" class="card-actions mw-promo" hidden><div id="mini-watt-offer" hidden><div class="mw-copy"><p class="mw-brand"><svg class="mw-bolt" viewBox="0 0 10 12" aria-hidden="true"><path d="M6 0 0 7h4l-1 5 6-7H5z"/></svg>MINI WATT</p><h2 class="mw-title">Keep riding <span>indoors.</span></h2><p class="mw-lede">Put your bike on a smart trainer. MINI WATT gives you structured workouts and real routes to ride.</p></div><div class="mw-art"><div class="mw-rider"><img src="/assets/miniwatt-rider.webp" alt="A rider pedalling a road bike mounted on a smart trainer" width="600" height="950" decoding="async"><span class="mw-trail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></div><div class="mw-action"><a class="mini-watt-cta" href="https://www.miniwatt.app/download?utm_source=garmin_wraped&amp;utm_medium=referral&amp;utm_campaign=cycling_promotion&amp;utm_content=recap_cta" target="_blank" rel="noopener noreferrer"><span>Try MINI WATT free</span><span class="mw-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="sr-only"> (opens in a new tab)</span></a><p class="mini-watt-details"><b>14 days free</b>, then $1.99/month · Mac + Windows<br>Works with any Bluetooth FTMS smart trainer</p></div></div></div>
+    <div id="card-actions" class="card-actions mw-promo" hidden><div id="mini-watt-offer" hidden><div class="mw-copy"><p class="mw-brand"><svg class="mw-bolt" viewBox="0 0 10 12" aria-hidden="true"><path d="M6 0 0 7h4l-1 5 6-7H5z"/></svg>MINI WATT</p><h2 class="mw-title">Keep riding <span>indoors.</span></h2><p class="mw-lede">Put your bike on a smart trainer. Ride workouts and real routes.</p></div><div class="mw-art"><div class="mw-rider"><img class="mw-halftone" src="/assets/miniwatt-halftone.svg" alt="" aria-hidden="true"><img class="mw-photo" src="/assets/miniwatt-rider.webp" alt="A rider pedalling a road bike mounted on a smart trainer" width="600" height="950" decoding="async"><span class="mw-trail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></div><div class="mw-chips" aria-hidden="true"><div class="mw-chip"><span class="mw-chip-icon is-bolt"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M6 0 0 7h4l-1 5 6-7H5z"/></svg></span><span class="mw-chip-text"><span class="mw-chip-label">Power</span><span class="mw-chip-value"><span id="mw-power">248</span> <small>W</small></span></span></div><div class="mw-chip"><span class="mw-chip-icon"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 18v-6M8 18V6M13 18V9M18 18V3"/></svg></span><span class="mw-chip-text"><span class="mw-chip-label">Next interval</span><span class="mw-chip-value"><span id="mw-next">280</span> W <small class="mw-hi">in <span id="mw-countdown">0:42</span></small></span></span></div><div class="mw-chip mw-chip-gradient"><span class="mw-chip-icon"><svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c3 0 3-5 6-5s3 3 6 3 3-7 3-10"/></svg></span><span class="mw-chip-text"><span class="mw-chip-label">Gradient</span><span class="mw-chip-value">7.2 <small>%</small></span></span></div></div><p class="mw-sticker" aria-hidden="true"><span>14 days</span><b>Free</b></p><div class="mw-action"><a class="mini-watt-cta" href="https://www.miniwatt.app/download?utm_source=garmin_wraped&amp;utm_medium=referral&amp;utm_campaign=cycling_promotion&amp;utm_content=recap_cta" target="_blank" rel="noopener noreferrer"><span>Try MINI WATT free</span><span class="mw-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="sr-only"> (opens in a new tab)</span></a><p class="mini-watt-details"><span class="sr-only">14 days free. </span>Then <b>$1.99/month</b> · Mac + Windows<br>Works with any Bluetooth FTMS smart trainer</p></div></div></div>
     <div id="share-prompt" class="share-prompt" role="region" aria-label="Share your year" hidden><div class="share-prompt-copy"><strong>Share your year</strong></div><button id="finale-share" class="share-prompt-button" type="button">Share</button><button id="share-prompt-close" class="share-prompt-close" type="button" aria-label="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="story-chrome">
       <header>
@@ -230,12 +244,12 @@
     <div class="privacy-copy">
       <p class="gw-dialog-intro">Garmin Wraped is an independent MINI WATT project. Each visitor connects only their own Garmin account using their own Personal API key. Garmin Wraped is not affiliated with or endorsed by Garmin.</p>
       <div class="gw-privacy-grid">
-        <section style="--c:#FFB35C"><h3>Your key</h3><p>Your key is exchanged with Garmin by this site’s server over HTTPS. The server retains no activity or health records. A secure, encrypted connection cookie expires after 20 minutes and is cleared when the import finishes or you disconnect. Visitors have separate connection sessions. Tabs in the same browser share a connection cookie; import one account at a time.</p></section>
-        <section style="--c:#6FA8FF"><h3>Your recap</h3><p>The recap lives only in this tab’s memory. Refreshing or closing the tab removes it. “Clear my data” removes the recap, export preview, and connection cookie. Downloaded PNG files and shares you send remain on your device or in the receiving app.</p></section>
-        <section style="--c:#FF6B7A"><h3>Health cards</h3><p>Daily steps, floors climbed, sleep, heart rate and overnight HRV are included automatically when available. Sharing any health card requires a separate confirmation for that card. Exports contain only the shown metric and approved copy: no names, Garmin identifiers, source references, or precise locations.</p></section>
+        <section style="--c:#FFB35C"><h3>Your key</h3><p>Your key is exchanged with Garmin by this site’s server over HTTPS and never stored there. If you tick “Remember my key”, it is kept in this browser’s storage until you select Forget key or Clear my data. A secure, encrypted connection cookie expires after 20 minutes and is cleared when the import finishes or you disconnect. Tabs in the same browser share a connection cookie; import one account at a time.</p></section>
+        <section style="--c:#6FA8FF"><h3>Your recap</h3><p>The recap lives only in this tab’s memory. Refreshing or closing the tab removes it. “Clear my data” removes the recap, export preview, connection cookie and any remembered key. Downloaded PNG files and shares you send remain on your device or in the receiving app.</p></section>
+        <section style="--c:#FF6B7A"><h3>Health cards</h3><p>With your consent when you build your recap, daily steps, floors climbed, sleep, heart rate and overnight HRV are included when available. Sharing any health card requires a separate confirmation for that card. Exports contain only the shown metric and approved copy: no names, Garmin identifiers, source references, or precise locations.</p></section>
         <section style="--c:#7FE0A8"><h3>Coverage</h3><p>Activity dates use your automatically detected device time zone. Daily wellness, sleep and HRV use Garmin’s recorded calendar days. Missing measurements are omitted. A complete API import means all pages returned for the requested date window; it cannot establish that Garmin holds every activity you performed.</p></section>
       </div>
-      <p class="gw-fine">Application error logs contain request IDs, route names, error codes, and timings only. Cloudflare hosts this app and processes connection information, including IP addresses, to deliver it and limit requests. No advertising or analytics SDK is installed. Fonts are served directly by this app; no third-party font requests are made. Disconnecting does not revoke your Garmin key. You can revoke it on <a href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noopener noreferrer">Garmin’s key page</a>.</p>
+      <p class="gw-fine">Application error logs contain request IDs, route names, error codes, and timings only. Cloudflare hosts this app and processes connection information, including IP addresses, to deliver it and limit requests. No analytics, advertising or tracking cookies or scripts are used. Fonts are served directly by this app; no third-party font requests are made. Disconnecting does not revoke your Garmin key. You can revoke it on <a href="https://connect.garmin.com/app/settings/personalApiToken" target="_blank" rel="noopener noreferrer">Garmin’s key page</a>. Full details, including your rights: <a href="/privacy.html" target="_blank" rel="noopener">Privacy &amp; cookies<span class="sr-only"> (opens in a new tab)</span></a>.</p>
       <div id="coverage-details"></div>
     </div>
     <div class="gw-actions gw-dialog-actions"><button id="privacy-clear" class="gw-btn gw-btn-primary">Clear my data &amp; disconnect</button><button id="privacy-done" class="gw-btn gw-btn-ghost" type="button">Done</button></div>

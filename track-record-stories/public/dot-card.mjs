@@ -213,6 +213,7 @@ export const TEXT_SETTLE=2.8;
 /* ---------- background ---------- */
 export function backgroundStops(spec,palette){
  if(palette)return {base:palette[0],glow:mixHex(palette[2],palette[0],.82),glowA:1,cta:false};
+ if(spec.promo)return {base:'#C7FF3F',glow:'#C7FF3F',glowA:0,cta:false};
  return {base:COLORS.NAVY,glow:spec.cta?'#C7FF3F':spec.acc,glowA:spec.cta?.08:.16,cta:!!spec.cta};
 }
 export function drawBackground(c,w,h,spec,frame,palette){
