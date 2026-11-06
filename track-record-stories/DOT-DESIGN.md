@@ -1,6 +1,6 @@
 # Dot design inventory (89 cards)
 
-Source: Design canvas *Garmin Wraped — One dot per activity* (23 boards, 89 cards; each board shows a busy 572-activity sample year and a low-count sample year). Every card is implemented by `public/dot-engine.mjs` (geometry, ported from the design's GWDots engine v2) and `public/dot-spec.mjs` (story → card mapping).
+Source: Design canvas *Garmin Wrapped — One dot per activity* (23 boards, 89 cards; each board shows a busy 572-activity sample year and a low-count sample year). Every card is implemented by `public/dot-engine.mjs` (geometry, ported from the design's GWDots engine v2) and `public/dot-spec.mjs` (story → card mapping).
 
 Feedback round 1 (29 Oct 2026): hours cards use a sport-specific outline (track, chainring, interval timer, kettlebell, footprint, boot, pool, oar, mat, ring, elliptical, skis, golf ball, racket, three rings, pitch, carabiner, heart, star) filled with one dot per stated unit; cycling and strength sessions fill a bike's wheels and a dumbbell outline; running distance traces a shoe and cycling distance traces a bike. Grey dots show the unfilled part of each outline. The dot key sits under the caption instead of under the number.
 

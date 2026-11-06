@@ -1,4 +1,4 @@
-/* Garmin Wraped app screens in the "one dot per activity" design:
+/* Garmin Wrapped app screens in the "one dot per activity" design:
    intro, connect, key help, loading, share, health consent, chapters, data & privacy.
    Navy ground, Sora type, the dot globe (entry-field.js) as the only artwork. */
 :root{--gw-navy:#0B1222;--gw-panel:#0E172C;--gw-accent:#FFB35C;--gw-accent-hi:#FFC47E;--gw-ink:#FFFFFF;--gw-dim:rgba(255,255,255,.72);--gw-line:rgba(255,255,255,.14);--gw-red:#FF6B7A;--gw-warm:#FFD9A0;--gw-gutter:clamp(20px,6vw,96px);--gw-rise:cubic-bezier(.2,.8,.2,1)}

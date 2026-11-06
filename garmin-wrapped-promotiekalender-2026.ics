@@ -1,0 +1,114 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Garmin Wrapped//Promotion Calendar//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Garmin Wrapped promotie
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-01@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:Garmin Wrapped: vraag toestemming aan r/Garmin
+DESCRIPTION:Stuur een modmail met de vraag of en hoe je de website mag dele
+ n.\nWebsite: https://garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/message/compose?to=/r/Garmin
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-02@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:Garmin Wrapped: post in r/alphaandbetausers
+DESCRIPTION:Vraag feedback op de demo\, de kaarten en het verbindingsproces
+ . Controleer eerst de actuele regels en titelvereisten.\nWebsite: https://
+ garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/r/alphaandbetausers/
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-03@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+SUMMARY:Garmin Wrapped: r/triathlon promotiedraad
+DESCRIPTION:Zoek de wekelijkse self-promotion thread en deel daar een korte
+  introductie en de demolink.\nWebsite: https://garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/r/triathlon/
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-04@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Garmin Wrapped: post in r/SideProject
+DESCRIPTION:Deel wat je bouwde en vraag gerichte feedback. Controleer de ac
+ tuele regels.\nWebsite: https://garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/r/SideProject/
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-05@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261205
+DTEND;VALUE=DATE:20261206
+SUMMARY:Garmin Wrapped: r/running Social Saturday
+DESCRIPTION:Open de nieuwste Social Saturday-thread en plaats een korte int
+ roductie als de draad promotie toestaat.\nWebsite: https://garmin-wrapped.
+ miniwatt.app
+URL:https://www.reddit.com/r/running/search/?q=social%20saturday&restrict_s
+ r=1&sort=new
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-06@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261207
+DTEND;VALUE=DATE:20261208
+SUMMARY:Garmin Wrapped: Intervals.icu External Projects
+DESCRIPTION:Stel het project voor met een fietsvoorbeeld en controleer eers
+ t de categorierichtlijnen.\nWebsite: https://garmin-wrapped.miniwatt.app
+URL:https://forum.intervals.icu/c/external-projects/14
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-07@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+SUMMARY:Garmin Wrapped: r/Garmin indien toegestaan
+DESCRIPTION:Plaats enkel als de moderators toestemming hebben gegeven en vo
+ lg hun instructies. Sla over als ze niet antwoorden of nee zeggen.\nWebsit
+ e: https://garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/r/Garmin/
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-08@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261210
+DTEND;VALUE=DATE:20261211
+SUMMARY:Garmin Wrapped: Show HN
+DESCRIPTION:Deel het project als de publieke demo zonder Garmin-sleutel wer
+ kt. Blijf beschikbaar om vragen te beantwoorden.\nWebsite: https://garmin-
+ wrapped.miniwatt.app
+URL:https://news.ycombinator.com/showhn.html
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-09@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261212
+DTEND;VALUE=DATE:20261213
+SUMMARY:Garmin Wrapped: optionele r/running-update
+DESCRIPTION:Plaats alleen een vervolg in de nieuwste Social Saturday-thread
+  als er een betekenisvolle update is en de regels dat toestaan.\nWebsite: 
+ https://garmin-wrapped.miniwatt.app
+URL:https://www.reddit.com/r/running/search/?q=social%20saturday&restrict_s
+ r=1&sort=new
+END:VEVENT
+BEGIN:VEVENT
+UID:garmin-wrapped-promotion-2026-10@miniwatt.app
+DTSTAMP:20261106T104203Z
+DTSTART;VALUE=DATE:20261214
+DTEND;VALUE=DATE:20261215
+SUMMARY:Garmin Wrapped: reacties en feedback bekijken
+DESCRIPTION:Beantwoord openstaande vragen\, bedank testers en verzamel de b
+ elangrijkste verbeterpunten.\nWebsite: https://garmin-wrapped.miniwatt.app
+URL:https://garmin-wrapped.miniwatt.app
+END:VEVENT
+END:VCALENDAR

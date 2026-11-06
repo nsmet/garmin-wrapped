@@ -41,7 +41,7 @@ function frameFor(s){
 // Export / thumbnail spec: built from the sanitized display fields, never the full story.
 function exportSpec(display,source,{notice,year}){
  const sp=source.sample?cardSpec(source,sampleCtx[source.sample]):cardSpec(display,source.libraryOnly?{}:context);
- return {...sp,notice,right:sp.right==='GARMIN WRAPED'?`GARMIN WRAPED · ${year}`:sp.right};
+ return {...sp,notice,right:sp.right==='GARMIN WRAPPED'?`GARMIN WRAPPED · ${year}`:sp.right};
 }
 
 /* ---------- dot layer: Three.js when available, 2D sprites otherwise ---------- */
@@ -296,9 +296,9 @@ async function renderSelectedShare(){
  }catch{if(version===shareVersion)$('share-error').textContent='The card could not be created. Choose a card or color to try again.';}
  finally{if(version===shareVersion)$('share-preview-frame').setAttribute('aria-busy','false');}
 }
-function filename(){return `garmin-wraped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.png`;}
+function filename(){return `garmin-wrapped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.png`;}
 $('download').addEventListener('click',()=>{if(!shareURL||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=shareURL;a.download=filename();document.body.append(a);a.click();a.remove();$('share-saved').textContent=`Saved to your device · ${a.download}`;});
-$('native-share').addEventListener('click',async()=>{if(!shareBlob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([shareBlob],filename(),{type:'image/png'})],title:'My Garmin Wraped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent='Sharing is unavailable here. You can download the PNG instead.';}});
+$('native-share').addEventListener('click',async()=>{if(!shareBlob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([shareBlob],filename(),{type:'image/png'})],title:'My Garmin Wrapped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent='Sharing is unavailable here. You can download the PNG instead.';}});
 // On phones Back and Next are invisible tap zones over the card; a swipe that starts on them must not also tap.
 let swipedAt=0;const swiped=()=>performance.now()-swipedAt<450;
 $('advance').addEventListener('click',()=>{if(swiped())return;state.index===stories.length-1?openShare():go(state.index+1);});

@@ -15,16 +15,16 @@ async function mocked(page,{empty=false,health=false,error=false,delay=false,opt
 }
 async function connect(page){await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();}
 async function checkProductCredit(page,selector,placement='header'){
- const link=page.locator(selector),expected='https://miniwatt.app/?utm_source=garmin_wraped&utm_medium=referral&utm_campaign=product_credit&utm_content='+placement;
+ const link=page.locator(selector),expected='https://miniwatt.app/?utm_source=garmin_wrapped&utm_medium=referral&utm_campaign=product_credit&utm_content='+placement;
  await expect(link).toHaveAttribute('href',expected);
  await page.context().route('https://miniwatt.app/**',route=>route.fulfill({contentType:'text/html',body:'MINI WATT'}));
  const opened=page.waitForEvent('popup');await link.click();const popup=await opened;
  await expect(popup).toHaveURL(expected);await popup.close();
 }
-test('Garmin Wraped branding carries through to the recap and cycling ends with a MINI WATT invitation',async({page})=>{
+test('Garmin Wrapped branding carries through to the recap and cycling ends with a MINI WATT invitation',async({page})=>{
  await mocked(page,{sport:'indoor_cycling'});await page.goto('/');
  await expect(page).toHaveTitle('Garmin Wrapped: Your Garmin Connect Year in Review | MINI WATT');
- await expect(page.locator('.gw-header .brand')).toContainText('GARMIN WRAPED');
+ await expect(page.locator('.gw-header .brand')).toContainText('GARMIN WRAPPED');
  await expect(page.locator('.gw-header .brand')).toContainText('a MINI WATT product');
  await checkProductCredit(page,'.gw-header .brand-product');
  await connect(page);await expect(page.locator('#story')).toBeVisible();
@@ -34,7 +34,7 @@ test('Garmin Wraped branding carries through to the recap and cycling ends with 
  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('KEEP RIDING');await page.locator('.chapter-tile').click();
  await expect(page.locator('#story-title')).toHaveText('KEEP RIDING INDOORS.');
  await expect(page.locator('#mini-watt-offer')).toBeVisible();
- await expect(page.locator('.mini-watt-cta')).toHaveAttribute('href','https://www.miniwatt.app/download?utm_source=garmin_wraped&utm_medium=referral&utm_campaign=cycling_promotion&utm_content=recap_cta');
+ await expect(page.locator('.mini-watt-cta')).toHaveAttribute('href','https://www.miniwatt.app/download?utm_source=garmin_wrapped&utm_medium=referral&utm_campaign=cycling_promotion&utm_content=recap_cta');
  await expect(page.locator('.mini-watt-cta')).toHaveAttribute('rel','noopener noreferrer');
  const position=await page.locator('#position').innerText(),[index,total]=position.split(' / ').map(Number);expect(index).toBe(total);
  await page.locator('#back').click();await expect(page.locator('#chapter-name')).toHaveText('FINALE');await expect(page.locator('#mini-watt-offer')).toBeHidden();

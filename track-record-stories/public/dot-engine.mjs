@@ -1,4 +1,4 @@
-// "One dot per activity" engine (Garmin Wraped dot design, engine v2).
+// "One dot per activity" engine (Garmin Wrapped dot design, engine v2).
 // Pure geometry: it turns a card spec (see dot-spec.mjs) into dots and labels in a
 // 360 × 640 card coordinate space. It never reads records or calculates metrics.
 //  - data dots: bright, one per activity / hour / km unit, as stated on the card.

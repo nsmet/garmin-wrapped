@@ -1,4 +1,4 @@
-/* The one thing Garmin Wraped keeps in the browser: the visitor's own Garmin Personal API key,
+/* The one thing Garmin Wrapped keeps in the browser: the visitor's own Garmin Personal API key,
    and only after they tick "Remember my key on this device" (consent under the ePrivacy rules).
    This is the only file allowed to touch browser storage (scripts/check.mjs enforces it).
    Recaps, activity and health records always stay in memory. */

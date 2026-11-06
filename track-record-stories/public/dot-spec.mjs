@@ -68,7 +68,7 @@ function seedOf(id){let h=2166136261;for(const ch of String(id))h=Math.imul(h^ch
 function base(story,extra){
  const [t1,t2]=split2(sentence(story.title.join(' ')));
  const [cap1,cap2]=(story.caption||'').split('\n');
- return {id:story.id,seed:seedOf(story.id),grp:'GARMIN WRAPED',right:'GARMIN WRAPED',t1,t2,hero:heroFrom(story.value),unit:String(story.unit||'').toUpperCase(),note:'',health:!!story.health,cap1:cap1||'',cap2:cap2||'',acc:'#FFB35C',...extra};
+ return {id:story.id,seed:seedOf(story.id),grp:'GARMIN WRAPPED',right:'GARMIN WRAPPED',t1,t2,hero:heroFrom(story.value),unit:String(story.unit||'').toUpperCase(),note:'',health:!!story.health,cap1:cap1||'',cap2:cap2||'',acc:'#FFB35C',...extra};
 }
 const SUFFIX=/-(sessions|hours|distance|weekday|longest)$/;
 
@@ -175,7 +175,7 @@ function mapStory(story,context={}){
   }
   case 'finale':{
    const total=ctx.total??leadingCount(story.caption),grid=chart?.kind==='summary'?chart.items.map(i=>({...heroFrom(i.value),l:i.label})):[];
-   const bare={bare:true,lift:24,brand:'GARMIN WRAPED · A MINI WATT PRODUCT'};
+   const bare={bare:true,lift:24,brand:'GARMIN WRAPPED · A MINI WATT PRODUCT'};
    if(!total)return base(story,{grp:'FINALE',hero:{text:story.value},L:'concept',p:{k:'other'},grid,gridTop:466,gridSmall:true,share:true,...bare});
    const d=activityDots(total,ctx.mix);
    return base(story,{grp:'FINALE',hero:{text:story.value},heroMax:96,L:'sphere',p:{n:d.n,cols:d.cols,keys:d.keys,cy:350,R:100},note:perActivityNote(d.n,d.unit),grid,gridTop:466,gridSmall:true,share:true,...bare});

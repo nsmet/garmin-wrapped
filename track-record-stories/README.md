@@ -1,4 +1,4 @@
-# Garmin Wraped — a MINI WATT product ⚡️
+# Garmin Wrapped — a MINI WATT product ⚡️
 
 A Garmin annual recap prepared for independent visitors at **https://garmin-wrapped.miniwatt.app**. The existing sports-poster design, motion controls, 1080×1920 exports, fictional demo and 184-concept design library are preserved. Real stories are calculated from imported records and admitted only when their required measurements are complete.
 
@@ -92,4 +92,4 @@ Data-quality notes and optional-source failures are available under the story me
 
 Cycling recaps end with a MINI WATT invitation after the year receipt. It is shown only when an admitted cycling chapter exists, is excluded from personal card exports, and links to miniwatt.app without passing recap data.
 
-Outbound MINI WATT links use `utm_source=garmin_wraped` and `utm_medium=referral`. Product credits use `utm_campaign=product_credit` with `utm_content=header` or `footer`; the cycling invitation uses `utm_campaign=cycling_promotion` and `utm_content=recap_cta`.
+Outbound MINI WATT links use `utm_source=garmin_wrapped` and `utm_medium=referral`. Product credits use `utm_campaign=product_credit` with `utm_content=header` or `footer`; the cycling invitation uses `utm_campaign=cycling_promotion` and `utm_content=recap_cta`.
