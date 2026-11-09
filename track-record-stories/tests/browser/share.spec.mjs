@@ -3,7 +3,7 @@ import {test,expect} from '@playwright/test';
 async function demo(page){
  const {dataset}=await import('../../public/sample-data.mjs');
  const {recapSequence}=await import('../../public/recap-sequence.mjs');
- await page.goto('/#'+recapSequence(dataset).at(-1).id);await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ await page.goto('/#'+recapSequence(dataset).at(-1).id);await page.locator('#connect-open').click();await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
 }
 async function previewPixel(page,x,y){
  return page.locator('#share-preview').evaluate(async(img,{x,y})=>{await img.decode();const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return [...ctx.getImageData(x,y,1,1).data];},{x,y});
@@ -45,7 +45,7 @@ test('Choosing a health card asks consent and switching away revokes that choice
   if(action==='sleep')return route.fulfill({json:{sleep:input.month===1?Array.from({length:30},(_,i)=>({date:`2025-01-${String(i+1).padStart(2,'0')}`,seconds:25200})):[]}});
   if(action==='wellness')return route.fulfill({json:{daily:[]}});return route.fulfill({json:{connected:true,disconnected:true}});
  });
- await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();
+ await page.goto('/');await page.locator('#connect-open').click();await page.locator('#api-key').fill('not-a-real-key-123');await page.locator('.connect-submit').click();await expect(page.locator('#story')).toBeVisible();await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();
  const previous=await page.locator('#share-preview').getAttribute('src'),health=page.getByRole('button',{name:'Choose OFF THE CLOCK.',exact:true});
  await health.click();await expect(page.locator('#health-share-dialog')).toBeVisible();await page.locator('#health-share-cancel').click();await expect(page.locator('#share-preview')).toHaveAttribute('src',previous);await expect(health).toHaveAttribute('aria-pressed','false');
  await health.click();await page.locator('#health-share-confirm').click();await expect(health).toHaveAttribute('aria-pressed','true');

@@ -109,25 +109,7 @@
         <p class="gw-kicker gw-reveal" id="connect-kicker">A little perspective on a lot of effort.</p>
         <h1 id="connect-title" class="gw-display" tabindex="-1"><span class="gw-line"><span>Make it</span></span><span class="gw-line"><span>yours<i>.</i></span></span></h1>
         <p class="gw-lede gw-reveal">Your sports. Your highlights. Your year, one dot per activity.</p>
-        <form id="api-form" class="gw-form gw-reveal" novalidate>
-          <label for="api-key" class="gw-kicker">Garmin personal API key</label>
-          <div class="key-field"><input id="api-key" type="password" placeholder="Paste your key here" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="key-note key-error"><button type="button" id="toggle-key" aria-label="Show API key" aria-pressed="false">Show</button></div>
-          <p id="key-saved" class="key-saved" hidden><span>Key saved on this device</span><button type="button" id="forget-key" class="gw-link">Forget key</button></p>
-          <p id="key-forgotten" class="help-preview-note key-forgotten" role="status" hidden></p>
-          <p id="key-error" class="key-error" role="alert"></p>
-          <button type="button" class="gw-link key-help" id="key-help" aria-haspopup="dialog">Where do I find my key? <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7 5h12v12"/></svg></button>
-          <div class="gw-remember">
-            <input id="remember-key" class="gw-check" type="checkbox" aria-describedby="remember-hint">
-            <div><label for="remember-key">Remember my key on this device</label><p id="remember-hint">Only in this browser, never on our servers.</p></div>
-          </div>
-          <p class="gw-consent" id="health-consent">By selecting <b>Build my recap</b>, you agree that we fetch your Garmin activities and health data (steps, sleep, heart rate, HRV) to build it. Nothing is kept on our servers. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy<span class="sr-only"> (opens in a new tab)</span></a></p>
-          <div class="gw-actions">
-            <button class="gw-btn gw-btn-primary connect-submit" type="submit" aria-describedby="health-consent">Build my recap <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
-            <!--dev-only--><button class="gw-btn gw-btn-ghost demo-link" id="demo-start" type="button">Try the demo</button><!--/dev-only-->
-          </div>
-          <!--dev-only--><p class="gw-note demo-caption">No key needed for the demo. Fictional data, real good stories.</p><!--/dev-only-->
-          <p id="key-note" class="sr-only">Your key passes securely through this site’s server to Garmin and is never saved there. It is kept in this browser only if you choose to remember it. Your recap stays in this tab’s memory.</p>
-        </form>
+        <button id="connect-open" class="gw-btn gw-btn-primary gw-connect-cta gw-reveal" type="button" aria-haspopup="dialog" aria-controls="connect-dialog">Build my recap <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
         <div class="gw-privacy entry-privacy gw-reveal">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg>
           <div><p class="gw-kicker">Private by design</p><span>Your key goes to Garmin through our server and is never stored there. Your recap stays on your device. No analytics, no tracking, no ads.</span> <button type="button" id="privacy-open" class="gw-link">Data &amp; privacy</button></div>
@@ -169,6 +151,29 @@
       </details>
     </footer>
   </main>
+  <dialog id="connect-dialog" class="gw-dialog gw-connect-dialog" aria-labelledby="connect-dialog-title">
+    <div class="gw-dialog-head"><div><p class="gw-kicker gw-accent">Your year, your story</p><h2 id="connect-dialog-title" class="gw-dialog-title">Let’s build<br>your recap<i>.</i></h2></div><button id="close-connect" class="gw-close" type="button" aria-label="Close recap form"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
+    <p class="gw-dialog-intro">Start with your Garmin Personal API key.</p>
+        <form id="api-form" class="gw-form" novalidate>
+          <label for="api-key" class="gw-kicker">Garmin personal API key</label>
+          <div class="key-field"><input id="api-key" type="password" placeholder="Paste your key here" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="key-note key-error"><button type="button" id="toggle-key" aria-label="Show API key" aria-pressed="false">Show</button></div>
+          <p id="key-saved" class="key-saved" hidden><span>Key saved on this device</span><button type="button" id="forget-key" class="gw-link">Forget key</button></p>
+          <p id="key-forgotten" class="help-preview-note key-forgotten" role="status" hidden></p>
+          <p id="key-error" class="key-error" role="alert"></p>
+          <button type="button" class="gw-link key-help" id="key-help" aria-haspopup="dialog">Where do I find my key? <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7 5h12v12"/></svg></button>
+          <div class="gw-remember">
+            <input id="remember-key" class="gw-check" type="checkbox" aria-describedby="remember-hint">
+            <div><label for="remember-key">Remember my key on this device</label><p id="remember-hint">Only in this browser, never on our servers.</p></div>
+          </div>
+          <p class="gw-consent" id="health-consent">By selecting <b>Build my recap</b>, you agree that we fetch your Garmin activities and health data (steps, sleep, heart rate, HRV) to build it. Nothing is kept on our servers. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy<span class="sr-only"> (opens in a new tab)</span></a></p>
+          <div class="gw-actions">
+            <button class="gw-btn gw-btn-primary connect-submit" type="submit" aria-describedby="health-consent">Build my recap <svg class="gw-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
+            <!--dev-only--><button class="gw-btn gw-btn-ghost demo-link" id="demo-start" type="button">Try the demo</button><!--/dev-only-->
+          </div>
+          <!--dev-only--><p class="gw-note demo-caption">No key needed for the demo. Fictional data, real good stories.</p><!--/dev-only-->
+          <p id="key-note" class="sr-only">Your key passes securely through this site’s server to Garmin and is never saved there. It is kept in this browser only if you choose to remember it. Your recap stays in this tab’s memory.</p>
+        </form>
+  </dialog>
   <dialog id="key-help-dialog" class="gw-dialog gw-help" aria-labelledby="key-help-title">
     <div class="gw-dialog-head"><div><p class="gw-kicker gw-accent">Garmin Connect · Personal API</p><h2 id="key-help-title" class="gw-dialog-title">Your key.<br>Your start line<i>.</i></h2></div><button id="close-key-help" class="gw-close" aria-label="Close API key help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
     <p class="gw-dialog-intro">Get your Personal API key on the Garmin Connect website. Use your own account’s key, not your Garmin password.</p>

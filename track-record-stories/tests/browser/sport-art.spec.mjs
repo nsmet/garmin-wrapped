@@ -31,7 +31,7 @@ test('Exports render the dot layer with Three.js and fall back to 2D without Web
  // Without WebGL the same card renders with 2D sprites.
  const context=await browser.newContext();const other=await context.newPage();
  await other.addInitScript(()=>{const get=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...a){return /webgl/.test(type)?null:get.call(this,type,...a);};});
- await other.goto('/');await other.locator('#demo-start').click();await expect(other.locator('#story')).toBeVisible();
+ await other.goto('/');await other.locator('#connect-open').click();await other.locator('#demo-start').click();await expect(other.locator('#story')).toBeVisible();
  await expect(other.locator('#dots')).toHaveAttribute('data-renderer','2d');
  await other.locator('#share:visible, #share-icon:visible').click();await expect(other.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);
  await context.close();

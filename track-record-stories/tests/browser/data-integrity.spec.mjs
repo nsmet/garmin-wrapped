@@ -10,13 +10,13 @@ async function mockImport(page,activities){
     return route.fulfill({json:{connected:true,disconnected:true}});
   });
 }
-async function connect(page){await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();}
+async function connect(page){await page.locator('#connect-open').click();await page.locator('#api-key').fill('not-a-real-key-123');await page.locator('.connect-submit').click();await expect(page.locator('#story')).toBeVisible();}
 
 test('Reloading a recorded story requires reconnecting and never silently substitutes the 52-run demo',async({page})=>{
   await mockImport(page,[activity(1,'indoor_cycling')]);await page.goto('/');await connect(page);
   await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('BACK IN THE SADDLE');await page.locator('.chapter-tile').click();
   await expect(page).toHaveURL(/#cycling-sessions$/);await page.reload();
-  await expect(page.locator('#connect-screen')).toBeVisible();await expect(page.locator('#reconnect-notice')).toContainText('Reconnect to see your Garmin data');
+  await expect(page.locator('#connect-screen')).toBeVisible();await expect(page.locator('#reconnect-notice')).toContainText('reconnect or choose the fictional demo');
   await expect(page.locator('#story')).not.toBeVisible();await expect(page.locator('#story-description')).toBeEmpty();
   // Real data with no running activity must never pick up the demo's runs.
   await connect(page);await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#story-search').fill('running');await expect(page.locator('.chapter-tile')).toHaveCount(0);
@@ -45,7 +45,7 @@ test('The activity breakdown explains sport counts, omissions, dates and source 
 
 test('A story URL opens the fictional demo only after the demo button is chosen',async({page})=>{
   await page.goto('/#running-sessions');await expect(page.locator('#connect-screen')).toBeVisible();await expect(page.locator('#story')).not.toBeVisible();
-  await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();await expect(page.locator('.demo-label')).toContainText('FICTIONAL');await expect(page.locator('#story-description')).toContainText('52 RECORDED RUNS');
+  await page.locator('#connect-open').click();await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();await expect(page.locator('.demo-label')).toContainText('FICTIONAL');await expect(page.locator('#story-description')).toContainText('52 RECORDED RUNS');
 });
 
 test('Distance precision matches canvas labels, accessible descriptions and exported cards',async({page})=>{

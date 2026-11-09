@@ -11,7 +11,7 @@ async function mockHeartImport(page,{unavailableHrv=false}={}){
   if(path==='hrv')return unavailableHrv?route.fulfill({status:403,json:{error:{code:'GARMIN_PERMISSION',message:'Unavailable'}}}):route.fulfill({json:{hrv:[1,2,4].includes(body.month)?days(body.month,body.month===1?50:body.month===2?70:60,'hrv'):[]}});
   return route.fulfill({json:{connected:true,disconnected:true}});
  });
- await page.goto('/');await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();await expect(page.locator('#story')).toBeVisible();
+ await page.goto('/');await page.locator('#connect-open').click();await page.locator('#api-key').fill('not-a-real-key-123');await page.locator('.connect-submit').click();await expect(page.locator('#story')).toBeVisible();
 }
 async function navigate(page,id){
  await page.evaluate(id=>{history.replaceState(null,'','#'+id);window.dispatchEvent(new HashChangeEvent('hashchange'));},id);

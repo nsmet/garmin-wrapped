@@ -14,10 +14,10 @@ async function mocked(page,{reject=false}={}){
   });
 }
 const stored=page=>page.evaluate(()=>[localStorage.length,localStorage.getItem('garmin-wraped:key'),sessionStorage.length]);
-const build=page=>page.getByRole('button',{name:'Build my recap'}).click();
+const build=page=>page.locator('.connect-submit').click();
 
 test('Nothing is stored unless the visitor ticks the box, and the consent line sits by the button',async({page})=>{
-  await mocked(page);await page.goto('/');
+  await mocked(page);await page.goto('/');await page.locator('#connect-open').click();
   await expect(page.getByLabel('Remember my key on this device')).not.toBeChecked();
   await expect(page.locator('#health-consent')).toContainText('health data (steps, sleep, heart rate, HRV)');
   await expect(page.locator('#health-consent a')).toHaveAttribute('href','/privacy.html');
@@ -28,10 +28,10 @@ test('Nothing is stored unless the visitor ticks the box, and the consent line s
 
 test('A remembered key returns prefilled and can be forgotten',async({page})=>{
   await mocked(page);await page.goto('/');
-  await page.locator('#api-key').fill(KEY);await page.getByLabel('Remember my key on this device').check();await build(page);
+  await page.locator('#connect-open').click();await page.locator('#api-key').fill(KEY);await page.getByLabel('Remember my key on this device').check();await build(page);
   await expect(page.locator('#story')).toBeVisible();
   expect(await stored(page)).toEqual([1,KEY,0]);
-  await page.goto('/');
+  await page.goto('/');await page.locator('#connect-open').click();
   await expect(page.locator('#api-key')).toHaveValue(KEY);
   await expect(page.getByLabel('Remember my key on this device')).toBeChecked();
   await expect(page.locator('#key-saved')).toBeVisible();
@@ -46,7 +46,7 @@ test('A remembered key returns prefilled and can be forgotten',async({page})=>{
 
 test('Unticking forgets at once, and a wrong key is never saved',async({page})=>{
   await mocked(page,{reject:true});
-  await page.goto('/');await page.evaluate(([name,key])=>localStorage.setItem(name,key),[NAME,KEY]);await page.reload();
+  await page.goto('/');await page.evaluate(([name,key])=>localStorage.setItem(name,key),[NAME,KEY]);await page.reload();await page.locator('#connect-open').click();
   await expect(page.locator('#api-key')).toHaveValue(KEY);
   await page.getByLabel('Remember my key on this device').uncheck();
   expect(await stored(page)).toEqual([0,null,0]);
@@ -59,7 +59,7 @@ test('Unticking forgets at once, and a wrong key is never saved',async({page})=>
 
 test('A saved key that Garmin rejects is removed and the visitor is told',async({page})=>{
   await mocked(page,{reject:true});
-  await page.goto('/');await page.evaluate(([name,key])=>localStorage.setItem(name,key),[NAME,KEY]);await page.reload();
+  await page.goto('/');await page.evaluate(([name,key])=>localStorage.setItem(name,key),[NAME,KEY]);await page.reload();await page.locator('#connect-open').click();
   await build(page);
   await expect(page.locator('#loading-status')).toContainText('Your saved key was removed from this browser.');
   expect(await stored(page)).toEqual([0,null,0]);
@@ -70,7 +70,7 @@ test('A saved key that Garmin rejects is removed and the visitor is told',async(
 
 test('Clear my data also removes a remembered key',async({page})=>{
   await mocked(page);await page.goto('/');
-  await page.locator('#api-key').fill(KEY);await page.getByLabel('Remember my key on this device').check();await build(page);
+  await page.locator('#connect-open').click();await page.locator('#api-key').fill(KEY);await page.getByLabel('Remember my key on this device').check();await build(page);
   await expect(page.locator('#story')).toBeVisible();
   await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#restart-onboarding').click();
   await expect(page.locator('#connect-screen')).toBeVisible();

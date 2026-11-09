@@ -99,14 +99,14 @@ function syncMotion(){
 async function disconnect(){try{await api('disconnect');}catch{}}
 function showConnect(focus=true){
   run++;controller?.abort();controller=null;clearInterval(countTimer);resetKey();fillKey();app?.clearRecap();
-  for(const id of ['key-help-dialog','chapters-dialog','share-dialog','privacy-dialog','health-share-dialog'])$(id).close();
+  for(const id of ['key-help-dialog','connect-dialog','chapters-dialog','share-dialog','privacy-dialog','health-share-dialog'])$(id).close();
   stage.inert=true;stage.hidden=true;shell.hidden=false;shell.classList.remove('is-loading','loading-failed');$('connect-screen').hidden=false;$('loading-screen').hidden=true;$('entry-footer').hidden=false;document.body.classList.add('onboarding-active');
   field?.show(true);field?.fill(1);field?.to({anchor:$('connect-orb'),gather:1,alpha:1,spin:.16,mode:'reel'},900);
-  history.replaceState(null,'','#connect');window.scrollTo(0,0);if(focus)key.focus({preventScroll:true});disconnect();
+  history.replaceState(null,'','#connect');window.scrollTo(0,0);if(focus)$('connect-open').focus({preventScroll:true});disconnect();
 }
 async function start({demo=false,deepLink=false,credential='',rememberKey=false}={}){
   controller?.abort();controller=new AbortController();const signal=controller.signal,currentRun=++run;
-  lastWasDemo=demo;lastDeepLink=deepLink;resetKey();$('key-help-dialog').close();clearInterval(countTimer);
+  lastWasDemo=demo;lastDeepLink=deepLink;resetKey();$('key-help-dialog').close();$('connect-dialog').close();clearInterval(countTimer);
   stage.inert=true;stage.hidden=true;shell.hidden=false;shell.classList.add('is-loading');shell.classList.remove('loading-failed');$('connect-screen').hidden=true;$('loading-screen').hidden=false;$('loading-retry').hidden=true;$('entry-footer').hidden=true;
   steps=(demo?DEMO_STEPS:IMPORT_STEPS).map(s=>({label:s.label,detail:''}));stepIndex=0;loadingCopy(false);setCount(0,{demo});$('loading-meter').style.width='0%';renderSteps();
   $('loading-status').textContent=demo?'Getting the example ready…':'Connecting securely to Garmin…';$('loading-mode').textContent=demo?'Fictional data · demo preview':'Your recorded year · private session';
@@ -132,6 +132,9 @@ async function start({demo=false,deepLink=false,credential='',rememberKey=false}
     $('loading-retry').hidden=false;$('loading-retry').textContent=demo?'Try the demo again ↗':'Return & reconnect ↗';
   }finally{credential='';clearTimeout(deadline);}
 }
+function openConnect(){if(!$('connect-dialog').open)$('connect-dialog').showModal();key.focus({preventScroll:true});}
+$('connect-open').addEventListener('click',openConnect);
+$('close-connect').addEventListener('click',()=>$('connect-dialog').close());
 $('api-form').addEventListener('submit',event=>{
   event.preventDefault();
   try{if(!key.value.trim())throw Error(DEMO?'Paste your Garmin Personal API key, or try the demo without one.':'Paste your Garmin Personal API key.');const credential=key.value.trim();const rememberKey=remember.checked;if(!rememberKey||credential!==keyStore.get())keyStore.forget();start({credential,rememberKey});}
@@ -145,7 +148,7 @@ $('toggle-key').addEventListener('click',()=>{const show=key.type==='password';k
 $('key-help').addEventListener('click',()=>$('key-help-dialog').showModal());$('close-key-help').addEventListener('click',()=>$('key-help-dialog').close());
 $('help-done').addEventListener('click',()=>{$('key-help-dialog').close();key.focus();});
 if(DEMO){$('demo-start').addEventListener('click',()=>start({demo:true,deepLink:true}));$('help-demo').addEventListener('click',()=>start({demo:true,deepLink:true}));}
-$('loading-cancel').addEventListener('click',()=>showConnect());$('loading-retry').addEventListener('click',()=>lastWasDemo?start({demo:true,deepLink:lastDeepLink}):showConnect());
+$('loading-cancel').addEventListener('click',()=>showConnect());$('loading-retry').addEventListener('click',()=>lastWasDemo?start({demo:true,deepLink:lastDeepLink}):(showConnect(),openConnect()));
 for(const id of ['loading-pause','entry-motion'])$(id).addEventListener('click',()=>{motionPaused=!motionPaused;syncMotion();});$('restart-onboarding').addEventListener('click',()=>{keyStore.forget();showConnect();});
 $('privacy-open').addEventListener('click',()=>{$('coverage-details').replaceChildren();$('privacy-dialog').showModal();});
 for(const id of ['close-privacy','privacy-done'])$(id).addEventListener('click',()=>$('privacy-dialog').close());$('privacy-clear').addEventListener('click',()=>{keyStore.forget();showConnect();});
@@ -153,5 +156,5 @@ document.querySelector('.gw-header .brand-name').addEventListener('click',e=>{e.
 document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',()=>{motionPaused=reduced.matches;syncMotion();});
 window.addEventListener('pagehide',()=>{run++;controller?.abort();resetKey();app?.clearRecap();fetch('/api/disconnect',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',credentials:'same-origin',keepalive:true}).catch(()=>{});});
 syncMotion();fillKey();if(DEMO&&location.hash&&location.hash!=='#connect'){
-  const notice=document.createElement('p');notice.id='reconnect-notice';notice.className='help-preview-note';notice.setAttribute('role','status');notice.textContent='Your private recap is cleared when you leave or reload. Reconnect to see your Garmin data, or choose the fictional demo below.';$('api-form').before(notice);
+  const notice=document.createElement('p');notice.id='reconnect-notice';notice.className='help-preview-note';notice.setAttribute('role','status');notice.textContent='Your private recap is cleared when you leave or reload. Open Build my recap to reconnect or choose the fictional demo.';$('connect-open').before(notice);
 }

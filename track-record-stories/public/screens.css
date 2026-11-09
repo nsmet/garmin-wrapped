@@ -99,7 +99,8 @@ body:not(.onboarding-active) .gw-field{display:none}
 .gw-connect{flex:1;display:grid;grid-template-columns:minmax(0,500px) minmax(0,1fr);gap:clamp(32px,5vw,96px);align-items:center;padding:24px var(--gw-gutter)}
 .gw-panel .gw-kicker:first-child{margin-bottom:22px;opacity:.85}
 .gw-connect .gw-display{font-size:clamp(56px,6.2vw,96px)}
-.gw-form{margin-top:36px}
+.gw-connect-cta{margin-top:36px}
+.gw-connect-dialog .gw-form{margin-top:0}
 .gw-form>label{display:block;margin-bottom:12px}
 .key-field{position:relative}
 .key-field input{box-sizing:border-box;width:100%;height:56px;border-radius:999px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.06);color:var(--gw-ink);padding:0 96px 0 24px;font:600 16px 'Sora',Arial,sans-serif;letter-spacing:.02em;transition:border-color .2s,background-color .2s}
@@ -115,7 +116,7 @@ body:not(.onboarding-active) .gw-field{display:none}
 .key-saved span{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.8)}
 .key-saved span::before{content:'';width:7px;height:7px;border-radius:50%;background:#7FE0A8;box-shadow:0 0 8px #7FE0A8}
 .key-saved .gw-link{font-size:12px;min-height:32px}
-.gw-entry .key-forgotten{margin:10px 0 0}
+.gw-entry .key-forgotten,.gw-connect-dialog .key-forgotten{margin:10px 0 0}
 .key-saved:not([hidden])~.key-error:empty,.key-forgotten:not([hidden])~.key-error:empty{min-height:0;margin-top:0}
 .gw-remember{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
 .gw-remember label{display:block;font-size:13px;font-weight:700;line-height:22px;cursor:pointer}
@@ -130,7 +131,7 @@ body:not(.onboarding-active) .gw-field{display:none}
 .gw-footer-link{margin-left:10px;color:rgba(255,255,255,.78)}
 .gw-footer-link:hover,.gw-consent a:hover{color:var(--gw-accent)}
 .gw-panel.is-returning>.gw-kicker:first-child{color:var(--gw-accent)}
-.gw-entry .help-preview-note{font-size:12px;line-height:1.55;padding:12px 16px;border-radius:14px;background:rgba(255,179,92,.1);color:#FFD3A0;margin:22px 0 0}
+.gw-entry .help-preview-note,.gw-connect-dialog .help-preview-note{font-size:12px;line-height:1.55;padding:12px 16px;border-radius:14px;background:rgba(255,179,92,.1);color:#FFD3A0;margin:22px 0 0}
 .gw-privacy{display:flex;gap:14px;align-items:flex-start;margin-top:34px;padding-top:22px;border-top:1px solid var(--gw-line)}
 .gw-privacy>svg{width:22px;height:22px;color:var(--gw-accent);flex:none;margin-top:2px}
 .gw-privacy .gw-kicker{margin-bottom:6px}
@@ -163,7 +164,7 @@ body:not(.onboarding-active) .gw-field{display:none}
 .entry-intro-revealing .gw-connect .gw-line+.gw-line>span{animation-delay:.08s}
 .entry-intro-revealing .gw-header,.entry-intro-revealing .gw-reveal,.entry-intro-revealing .gw-art>:not(.gw-orb),.entry-intro-revealing .gw-footer{animation:gw-fade .9s ease-out both}
 .entry-intro-revealing .gw-panel>.gw-lede{animation-delay:.3s}
-.entry-intro-revealing .gw-form{animation-delay:.45s}
+.entry-intro-revealing .gw-connect-cta{animation-delay:.45s}
 .entry-intro-revealing .gw-privacy{animation-delay:.7s}
 .entry-intro-revealing .gw-art>:not(.gw-orb),.entry-intro-revealing .gw-footer{animation-delay:.9s}
 
@@ -354,7 +355,7 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
  .gw-panel{max-width:560px;width:100%;justify-self:center}
  .gw-panel>.gw-kicker:first-child{display:none}
  .gw-connect .gw-display{font-size:clamp(46px,13.6vw,72px)}
- .gw-form{margin-top:24px}
+ .gw-connect-cta{margin-top:24px}
  .gw-remember{padding:4px 0;background:none;border:0;border-radius:0;gap:12px}
  .gw-consent{margin:10px 0 12px}
  .gw-loading{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;gap:0}
@@ -391,7 +392,7 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
  .gw-header .brand-product{font-size:9px;padding:5px 9px}
  .gw-edition{display:none}
  .gw-lede{font-size:13px;margin-top:12px}
- .gw-form{margin-top:22px}
+ .gw-connect-cta{margin-top:22px}
  .gw-form>label{font-size:9px;margin-bottom:10px}
  .key-field input{height:52px;padding-left:20px}
  .key-field button{top:6px;right:6px}

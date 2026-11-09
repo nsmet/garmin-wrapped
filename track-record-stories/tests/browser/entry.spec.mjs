@@ -9,8 +9,8 @@ test('The compact homepage fits phone, tablet and desktop widths and keeps detai
     await expect(title).toBeVisible();
     expect(await title.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
     await expect(page.getByRole('button',{name:'Build my recap'})).toBeInViewport();
-    // The globe sits beside the form on wide screens and above it on narrow ones, never over it.
-    const [orb,form]=await Promise.all([page.locator('#connect-orb').boundingBox(),page.locator('#api-form').boundingBox()]);
+    // The animation and CTA never overlap.
+    const [orb,form]=await Promise.all([page.locator('#connect-orb').boundingBox(),page.locator('#connect-open').boundingBox()]);
     const overlap=orb.x<form.x+form.width&&form.x<orb.x+orb.width&&orb.y<form.y+form.height&&form.y<orb.y+orb.height;
     expect(overlap).toBe(false);
     await expect(page.locator('.entry-privacy')).toContainText('Your recap stays on your device.');
@@ -34,7 +34,10 @@ test('Reduced motion goes straight to a usable homepage, with fonts served local
   await expect(page.locator('#entry-motion')).toBeDisabled();
   expect(await page.locator('#entry-field').getAttribute('data-frames')).not.toBeNull();
   expect(external).toEqual([]);
-  await page.getByRole('button',{name:'Build my recap'}).click();
+  await expect(page.locator('#connect-dialog')).toBeHidden();
+  await page.locator('#connect-open').click();
+  await expect(page.locator('#api-key')).toBeFocused();
+  await page.locator('.connect-submit').click();
   await expect(page.locator('#key-error')).toContainText('Paste your Garmin Personal API key');
   await expect(page.locator('#api-key')).toHaveAttribute('aria-invalid','true');
   await page.locator('#key-help').click();
@@ -42,6 +45,19 @@ test('Reduced motion goes straight to a usable homepage, with fonts served local
   await page.locator('#help-done').click();
   await expect(page.locator('#key-help-dialog')).not.toBeVisible();
   await expect(page.locator('#api-key')).toBeFocused();
+});
+
+test('The recap form opens as a modal and returns focus after closing',async({page})=>{
+  await page.goto('/');
+  const open=page.locator('#connect-open'),dialog=page.locator('#connect-dialog');
+  await expect(dialog).toBeHidden();
+  await open.focus();await page.keyboard.press('Enter');
+  await expect(dialog).toBeVisible();await expect(page.locator('#api-key')).toBeFocused();
+  await page.locator('#key-help').click();await expect(page.locator('#key-help-dialog')).toBeVisible();
+  await page.keyboard.press('Escape');await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');await expect(dialog).toBeHidden();await expect(open).toBeFocused();
+  await open.click();await page.locator('#close-connect').click();
+  await expect(dialog).toBeHidden();await expect(open).toBeFocused();
 });
 
 test.describe('Animated entry',()=>{
@@ -62,8 +78,8 @@ test.describe('Animated entry',()=>{
     await expect(page.locator('.gw-intro-three .gw-intro-tags')).toContainText('No analytics');
     await expect(page.locator('#entry-intro')).not.toBeVisible({timeout:8000});
     await expect(page.locator('#onboarding')).toHaveJSProperty('inert',false);
-    await expect(page.locator('#api-key')).toBeInViewport();
-    await expect(page.locator('#api-key')).toBeEditable();
+    await expect(page.locator('#connect-open')).toBeInViewport();
+    await expect(page.locator('#connect-dialog')).toBeHidden();
     const moving=await frames(page);
     await expect.poll(()=>frames(page)).toBeGreaterThan(moving+3);
     await page.getByRole('button',{name:'Pause homepage animation'}).click();
@@ -82,7 +98,7 @@ test.describe('Animated entry',()=>{
     await expect(page.locator('#reel-steps i.is-on')).toHaveCount(1);
     await expect(page.locator('#reel-label')).not.toHaveText(first,{timeout:9000});
     await page.route('**/api/**',route=>new Promise(()=>{}));
-    await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();
+    await page.locator('#connect-open').click();await page.locator('#api-key').fill('not-a-real-key-123');await page.locator('.connect-submit').click();
     await expect(page.locator('#entry-field')).toHaveAttribute('data-mode','globe');
     await page.locator('#loading-cancel').click();
     await expect(page.locator('#entry-field')).toHaveAttribute('data-mode','reel');
@@ -100,7 +116,7 @@ test.describe('Animated entry',()=>{
     await expect(page.locator('#entry-intro')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.locator('#entry-intro')).not.toBeVisible();
-    await expect(page.locator('#api-key')).toBeEditable();
+    await expect(page.locator('#connect-open')).toBeVisible();
     await page.reload();
     await expect(page.locator('#entry-intro')).toBeVisible();
     await page.emulateMedia({reducedMotion:'reduce'});
@@ -119,7 +135,7 @@ test('Loading fills the globe one dot per activity and a failure keeps the steps
     return route.fulfill({json:{connected:true,disconnected:true}});
   });
   await page.goto('/#connect');
-  await page.locator('#api-key').fill('not-a-real-key-123');await page.getByRole('button',{name:'Build my recap'}).click();
+  await page.locator('#connect-open').click();await page.locator('#api-key').fill('not-a-real-key-123');await page.locator('.connect-submit').click();
   await expect(page.locator('#loading-status')).toContainText('expired');
   await expect(page.locator('#loading-steps li[data-state=failed]')).toHaveCount(1);
   await expect(page.locator('#loading-title')).toContainText('that again');

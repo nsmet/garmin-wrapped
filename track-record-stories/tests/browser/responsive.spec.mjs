@@ -32,7 +32,7 @@ async function fits(page,label){
 }
 
 test('Every recap slide fits desktop, tablet and compact mobile layouts after resizing',async({page,browserName})=>{
- test.setTimeout(90000);await captureText(page);await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ test.setTimeout(90000);await captureText(page);await page.goto('/');await page.locator('#connect-open').click();await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
  const ids=await page.evaluate(async()=>{const {dataset}=await import('/sample-data.mjs');const {recapSequence}=await import('/recap-sequence.mjs');return recapSequence(dataset).map(s=>s.id);});
  for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[320,568],[844,390]]){
   await page.setViewportSize({width,height});
@@ -49,7 +49,7 @@ test('Every recap slide fits desktop, tablet and compact mobile layouts after re
 });
 
 test('All 184 design templates keep their typography clear at desktop and mobile sizes',async({page,browserName})=>{
- test.setTimeout(180000);await captureText(page);await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ test.setTimeout(180000);await captureText(page);await page.goto('/');await page.locator('#connect-open').click();await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
  await page.locator('#chapters-button').dispatchEvent('click');await page.locator('#library-mode').selectOption('library');await expect(page.locator('#library-count')).toContainText('184 templates');await page.locator('.chapter-tile').first().click();
  const templates=await page.evaluate(async()=>{const {makeLibrary,extensions}=await import('/story-library.mjs');const catalog=await fetch('/story-catalog.json').then(r=>r.json());return [...makeLibrary(catalog),...extensions].map(s=>({id:s.id,title:s.title.join(' ')}));});
  for(const [width,height] of [[1440,900],[768,1024],[320,568]]){
@@ -67,7 +67,7 @@ test('Onboarding, loading, dialogs and export controls remain usable at each scr
  for(const [width,height] of [[1920,1080],[1366,768],[768,1024],[390,844],[320,568]]){
   await page.setViewportSize({width,height});await page.goto('/');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await page.locator('#key-help').click();await expect(page.locator('#close-key-help')).toBeInViewport();await page.locator('#close-key-help').click();
+  await page.locator('#connect-open').click();await page.locator('#key-help').click();await expect(page.locator('#close-key-help')).toBeInViewport();await page.locator('#close-key-help').click();
   await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
   await page.locator('#chapters-button').dispatchEvent('click');await expect(page.locator('#close-chapters')).toBeInViewport();await expect(page.locator('#story-search')).toBeVisible();await page.locator('#close-chapters').click();
   await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();await page.locator('#download').scrollIntoViewIfNeeded();await expect(page.locator('#download')).toBeInViewport();
@@ -76,7 +76,7 @@ test('Onboarding, loading, dialogs and export controls remain usable at each scr
 });
 
 test('Phones get slim recap chrome: share icon in the header, tap zones and a one-line footer',async({page})=>{
- await page.setViewportSize({width:390,height:664});await page.goto('/');await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
+ await page.setViewportSize({width:390,height:664});await page.goto('/');await page.locator('#connect-open').click();await page.locator('#demo-start').click();await expect(page.locator('#story')).toBeVisible();
  for(const selector of ['#chapters-button','#share','#motion','#caption','.demo-label','.story header .brand-product'])await expect(page.locator(selector),selector).toBeHidden();
  await expect(page.locator('#share-icon')).toBeVisible();await expect(page.locator('.footer-credit')).toBeVisible();await expect(page.locator('#chapter-key')).toHaveText(/^1 dot/);
  const progress=await page.locator('#progress').boundingBox(),header=await page.locator('.story header').boundingBox(),footer=await page.locator('#story footer').boundingBox();
