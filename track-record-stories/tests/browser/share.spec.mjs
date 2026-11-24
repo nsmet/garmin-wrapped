@@ -17,7 +17,7 @@ test('The final card opens a recap picker, changes colors, and downloads the sel
  await page.getByRole('button',{name:'Cobalt colors',exact:true}).click();await expect(page.locator('#download')).toBeEnabled();
  await expect.poll(()=>previewPixel(page,5,5)).toEqual([28,52,217,255]);
  await expect(page.locator('#share-preview')).toHaveJSProperty('naturalWidth',1080);await expect(page.locator('#share-preview')).toHaveJSProperty('naturalHeight',1920);
- const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toBe(`garmin-wrapped-2025-${id}-cobalt-fictional-demo.png`);await file.saveAs(testInfo.outputPath('selected-card.png'));
+ const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toBe(`miniwatt-garmin-wrapped-2025-${id}-cobalt-fictional-demo.png`);await file.saveAs(testInfo.outputPath('selected-card.png'));
  // Exports carry no navigation: the right margin beside the title stays clear.
  expect(await previewPixel(page,1070,330)).toEqual([28,52,217,255]);
  await page.locator('#close-share').click();await expect(page.locator('#share-cards button')).toHaveCount(0);await expect(page.locator('#share-preview')).not.toHaveAttribute('src',/.+/);expect(errors).toEqual([]);
@@ -62,7 +62,7 @@ test('A card can be shared as a looping MP4 video and switched back to an image'
  await page.getByRole('button',{name:'Video',exact:true}).click();await expect(page.getByRole('button',{name:'Video',exact:true})).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#share-video')).toBeVisible({timeout:60000});await expect(page.locator('#download')).toBeEnabled();await expect(page.locator('#download')).toContainText('MP4');
  await expect.poll(()=>page.locator('#share-video').evaluate(v=>[v.videoWidth,v.videoHeight,Math.round(v.duration)])).toEqual([1080,1920,7]);
- const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toMatch(/^garmin-wrapped-2025-.+-fictional-demo\.mp4$/);
+ const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toMatch(/^miniwatt-garmin-wrapped-2025-.+-fictional-demo\.mp4$/);
  await page.getByRole('button',{name:'Image',exact:true}).click();await expect(page.locator('#download')).toContainText('PNG');await expect(page.locator('#share-video')).toBeHidden();
  await page.locator('#close-share').click();await expect(page.locator('#share-video')).not.toHaveAttribute('src',/.+/);expect(errors).toEqual([]);
 });
