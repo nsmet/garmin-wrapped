@@ -8,8 +8,24 @@ export const shareColorways=[
  {id:'ember',label:'Ember',color:'#FF5A1F',palette:['#FF5A1F','#0B1222','#FFFFFF','#FFE14D']}
 ];
 
+// The one title line a share card carries at its top.
+export const shareTitle=year=>`Garmin Wrapped – ${year}, a miniwatt.app ⚡️ product`;
+
 // A portrait card (1080 × 1920 for exports) from a card spec built from sanitized display fields.
 // Colourways recolour type and dots by role; data highlights keep their contrast with the rest.
-export function renderShareCard(c,w,h,{spec,colorway='original'}){
- return renderStill(c,w,h,spec,{palette:shareColorways.find(p=>p.id===colorway)?.palette||null});
+// Share cards are quieter than the story cards: one title line, no caption, the dot key and the
+// data notice in a compact footer, and flat dots without glow (the glow smears on light colourways).
+export function shareSpec(spec,year){
+ const title=shareTitle(year??new Date().getFullYear());
+ // the finale has no top bar: its brand line at the bottom carries the same title
+ return {...spec,shareCard:true,top:spec.bare?'':title,...(spec.bare&&spec.brand?{brand:title}:{})};
+}
+export const sharePalette=colorway=>shareColorways.find(p=>p.id===colorway)?.palette||null;
+export function renderShareCard(c,w,h,{spec,colorway='original',year}){
+ return renderStill(c,w,h,shareSpec(spec,year),{palette:sharePalette(colorway),flat:true});
+}
+// The same card as a looping MP4 (share-video.mjs, loaded only when a video is asked for).
+export async function renderShareCardVideo({spec,colorway='original',year,onProgress,current}){
+ const {renderShareVideo}=await import('./share-video.mjs');
+ return renderShareVideo(shareSpec(spec,year),{palette:sharePalette(colorway),onProgress,current});
 }

@@ -37,7 +37,8 @@ const SHOE_DECOR=[S([[60,534],[334,536]]),S([[214,446],[232,436]]),S([[228,462],
 // label: 'center' puts the minutes/average stats inside the shape; otherwise they sit in a row under it.
 export const HOURS={
  running:()=>({ // a 400 m track: the outer lane fills, inner lanes and the start line draw the stadium
-  slots:[S(stadium(104),true)],decor:[S(stadium(92),true),S(stadium(80),true),S(stadium(68),true),S([[180,512],[180,546]])],label:{x:180,y:396}}),
+  // the stats sit in the vertical middle of the infield (mid: y is the centre of the two-line block)
+  slots:[S(stadium(104),true)],decor:[S(stadium(92),true),S(stadium(80),true),S(stadium(68),true)],label:{x:180,y:436,mid:true}}),
  cycling:()=>{ // a chainring and crank: the ring fills, teeth and bolts draw it
   const c=[186,420],teeth=[];for(let k=0;k<34;k++){const a=k/34*TAU;teeth.push(S([[c[0]+108*Math.sin(a),c[1]-108*Math.cos(a)],[c[0]+118*Math.sin(a+.04),c[1]-118*Math.cos(a+.04)]]));}
   return {slots:[S(circ(c[0],c[1],100,140),true,{rot:[c[0],c[1],0.12]})],decor:[...teeth.map(t=>({...t,rot:[c[0],c[1],0.12]})),S(circ(c[0],c[1],70,60),true,{rot:[c[0],c[1],0.12]}),S([[c[0],c[1]],[64,560]]),S(rr(40,552,52,16,6),true)],label:{x:186,y:388}};

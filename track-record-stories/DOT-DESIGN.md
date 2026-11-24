@@ -6,6 +6,8 @@ Feedback round 1 (29 Oct 2026): hours cards use a sport-specific outline (track,
 
 Feedback round 2 (30 Oct 2026): the hiking outline is an ankle-high hiking boot (laces to hooks, toe cap, lugged sole) instead of a tall ski-boot shaft; climbing hours fill the holds of a route up a wall from the ground up (rope and quickdraws as guides) instead of a carabiner; both elliptical cards use one side-view trainer rig (flywheel, upright, console, swinging handles, foot plates). Sessions animate it, with each session riding the pedal orbit, and hours fill that orbit. Multisport sessions use two counter-rotating rings, with every dot inside their overlap. The HRV strands share one column grid and a column-driven wave, so a shorter last strand stays parallel. Weekday captions no longer add an "Activity dates use …" line.
 
+Feedback round 3 (24 Nov 2026): the running track drops its start-line dots and centres the minutes / average stats in the infield. The peak-HR heart, the activity-HR ring and the resting-HR field beat at the recorded BPM (a lub-dub; data dots swell on each beat). Share cards carry one title line (*Garmin Wrapped – YEAR, a miniwatt.app ⚡️ product*), drop the caption and keep only the dot key and data notice in the footer, and draw flat dots without glow; story cards, thumbnails and the other stills keep the glow. Share cards can also be saved as a looping 7-second MP4 (Image / Video switch under the preview).
+
 How the cards reach people:
 
 - **Recap**: a card appears only when the existing pipeline admits its story (column *Live when*). Values, captions and chart items come from the story; the mapping reads displayed numbers back and never calculates metrics.

@@ -1,6 +1,6 @@
 // Shared card renderer for the dot design: layout frames, background, typography and the
 // CPU side of the dot layer. Live stories, thumbnails and 1080 × 1920 exports all use it.
-import {build,place,ease,clamp,artBounds,COLORS} from './dot-engine.mjs';
+import {build,place,ease,clamp,artBounds,labelMid,COLORS} from './dot-engine.mjs';
 
 export const CARD_W=360,CARD_H=640;
 const FONT='Sora';
@@ -120,7 +120,11 @@ export function layoutText(c,spec,{mode='export',stack=false,minPx=0,boost=null}
  }
  const ml=Math.max(spec.t1.length,spec.t2.length);let ts=Math.min(34,Math.floor(324/(Math.max(ml,1)*0.6)));
  const tw=Math.max(measure(c,spec.t1,ts,800,-.04),measure(c,spec.t2,ts,800,-.04));if(tw>322)ts=Math.floor(ts*322/tw*10)/10;
- if(!live&&!spec.bare){
+ if(!live&&spec.shareCard&&spec.top){
+  // share cards: one title line across the top, shrunk to fit the card width
+  let size=10.5;const tw2=measure(c,spec.top,size,600,.02);if(tw2>324)size=Math.floor(size*324/tw2*10)/10;
+  ops.push({k:'text',t:spec.top,x:18,y:16,size,w:600,ls:.02,alpha:.9,base:'top'});
+ }else if(!live&&!spec.bare){
   ops.push({k:'text',t:spec.grp,x:18,y:16,size:10,w:600,ls:.14,alpha:.85,base:'top'});
   ops.push({k:'text',t:spec.right,x:342,y:16,size:10,w:600,ls:.14,alpha:.85,base:'top',align:'right'});
  }
@@ -154,7 +158,12 @@ export function layoutText(c,spec,{mode='export',stack=false,minPx=0,boost=null}
   bottom=Math.max(bottom,top+Math.ceil(spec.grid.length/2)*row);
   if(part)tail={y0:Math.min(tail?.y0??top,top),y1:Math.max(tail?.y1??0,top+Math.ceil(spec.grid.length/2)*row)};else head=bottom;
  }
- if(!live){
+ if(!live&&spec.shareCard&&!spec.bare){
+  // Share cards: a compact footer, the dot key with the data notice right under it, no caption.
+  const L=spec.lift||0;
+  if(spec.legend)ops.push({k:'legend',t:spec.legend,x:18,y:604+L,size:8.5,w:600,ls:.06,alpha:.8,base:'top'});
+  if(spec.notice)ops.push({k:'text',t:spec.notice.toUpperCase(),x:18,y:spec.legend?618+L:612+L,size:7.5,w:600,ls:.14,alpha:.62,base:'top'});
+ }else if(!live){
   // Exports keep the caption and add the required data notice under it.
   const lines=[...wrap(c,spec.cap1,11,600,0,324).map(t=>({t,w:600,a:1})),...wrap(c,spec.cap2,11,400,0,324).map(t=>({t,w:400,a:.7}))];
   // The footer stays anchored to the card bottom when the content is lifted; a brand line sits below the notice.
@@ -163,13 +172,15 @@ export function layoutText(c,spec,{mode='export',stack=false,minPx=0,boost=null}
   for(const l of lines){ops.push({k:'text',t:l.t,x:18,y:cy,size:11,w:l.w,alpha:l.a,base:'top',delay:1.8});cy+=15.4;}
   if(spec.legend){ops.push({k:'legend',t:spec.legend,x:18,y:cy+3,size:8.5,w:600,ls:.06,alpha:.75,base:'top'});}
   if(spec.notice)ops.push({k:'text',t:spec.notice.toUpperCase(),x:18,y:620+L-B,size:7.5,w:600,ls:.14,alpha:.62,base:'top'});
-  if(spec.brand)ops.push({k:'text',t:spec.brand,x:18,y:620+L,size:8.5,w:700,ls:.14,alpha:.9,base:'top'});
+  if(spec.brand)ops.push({k:'text',t:spec.brand,x:18,y:620+L,size:8.5,w:700,ls:spec.shareCard?.02:.14,alpha:.9,base:'top'});
  }
  return {ops,top:44-2,bottom,head,tail};
 }
 
 /* draw: intro = seconds since the card appeared (null = settled); alpha = transition fade */
-export function drawText(c,frame,spec,{intro=null,alpha=1,palette=null,labels=true}={}){
+// chromeAlpha: opacity of the fixed frame text (title line, footer) that has no intro of its own; share
+// videos keep it at 1 while the card's content fades, so the loop never blinks it.
+export function drawText(c,frame,spec,{intro=null,alpha=1,palette=null,labels=true,chromeAlpha=alpha}={}){
  const roles=colorRoles(spec,palette),ink=roles?.ink||'#FFFFFF',T0=frame.text,lay=frame.textLayout;
  const fadeK=d=>intro==null?1:easeOut3((intro-d)/.9);
  const countE=intro==null?1:easeOut3((intro-.5)/1.5);
@@ -185,7 +196,7 @@ export function drawText(c,frame,spec,{intro=null,alpha=1,palette=null,labels=tr
    c.save();c.beginPath();c.rect(x-size*.2,T.y+op.y*T.s-size*.1,Math.max(10,measure(c,op.t,size,op.w,op.ls))+size*.4,lineH+size*.15);c.clip();
    c.globalAlpha=alpha;c.fillStyle=col;fillSpaced(c,op.t,x,y+(1-p)*1.05*lineH,size,op.ls);c.restore();continue;
   }
-  const a=(op.delay==null?1:fadeK(op.delay))*(op.alpha??1)*alpha;if(a<.01)continue;
+  const a=(op.delay==null?chromeAlpha:fadeK(op.delay)*alpha)*(op.alpha??1);if(a<.01)continue;
   c.globalAlpha=a;c.fillStyle=col;
   if(op.k==='hero'){fillSpaced(c,heroAt(op.hero,countE),x,y,size,op.ls);continue;}
   if(op.k==='count'){fillSpaced(c,countAt(op.item,countE),x,y,size,op.ls);continue;}
@@ -200,7 +211,7 @@ export function drawText(c,frame,spec,{intro=null,alpha=1,palette=null,labels=tr
    // phones: chart labels 15% larger (checked collision-free on every card design and both sample years)
    const k=frame.phone?1.15:1,ts=Math.max((l.ts||10)*k,Math.min(9/A.s,(l.ts||10)*1.3)),ss=Math.max((l.ss||8)*k,Math.min(8.5/A.s,(l.ss||8)*1.3)),hi=l.flip||l.sb;
    c.textAlign=l.anc==='c'?'center':l.anc==='r'?'right':'left';
-   const x=A.x+l.x*A.s,y=A.y+l.y*A.s;
+   const x=A.x+l.x*A.s,y=A.y+(l.vc?l.y-labelMid(l,ts,ss):l.y)*A.s;
    font(c,ts*A.s,l.tw||800);c.globalAlpha=a;c.fillStyle=textColor(l.c||'#FFFFFF',roles,l.sk);c.fillText(l.t,x,y+ts*A.s*.92);
    if(l.s){font(c,ss*A.s,hi?800:500);c.globalAlpha=a*(hi?1:.75);c.fillStyle=textColor(l.sc||l.c||'#FFFFFF',roles,l.sk);c.fillText(l.s,x,y+ts*A.s*1.2+ss*A.s*.95);}
   }
@@ -233,7 +244,9 @@ export function createDotBuffer(capacity=4096){const n=capacity;return {n:0,cap:
 function grow(buf,need){if(need<=buf.cap)return;const nb=createDotBuffer(Math.max(need,buf.cap*2));for(const k of ['x','y','r','a','core'])nb[k].set(buf[k]);nb.c.set(buf.c);Object.assign(buf,nb,{n:buf.n});}
 const RGB={};const rgbOf=h=>RGB[h]||(RGB[h]=hexRgb(h).map(v=>v/255));
 const tmp={x:0,y:0,z:0,k:1,ka:1};
-export function collectDots(buf,spec,{t=30,intro=null,fade=1,frame,palette=null,from=null,minR=0}={}){
+// neutralStart (share videos): a dot still in flight takes on its ambient size and depth fade only as it
+// lands, so the scattered start looks the same at any ambient time and a looping video has no seam.
+export function collectDots(buf,spec,{t=30,intro=null,fade=1,frame,palette=null,from=null,minR=0,neutralStart=false}={}){
  const b=build(spec),A=frame.art,roles=colorRoles(spec,palette),introLen=b.intro||1.3;
  grow(buf,buf.n+b.pts.length);
  const cache=roles?(spec._roleCache||(spec._roleCache=new Map())):null;
@@ -243,6 +256,7 @@ export function collectDots(buf,spec,{t=30,intro=null,fade=1,frame,palette=null,
   let sx,sy;
   if(from&&from.length){const j=(i%(from.length/2))*2;sx=from[j];sy=from[j+1];}else{sx=A.x+p.sx*A.s;sy=A.y+p.sy*A.s;}
   const tx=A.x+tmp.x*A.s,ty=A.y+tmp.y*A.s,x=sx+(tx-sx)*e,y=sy+(ty-sy)*e;
+  if(neutralStart&&e<1){tmp.k=1+(tmp.k-1)*e;tmp.ka=1+(tmp.ka-1)*e;}
   let r=p.s*tmp.k*A.s,[hex,am]=roles?(cache.get(p)||(cache.set(p,dotColor(p,roles)),cache.get(p))):[p.c,1];
   const a=p.a*tmp.ka*(0.15+0.85*e)*fade*am;
   if(a<=0.01||r<=0.05)continue;
@@ -270,6 +284,12 @@ function sprite(rgb,core){
 export function drawDots2D(c,buf,{additive=true}={}){
  c.save();c.globalCompositeOperation=additive?'lighter':'source-over';
  for(let i=0;i<buf.n;i++){const r=buf.r[i];c.globalAlpha=buf.a[i];c.drawImage(sprite([buf.c[i*3],buf.c[i*3+1],buf.c[i*3+2]],buf.core[i]>0),buf.x[i]-r*1.6,buf.y[i]-r*1.6,r*3.2,r*3.2);}
+ c.restore();
+}
+/* flat dots: a solid disc the size of a sprite's bright centre, no glow and no white core */
+export function drawDotsFlat(c,buf){
+ c.save();c.globalCompositeOperation='source-over';
+ for(let i=0;i<buf.n;i++){const r=buf.r[i]*.62;c.globalAlpha=buf.a[i];c.fillStyle=`rgb(${Math.round(buf.c[i*3]*255)},${Math.round(buf.c[i*3+1]*255)},${Math.round(buf.c[i*3+2]*255)})`;c.beginPath();c.arc(buf.x[i],buf.y[i],r,0,Math.PI*2);c.fill();}
  c.restore();
 }
 export const additiveFor=palette=>!palette;

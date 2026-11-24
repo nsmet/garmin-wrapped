@@ -151,8 +151,8 @@ function mapStory(story,context={}){
   }
   case 'max-hr':{
    const c=ofCount(story.caption);if(!c)return base(story,{grp:'HEART AND EFFORT',acc:'#FF6B7A',L:'concept',p:{k:'cardio',base:'heart'}});
-   const unit=activityUnit(c.total),total=Math.max(1,Math.round(c.total/unit)),lit=Math.round(c.lit/unit);
-   return base(story,{grp:'HEART AND EFFORT',acc:'#FF6B7A',L:'heart',p:{total,lit},note:perActivityNote(total,unit,' · LIT = HAS A PEAK')});
+   const unit=activityUnit(c.total),total=Math.max(1,Math.round(c.total/unit)),lit=Math.round(c.lit/unit),bpm=readFigure(story.value);
+   return base(story,{grp:'HEART AND EFFORT',acc:'#FF6B7A',L:'heart',p:{total,lit,bpm},note:perActivityNote(total,unit,' · LIT = HAS A PEAK')+(bpm?' · BEATING AT '+Math.round(bpm)+' BPM':'')});
   }
   case 'activity-hr':{
    const c=ofCount(story.caption),bpm=readFigure(story.value);if(!c||!bpm)return base(story,{grp:'HEART AND EFFORT',acc:'#FF8FA8',L:'concept',p:{k:'cardio',base:'heart'}});

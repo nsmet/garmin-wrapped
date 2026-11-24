@@ -301,6 +301,21 @@ dialog.gw-sheet[open]{animation:gw-sheet-in .5s var(--gw-rise) both}
 #share-dialog .share-preview-frame{position:relative;display:grid;place-items:center;height:min(76svh,704px);aspect-ratio:9/16;padding:0;min-height:0;background:var(--gw-panel);border-radius:18px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06)}
 #share-dialog #share-preview{display:block;width:100%;height:100%;max-height:none;max-width:none;aspect-ratio:9/16;object-fit:cover;filter:none;margin:0}
 #share-dialog .share-rendering{font-size:11px;color:rgba(255,255,255,.7)}
+/* share as image or video: the video plays over the still; a progress pill sits on the card while it renders */
+#share-dialog #share-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:transparent}
+#share-dialog #share-video[hidden]{display:none}
+.share-progress{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:grid;gap:8px;width:min(78%,240px);padding:12px 16px 14px;border-radius:14px;background:rgba(11,18,34,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);color:#fff;font:600 10px/1 'Sora',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.share-progress[hidden]{display:none}
+.share-progress-track{display:block;height:3px;border-radius:3px;background:rgba(255,255,255,.16);overflow:hidden}
+#share-progress-bar{display:block;height:100%;width:0;border-radius:3px;background:var(--gw-accent);transition:width .15s linear}
+.share-format{position:relative;z-index:1;display:inline-flex;gap:4px;background:var(--gw-navy);padding:4px;border-radius:999px;border:1.5px solid rgba(255,255,255,.18)}
+.share-format[hidden]{display:none}
+.share-format button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 18px 0 14px;border:0;border-radius:999px;background:none;color:rgba(255,255,255,.78);font:700 11px/1 'Sora',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background-color .2s,color .2s}
+.share-format button:hover{color:#fff}
+.share-format button[aria-pressed=true]{background:var(--gw-accent);color:#141B2E}
+.share-format svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round}
+.share-format svg path{fill:currentColor;stroke:none}
+@media(prefers-reduced-motion:reduce){#share-progress-bar,.share-format button{transition:none}}
 #share-dialog .share-note{margin:0;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.65);text-align:center}
 .gw-share .gw-dialog-title{font-size:clamp(44px,4.6vw,68px);margin-bottom:34px}
 .gw-share .share-settings{display:block}

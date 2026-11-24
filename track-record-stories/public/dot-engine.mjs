@@ -472,7 +472,12 @@ L.shape=c=>{
  const out={pts,labels:[]};
  if(sh.move==='lift')out.move=(p,t,o)=>{o.x=p.x;o.y=p.y+Math.sin(t*1.3)*5;};
  if(labels?.length){
-  if(sh.label){const {x,y,anc='c'}=sh.label;labels.forEach((l,i)=>out.labels.push({x,y:y-26+(i?60:0),t:l.t,s:l.s,anc,ts:i?24:32,ss:9.5,tw:800}));}
+  if(sh.label){
+   const {x,y,anc='c',mid}=sh.label;
+   // mid: both stats are centred on y as one block (each label is drawn around its own visual centre)
+   if(mid)labels.forEach((l,i)=>out.labels.push({x,y:y+(i?28.5:-24.5),vc:1,t:l.t,s:l.s,anc,ts:i?24:32,ss:9.5,tw:800}));
+   else labels.forEach((l,i)=>out.labels.push({x,y:y-26+(i?60:0),t:l.t,s:l.s,anc,ts:i?24:32,ss:9.5,tw:800}));
+  }
  }
  return out;
 };
@@ -598,9 +603,13 @@ L.moon=c=>{
  return {pts};
 };
 function inPoly(P,x,y){let inside=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const [xi,yi]=P[i],[xj,yj]=P[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)inside=!inside;}return inside;}
+/* a heartbeat at the recorded rate: t in seconds, bpm beats per minute -> 0..~1 (lub, then a softer dub) */
+export function beat(t,bpm){const f=mod(t*clamp(bpm||60,20,260)/60,1),g=f-0.16;return Math.exp(-f*11)+(g>0?0.55*Math.exp(-g*11):0);}
+/* scale a dot about (cx,cy) on the beat; data dots also swell a little so the beat reads at any size */
+function beatAt(p,t,o,cx,cy,bpm,amp){const b=beat(t,bpm),k2=1+amp*b;o.x=cx+(p.x-cx)*k2;o.y=cy+(p.y-cy)*k2;if(p.dat)o.k=1+0.22*b;}
 /* peak HR: one dot per activity (or unit); dots without a usable peak stay dim */
 L.heart=(c,rnd)=>{
- const {total,lit}=c.p,pts=[],col='#FF6B7A',cy=418;
+ const {total,lit,bpm}=c.p,pts=[],col='#FF6B7A',cy=418;
  const outline=[];for(let i=0;i<160;i++){const t=i/160*TAU,x=16*Math.pow(Math.sin(t),3),y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);outline.push([CX+x*7.6,cy-8-y*7.6]);}
  guides(pts,byPitch(outline,7,true),GUIDE,1.25,0.5);
  const inset=outline.map(q=>[CX+(q[0]-CX)*0.9,cy-8+(q[1]-cy+8)*0.9]);
@@ -609,7 +618,8 @@ L.heart=(c,rnd)=>{
  const dat=pts.filter(p=>p.dat),idx=dat.map((p,i)=>i);
  for(let a=idx.length-1;a>0;a--){const b=Math.floor(rnd()*(a+1)),tmp=idx[a];idx[a]=idx[b];idx[b]=tmp;}
  for(let k=0;k<total-lit&&k<idx.length;k++){dat[idx[k]].c=DIM;dat[idx[k]].s=s*0.8;}
- return {pts,move:(p,t,o)=>{const f=mod(t,1.1),bb=Math.exp(-f*9)+0.6*Math.exp(-Math.max(0,f-0.22)*9)*(f>0.22?1:0),k2=1+0.035*bb;o.x=CX+(p.x-CX)*k2;o.y=cy+(p.y-cy)*k2;}};
+ // beats at the recorded peak (a design-library heart without a value keeps a calm 60 bpm)
+ return {pts,move:(p,t,o)=>beatAt(p,t,o,CX,cy-10,bpm||60,0.045)};
 };
 L.pulseRing=c=>{
  /* a band of concentric rings around 118 px; as many rings as needed to keep ~9 px between dots */
@@ -620,13 +630,12 @@ L.pulseRing=c=>{
  const s=sz(n,rings===1?TAU*118/n:9.5),dimIdx={},need=n-lit;for(let k=0;k<need;k++)dimIdx[Math.floor((k+0.5)*n/Math.max(1,need))]=1;
  let idx=0;
  radii.forEach((r,ri)=>{for(let j=0;j<cnt[ri];j++){const a=(j+(ri%2)*0.5)/cnt[ri]*TAU,on=!dimIdx[idx++];pts.push(data(CX+r*Math.sin(a),420-r*Math.cos(a),on?col:DIM,on?s:s*0.8));}});
- const hz=bpm/60;
- return {pts,move:(p,t,o)=>{const f=mod(t*hz,1),k2=1+0.04*Math.exp(-f*7);o.x=CX+(p.x-CX)*k2;o.y=420+(p.y-420)*k2;}};
+ return {pts,move:(p,t,o)=>beatAt(p,t,o,CX,420,bpm,0.05)};
 };
 L.breath=c=>{
- const {days:n,bpm}=c.p,hz=bpm/60,pitch=Math.min(16,120*Math.sqrt(Math.PI/n)/1.05),pts=[];
+ const {days:n,bpm}=c.p,pitch=Math.min(16,120*Math.sqrt(Math.PI/n)/1.05),pts=[];
  datas(pts,sunN(CX,420,n,pitch),'#5FE0C4',sz(n,pitch));
- return {pts,move:(p,t,o)=>{const f=mod(t*hz,1),k2=1+0.05*Math.exp(-f*5);o.x=CX+(p.x-CX)*k2;o.y=420+(p.y-420)*k2;}};
+ return {pts,move:(p,t,o)=>beatAt(p,t,o,CX,420,bpm,0.06)};
 };
 /* HRV: one dot per night, laid in strands of up to 50 so they never fuse into a line */
 L.wave=c=>{
@@ -684,6 +693,8 @@ function project(v,o,t){
  const cb=Math.cos(v.tilt||0),sb=Math.sin(v.tilt||0),y2=y*cb-z*sb,z2=y*sb+z*cb,Dd=v.dist||4,k=Dd/(Dd+z2);
  o.x=v.cx+x*v.R*k;o.y=v.cy-y2*v.R*k;o.k*=k;o.ka=(o.ka||1)*(0.5+0.5*clamp((1-z2)/2,0,1));
 }
+/* a label drawn from its top: distance from that top to the visual middle of its value + subtitle */
+export const labelMid=(l,ts=l.ts||10,ss=l.ss||8)=>0.7*ts+(l.s?0.575*ss:0.3*ts);
 /* where every dot of a card sits at time t (used by the renderers and the tests) */
 export function place(b,p,t,o){
  o.k=1;o.ka=1;o.z=p.z||0;
@@ -695,7 +706,7 @@ export function place(b,p,t,o){
 export function artBounds(spec){
  const b=build(spec),o={x:0,y:0,z:0,k:1,ka:1};let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
  for(const t of [0,2.5,5]){for(const p of b.pts){place(b,p,t,o);if(o.ka*p.a<0.05)continue;const r=p.s*o.k*1.6;x0=Math.min(x0,o.x-r);x1=Math.max(x1,o.x+r);y0=Math.min(y0,o.y-r);y1=Math.max(y1,o.y+r);}}
- for(const l of b.labels){const w=String(l.t).length*(l.ts||10)*0.62,lx=l.anc==='c'?l.x-w/2:l.anc==='r'?l.x-w:l.x;x0=Math.min(x0,lx);x1=Math.max(x1,lx+w);y0=Math.min(y0,l.y);y1=Math.max(y1,l.y+(l.ts||10)*1.2+(l.s?(l.ss||8)*1.3:0));}
+ for(const l of b.labels){const w=String(l.t).length*(l.ts||10)*0.62,lx=l.anc==='c'?l.x-w/2:l.anc==='r'?l.x-w:l.x;x0=Math.min(x0,lx);x1=Math.max(x1,lx+w);const ly=l.vc?l.y-labelMid(l):l.y;y0=Math.min(y0,ly);y1=Math.max(y1,ly+(l.ts||10)*1.2+(l.s?(l.ss||8)*1.3:0));}
  if(!Number.isFinite(x0))return {x:0,y:260,w:360,h:340};
  x0=Math.max(0,x0);x1=Math.min(360,x1);y0=Math.max(150,y0);y1=Math.min(640,y1);
  return {x:x0,y:y0,w:Math.max(40,x1-x0),h:Math.max(40,y1-y0)};

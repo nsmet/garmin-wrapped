@@ -1,5 +1,6 @@
 import {canShare,canRequestShare,sanitizedCard,datasetFromPlan,displayFields,chartDescription} from './story-model.mjs';
-import {shareColorways,renderShareCard} from './share-card.mjs';
+import {shareColorways,renderShareCard,renderShareCardVideo} from './share-card.mjs';
+import {videoSupport,VIDEO} from './share-video.mjs';
 import {makeLibrary,extensions} from './story-library.mjs';
 import {appendActivityAudit} from './activity-audit.mjs';
 import {recapSequence} from './recap-sequence.mjs';
@@ -21,7 +22,8 @@ $('chapters-button').hidden=!devTools;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 // clock: seconds of animation time (stops while paused); enter: clock time the current card appeared
 const state={index:0,from:0,to:0,progress:1,elapsed:0,duration:900,clock:0,enter:0,fromEnter:0,last:0,raf:0,paused:reduced.matches,busy:false,w:0,h:0,dpr:1,lastDots:0,textDirty:true,bgDirty:true,morph:null};
-let shareURL=null,shareBlob=null,toastTimer,loadingStory=false,viewVersion=0,shareStory=null;
+// shareFormat: 'image' (PNG) or 'video' (looping MP4); it stays as chosen while the recap is open.
+let shareURL=null,shareBlob=null,videoURL=null,videoBlob=null,shareFormat='image',toastTimer,loadingStory=false,viewVersion=0,shareStory=null;
 let shareColorway='original',shareVersion=0,sharePickerVersion=0;
 const fonts=document.fonts?Promise.all([document.fonts.load('800 40px Sora'),document.fonts.load('600 12px Sora'),document.fonts.load('400 12px Sora')]).then(()=>document.fonts.ready).catch(()=>{}):Promise.resolve();
 const ready=Promise.all([fonts,loadThree()]);
@@ -208,13 +210,21 @@ async function renderGrid(){
 }
 for(const id of ['library-mode','story-group','story-search'])$(id).addEventListener(id==='story-search'?'input':'change',()=>{page=0;renderGrid();});
 $('more-stories').addEventListener('click',()=>{page++;renderGrid();});
-function resetShareImage(){$('share-saved').textContent='';if(shareURL)URL.revokeObjectURL(shareURL);shareURL=null;shareBlob=null;$('share-preview').removeAttribute('src');$('native-share').hidden=true;$('download').disabled=true;}
+function resetShareImage(){$('share-saved').textContent='';if(shareURL)URL.revokeObjectURL(shareURL);shareURL=null;shareBlob=null;$('share-preview').removeAttribute('src');resetShareVideo();$('native-share').hidden=true;$('download').disabled=true;}
+function resetShareVideo(){const v=$('share-video');v.pause();v.removeAttribute('src');v.load();v.hidden=true;v.controls=false;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=null;videoBlob=null;shareProgress(null);}
+// p: 0…1 while a video renders, null to hide the progress pill
+function shareProgress(p){const el=$('share-progress');el.hidden=p==null;if(p==null)return;const pct=Math.round(p*100);$('share-progress-bar').style.width=pct+'%';el.setAttribute('aria-valuenow',String(pct));}
+function syncShareFormat(){for(const b of $('share-format').children)b.setAttribute('aria-pressed',String(b.dataset.format===shareFormat));$('download-kind').textContent=shareFormat==='video'?'MP4':'PNG';}
+const shareFile=()=>shareFormat==='video'?{url:videoURL,blob:videoBlob,type:'video/mp4'}:{url:shareURL,blob:shareBlob,type:'image/png'};
 function clearShare(){shareVersion++;sharePickerVersion++;if(shareStory)dataset?.shareConsents?.delete(shareStory.id);resetShareImage();shareStory=null;shareColorway='original';$('share-cards').replaceChildren();$('share-colors').replaceChildren();$('share-selection').textContent='';$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','false');}
 // display: sanitized display fields (exports) or display fields (previews); source: the in-memory story
+function shareSpecFor(display,source){
+ const notice=source.sample?'Fictional sample · design preview':source.libraryOnly?'Template · no personal data':dataset.exampleOnly?'Fictional data':dataset.notice;
+ return exportSpec(display,source,{notice,year:dataset.year});
+}
 function shareCanvas(display,source,width=1080,colorway=shareColorway){
  const out=document.createElement('canvas');out.width=width;out.height=Math.round(width*16/9);
- const notice=source.sample?'Fictional sample · design preview':source.libraryOnly?'Template · no personal data':dataset.exampleOnly?'Fictional data':dataset.notice;
- renderShareCard(out.getContext('2d'),out.width,out.height,{spec:exportSpec(display,source,{notice,year:dataset.year}),colorway});return out;
+ renderShareCard(out.getContext('2d'),out.width,out.height,{spec:shareSpecFor(display,source),colorway,year:dataset.year});return out;
 }
 function encodeShareCanvas(out,version){
  return new Promise((resolve,reject)=>{
@@ -278,27 +288,43 @@ async function openShare(){
  if(state.busy||!canRequestShare(story,dataset))return;
  clearShare();
  const allowed=await requestShareConsent(story);if(!allowed||version!==viewVersion)return;
+ // the Image / Video switch appears only where this browser can encode H.264 video
+ const canVideo=!!await videoSupport().catch(()=>null);if(version!==viewVersion)return;
+ $('share-format').hidden=!canVideo;if(!canVideo)shareFormat='image';syncShareFormat();
  shareStory=story;
  $('share-dialog').showModal();$('share-error').textContent='';
  renderShareColors();void renderSharePicker();void renderSelectedShare();
 }
 async function renderSelectedShare(){
- const story=shareStory,version=++shareVersion;
+ const story=shareStory,version=++shareVersion,video=shareFormat==='video',live=()=>version===shareVersion&&$('share-dialog').open;
  resetShareImage();$('share-error').textContent='';$('share-preview-frame').setAttribute('aria-busy','true');
- document.querySelector('.share-note').textContent=story.sample?'1080 × 1920 · fictional sample · design preview':story.libraryOnly?'1080 × 1920 · template · no personal data':dataset.exampleOnly?'1080 × 1920 · fictional data':'1080 × 1920 · only this card’s metric and caption';
+ const scope=story.sample?'fictional sample · design preview':story.libraryOnly?'template · no personal data':dataset.exampleOnly?'fictional data':'only this card’s metric and caption';
+ document.querySelector('.share-note').textContent=`1080 × 1920 · ${video?Math.round(VIDEO.duration)+' s loop · ':''}${scope}`;
  try{
-  await ready;if(version!==shareVersion||!$('share-dialog').open)return;
+  // The still comes first: it is the image export, and the poster while a video renders.
+  await ready;if(!live())return;
   const safe=sanitizedCard(story,dataset),out=shareCanvas(safe,story);
   const blob=await encodeShareCanvas(out,version);if(!blob)throw Error('Image encoding failed');
-  if(version!==shareVersion||!$('share-dialog').open)return;
-  shareBlob=blob;shareURL=URL.createObjectURL(blob);$('share-preview').src=shareURL;$('share-preview').alt=`${story.title.join(' ')} — ${shareColorways.find(c=>c.id===shareColorway).label} share card`;$('download').disabled=false;
-  const file=new File([blob],filename(),{type:'image/png'});$('native-share').hidden=!(navigator.canShare&&navigator.canShare({files:[file]}));
- }catch{if(version===shareVersion)$('share-error').textContent='The card could not be created. Choose a card or color to try again.';}
+  if(!live())return;
+  shareBlob=blob;shareURL=URL.createObjectURL(blob);$('share-preview').src=shareURL;$('share-preview').alt=`${story.title.join(' ')} — ${shareColorways.find(c=>c.id===shareColorway).label} share card`;
+  if(video){
+   $('share-preview-frame').setAttribute('aria-busy','false');shareProgress(0);
+   const clip=await renderShareCardVideo({spec:shareSpecFor(safe,story),colorway:shareColorway,year:dataset.year,current:live,onProgress:p=>{if(live())shareProgress(p);}});
+   if(!clip||!live())return;
+   shareProgress(null);videoBlob=clip;videoURL=URL.createObjectURL(clip);
+   const v=$('share-video');v.src=videoURL;v.setAttribute('aria-label',`${story.title.join(' ')} — looping share video`);v.hidden=false;
+   // reduced motion: the video waits for its own play control instead of starting by itself
+   if(reduced.matches)v.controls=true;else v.play().catch(()=>{v.controls=true;});
+  }
+  const file=shareFile();$('download').disabled=false;
+  $('native-share').hidden=!(navigator.canShare&&navigator.canShare({files:[new File([file.blob],filename(),{type:file.type})]}));
+ }catch{if(version===shareVersion){shareProgress(null);$('share-error').textContent=video?'The video could not be created. Try again, or share the card as an image.':'The card could not be created. Choose a card or color to try again.';}}
  finally{if(version===shareVersion)$('share-preview-frame').setAttribute('aria-busy','false');}
 }
-function filename(){return `garmin-wrapped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.png`;}
-$('download').addEventListener('click',()=>{if(!shareURL||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=shareURL;a.download=filename();document.body.append(a);a.click();a.remove();$('share-saved').textContent=`Saved to your device · ${a.download}`;});
-$('native-share').addEventListener('click',async()=>{if(!shareBlob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([shareBlob],filename(),{type:'image/png'})],title:'My Garmin Wrapped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent='Sharing is unavailable here. You can download the PNG instead.';}});
+function filename(){return `garmin-wrapped-${dataset.year}-${shareStory?.id||stories[state.index].id}${shareColorway==='original'?'':'-'+shareColorway}${dataset.exampleOnly?'-fictional-demo':''}.${shareFormat==='video'?'mp4':'png'}`;}
+$('download').addEventListener('click',()=>{const {url}=shareFile();if(!url||!canShare(shareStory,dataset))return;const a=document.createElement('a');a.href=url;a.download=filename();document.body.append(a);a.click();a.remove();$('share-saved').textContent=`Saved to your device · ${a.download}`;});
+$('native-share').addEventListener('click',async()=>{const {blob,type}=shareFile();if(!blob||!canShare(shareStory,dataset))return;try{await navigator.share({files:[new File([blob],filename(),{type})],title:'My Garmin Wrapped · a MINI WATT product ⚡️'});}catch(e){if(e.name!=='AbortError')$('share-error').textContent=`Sharing is unavailable here. You can download the ${shareFormat==='video'?'video':'PNG'} instead.`;}});
+for(const button of $('share-format').children)button.addEventListener('click',()=>{if(button.dataset.format===shareFormat||!shareStory)return;shareFormat=button.dataset.format;syncShareFormat();void renderSelectedShare();});
 // On phones Back and Next are invisible tap zones over the card; a swipe that starts on them must not also tap.
 let swipedAt=0;const swiped=()=>performance.now()-swipedAt<450;
 $('advance').addEventListener('click',()=>{if(swiped())return;state.index===stories.length-1?openShare():go(state.index+1);});

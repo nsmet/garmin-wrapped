@@ -52,3 +52,17 @@ test('Choosing a health card asks consent and switching away revokes that choice
  await expect(page.locator('#download')).toBeEnabled();
  await page.locator('#share-cards button').first().click();await expect(page.locator('#download')).toBeEnabled();await health.click();await expect(page.locator('#health-share-dialog')).toBeVisible();expect(errors).toEqual([]);
 });
+
+test('A card can be shared as a looping MP4 video and switched back to an image',async({page},testInfo)=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await demo(page);await page.locator('#share:visible, #share-icon:visible').click();await expect(page.locator('#download')).toBeEnabled();
+ // the switch only appears where the browser can encode H.264 (WebCodecs); elsewhere sharing stays image-only
+ const canVideo=await page.evaluate(async()=>!!await (await import('/share-video.mjs')).videoSupport());
+ if(!canVideo){await expect(page.locator('#share-format')).toBeHidden();testInfo.skip(true,'No H.264 encoder in this browser build');return;}
+ await page.getByRole('button',{name:'Video',exact:true}).click();await expect(page.getByRole('button',{name:'Video',exact:true})).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#share-video')).toBeVisible({timeout:60000});await expect(page.locator('#download')).toBeEnabled();await expect(page.locator('#download')).toContainText('MP4');
+ await expect.poll(()=>page.locator('#share-video').evaluate(v=>[v.videoWidth,v.videoHeight,Math.round(v.duration)])).toEqual([1080,1920,7]);
+ const download=page.waitForEvent('download');await page.locator('#download').click();const file=await download;expect(file.suggestedFilename()).toMatch(/^garmin-wrapped-2025-.+-fictional-demo\.mp4$/);
+ await page.getByRole('button',{name:'Image',exact:true}).click();await expect(page.locator('#download')).toContainText('PNG');await expect(page.locator('#share-video')).toBeHidden();
+ await page.locator('#close-share').click();await expect(page.locator('#share-video')).not.toHaveAttribute('src',/.+/);expect(errors).toEqual([]);
+});
