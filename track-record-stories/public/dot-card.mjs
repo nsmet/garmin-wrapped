@@ -240,8 +240,8 @@ export function drawBackground(c,w,h,spec,frame,palette){
 // Fills `out` with screen-space dots for one card at ambient time t.
 // intro: seconds since the card appeared (null = settled); fade: card opacity;
 // from: optional Float32Array of [x,y] screen positions the dots fly in from (morph).
-export function createDotBuffer(capacity=4096){const n=capacity;return {n:0,cap:n,x:new Float32Array(n),y:new Float32Array(n),r:new Float32Array(n),c:new Float32Array(n*3),a:new Float32Array(n),core:new Float32Array(n)};}
-function grow(buf,need){if(need<=buf.cap)return;const nb=createDotBuffer(Math.max(need,buf.cap*2));for(const k of ['x','y','r','a','core'])nb[k].set(buf[k]);nb.c.set(buf.c);Object.assign(buf,nb,{n:buf.n});}
+export function createDotBuffer(capacity=4096){const n=capacity;return {n:0,cap:n,x:new Float32Array(n),y:new Float32Array(n),r:new Float32Array(n),c:new Float32Array(n*3),a:new Float32Array(n),core:new Float32Array(n),g:new Uint8Array(n)};}
+function grow(buf,need){if(need<=buf.cap)return;const nb=createDotBuffer(Math.max(need,buf.cap*2));for(const k of ['x','y','r','a','core','g'])nb[k].set(buf[k]);nb.c.set(buf.c);Object.assign(buf,nb,{n:buf.n});}
 const RGB={};const rgbOf=h=>RGB[h]||(RGB[h]=hexRgb(h).map(v=>v/255));
 const tmp={x:0,y:0,z:0,k:1,ka:1};
 // neutralStart (share videos): a dot still in flight takes on its ambient size and depth fade only as it
@@ -262,7 +262,7 @@ export function collectDots(buf,spec,{t=30,intro=null,fade=1,frame,palette=null,
   if(a<=0.01||r<=0.05)continue;
   if(minR&&!p.g)r=Math.max(r,minR);
   const k=buf.n++,col=rgbOf(hex);
-  buf.x[k]=x;buf.y[k]=y;buf.r[k]=r;buf.a[k]=Math.min(1,a);buf.c[k*3]=col[0];buf.c[k*3+1]=col[1];buf.c[k*3+2]=col[2];buf.core[k]=!p.g&&r>2.5*A.s?1:0;
+  buf.x[k]=x;buf.y[k]=y;buf.r[k]=r;buf.a[k]=Math.min(1,a);buf.c[k*3]=col[0];buf.c[k*3+1]=col[1];buf.c[k*3+2]=col[2];buf.core[k]=!p.g&&r>2.5*A.s?1:0;buf.g[k]=p.g?1:0;
  }
  return buf;
 }
@@ -286,10 +286,13 @@ export function drawDots2D(c,buf,{additive=true}={}){
  for(let i=0;i<buf.n;i++){const r=buf.r[i];c.globalAlpha=buf.a[i];c.drawImage(sprite([buf.c[i*3],buf.c[i*3+1],buf.c[i*3+2]],buf.core[i]>0),buf.x[i]-r*1.6,buf.y[i]-r*1.6,r*3.2,r*3.2);}
  c.restore();
 }
-/* flat dots: a solid disc the size of a sprite's bright centre, no glow and no white core */
+/* flat dots (share cards): solid discs, no glow and no white core. Without a glow a disc must be larger
+   to read at the same weight: data dots fill the radius their glow used to reach (the engine spaces dots
+   about 2.9 radii apart, so neighbours stay clear), guide dots grow less so outlines stay light. */
+export const FLAT_DATA=1,FLAT_GUIDE=.8;
 export function drawDotsFlat(c,buf){
  c.save();c.globalCompositeOperation='source-over';
- for(let i=0;i<buf.n;i++){const r=buf.r[i]*.62;c.globalAlpha=buf.a[i];c.fillStyle=`rgb(${Math.round(buf.c[i*3]*255)},${Math.round(buf.c[i*3+1]*255)},${Math.round(buf.c[i*3+2]*255)})`;c.beginPath();c.arc(buf.x[i],buf.y[i],r,0,Math.PI*2);c.fill();}
+ for(let i=0;i<buf.n;i++){const r=buf.r[i]*(buf.g[i]?FLAT_GUIDE:FLAT_DATA);c.globalAlpha=buf.a[i];c.fillStyle=`rgb(${Math.round(buf.c[i*3]*255)},${Math.round(buf.c[i*3+1]*255)},${Math.round(buf.c[i*3+2]*255)})`;c.beginPath();c.arc(buf.x[i],buf.y[i],r,0,Math.PI*2);c.fill();}
  c.restore();
 }
 export const additiveFor=palette=>!palette;
